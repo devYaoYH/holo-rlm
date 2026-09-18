@@ -1,0 +1,105 @@
+{
+  "backend": "scripted",
+  "capture_consent": true,
+  "files": {
+    "actions/0000.json": {
+      "bytes": 499,
+      "sha256": "4c4c88cc6e47977043c3c84609cbdaae733cbf4304ea03d80c5edd9b9213cc56"
+    },
+    "actions/0001.json": {
+      "bytes": 499,
+      "sha256": "9a0f550f60436bd3c24a975d1c9329046a9217cd83bbc9d5a538b9a9d85b0b6b"
+    },
+    "annotations.json": {
+      "bytes": 727,
+      "sha256": "052bf6725bf4d8ff49bb3978e1f7125cc30a21173a6d9c98007881b0d4527e37"
+    },
+    "events.jsonl": {
+      "bytes": 76072,
+      "sha256": "4e518cce79eced561ead086976b7ef5c93be200ffaf8f14996a9e681131af42b"
+    },
+    "frames/0000-model-input.png": {
+      "bytes": 23079,
+      "sha256": "b75b661a00eaa35b262f10f641274e7eb3102d9f8cdfe5424b4f76b7c2edf92b"
+    },
+    "frames/0000-post-action.png": {
+      "bytes": 24465,
+      "sha256": "8799c5546c9cf0d5fb87dee67fe34f2f7f58f74089bd2c0e11cf10d95b32fff9"
+    },
+    "frames/0001-model-input.png": {
+      "bytes": 24465,
+      "sha256": "8799c5546c9cf0d5fb87dee67fe34f2f7f58f74089bd2c0e11cf10d95b32fff9"
+    },
+    "frames/0001-post-action.png": {
+      "bytes": 24990,
+      "sha256": "99599f3f843c10e7c2f17ccd3d80393366cfa9bd829836afb2884f5ac049d611"
+    },
+    "raw/events.jsonl": {
+      "bytes": 70658,
+      "sha256": "cfe0bb2d1dc98725cfc58176b50d1fc6f4fa974e5dc64db251176b19e0f5b93e"
+    },
+    "report.html": {
+      "bytes": 2554,
+      "sha256": "b4abca812e698553183941ea5af7ba820dce6730fe4cb15f385120979730d395"
+    },
+    "requests/0000.json": {
+      "bytes": 34020,
+      "sha256": "7566b299134c0132aced061c6db7a2eba8dcad0005bf40f271683bef29637427"
+    },
+    "requests/0001.json": {
+      "bytes": 36101,
+      "sha256": "a93d0142d535aa030b4f86b2c9dff41057bbee7551719498d8ef7e1cd1403a5e"
+    },
+    "responses/0000.json": {
+      "bytes": 376,
+      "sha256": "1cbdece74c826a7dd651827ecbb1a294cf6578aa71e43fa5b9ef301a11c4650a"
+    },
+    "responses/0001.json": {
+      "bytes": 376,
+      "sha256": "f799f68657ff16f7db9e238873ab9ef7588bd8441081af7a7235e9b4fde15b36"
+    }
+  },
+  "fixture": {
+    "base_url": "http://127.0.0.1:51196",
+    "seed": 0,
+    "variant": 1,
+    "version": "booking-fixture-v1",
+    "viewport": {
+      "height": 800,
+      "width": 1280
+    }
+  },
+  "model": {
+    "id": "deterministic-reference-policy",
+    "processor_config": {
+      "color_mode": "RGB",
+      "image_format": "png",
+      "renderer": "fixture-renderer-v1"
+    },
+    "processor_revision": "fixture-renderer-v1",
+    "revision": "v1"
+  },
+  "redaction": {
+    "applied": false,
+    "method": null,
+    "rectangles": []
+  },
+  "research_eligible": false,
+  "research_split": null,
+  "schema_version": "holo-trajectory-v0",
+  "software": {
+    "capture": "0.1.0",
+    "platform": "macOS-26.6.1-arm64-arm-64bit",
+    "python": "3.12.11"
+  },
+  "task_id": "find-target-after-scroll-v1-variant-1",
+  "timestamps": {
+    "completed_at": "2026-09-18T07:14:42.794187+00:00",
+    "started_at": "2026-09-18T07:14:42.607579+00:00"
+  },
+  "trajectory_id": "traj-20260918T071442Z-114fbc2997",
+  "viewport": {
+    "height": 800,
+    "width": 1280
+  }
+}

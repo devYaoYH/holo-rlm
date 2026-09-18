@@ -1,0 +1,25 @@
+{
+  "normalized": {
+    "action": "scroll",
+    "delta_y": -810
+  },
+  "raw_output": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\"action\": \"scroll\", \"delta_y\": -810}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "scripted-0001",
+    "model": "deterministic-reference-policy",
+    "usage": {
+      "completion_tokens": null,
+      "prompt_tokens": null,
+      "total_tokens": null
+    }
+  }
+}

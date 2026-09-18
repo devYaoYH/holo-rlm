@@ -1,0 +1,26 @@
+# Locally downloaded Hugging Face model checkpoints.
+models/
+
+# Local environment state and generated model/trajectory artifacts.
+.venv/
+**/.venv/
+data/
+.env
+**/.env
+
+# The Holo CLI checkout is a local development dependency, not project source.
+vendor/
+
+# Disposable desktop/browser state and generated run artifacts.
+browser-profiles/
+.holo-runs/
+run-logs/
+artifact-cache/
+*.log
+
+# Python/editor caches.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.DS_Store

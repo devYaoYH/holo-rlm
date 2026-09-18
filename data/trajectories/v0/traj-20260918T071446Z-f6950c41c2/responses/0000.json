@@ -1,0 +1,19 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "{\"action\": \"scroll\", \"delta_y\": 1000}",
+        "role": "assistant"
+      }
+    }
+  ],
+  "id": "scripted-0000",
+  "model": "deterministic-reference-policy",
+  "usage": {
+    "completion_tokens": null,
+    "prompt_tokens": null,
+    "total_tokens": null
+  }
+}

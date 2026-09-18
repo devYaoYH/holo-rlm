@@ -1,0 +1,26 @@
+{
+  "normalized": {
+    "action": "click",
+    "x": 1080,
+    "y": 350
+  },
+  "raw_output": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\"action\": \"click\", \"x\": 1080, \"y\": 350}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "scripted-0002",
+    "model": "deterministic-reference-policy",
+    "usage": {
+      "completion_tokens": null,
+      "prompt_tokens": null,
+      "total_tokens": null
+    }
+  }
+}

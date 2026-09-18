@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StayLocal — deterministic results</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <div><span class="brand">StayLocal</span><span class="badge">LOCAL FIXTURE</span></div>
+    <div class="search-summary">Harbor City · 2 guests · 3 nights</div>
+  </header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow">DETERMINISTIC SEARCH</p>
+      <h1>Places to stay in Harbor City</h1>
+      <p>Seed <strong id="seed"></strong> · fixed prices · no real reservations</p>
+    </section>
+    <aside id="fixture-state" aria-label="Fixture state panel">
+      <strong>Test state</strong>
+      <span data-test="fixture-seed"></span>
+      <span data-test="scroll-position"></span>
+      <span data-test="details-open"></span>
+    </aside>
+    <section id="results" aria-label="Hotel results"></section>
+    <div class="end-marker">End of deterministic results</div>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

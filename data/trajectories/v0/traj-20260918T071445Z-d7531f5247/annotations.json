@@ -1,0 +1,34 @@
+{
+  "completed_steps": 3,
+  "error": null,
+  "final_state": {
+    "action_count": 3,
+    "destination": "/details/harbor-lantern",
+    "details_open": true,
+    "scroll_y": 90,
+    "seed": 2,
+    "variant": 1
+  },
+  "initial_state": {
+    "action_count": 0,
+    "destination": "/",
+    "details_open": false,
+    "scroll_y": 0,
+    "seed": 2,
+    "variant": 1
+  },
+  "manual_privacy_review": false,
+  "second_find_turn_step": 1,
+  "target": {
+    "expected_destination": "/details/harbor-lantern",
+    "hotel": "Copper Lantern Hotel"
+  },
+  "target_frame_interval": [
+    0,
+    2
+  ],
+  "target_seen_before_left_viewport": true,
+  "target_visible_region": "hotel result card",
+  "task_success": true,
+  "terminal_reason": "fixture_success"
+}
