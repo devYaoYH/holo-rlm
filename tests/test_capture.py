@@ -9,7 +9,7 @@ from PIL import Image
 from capture.normalizer import classify_holo_event, omit_hidden_reasoning
 from capture.validator import validate_bundle
 from demo.backends import BackendDecisionError, ScriptedBackend, build_request
-from demo.runner import _safe_exception, capture_run
+from demo.runner import _action_for_model_history, _safe_exception, capture_run
 
 
 def _lines(path: Path) -> list[dict]:
@@ -223,3 +223,47 @@ def test_bottom_noop_prompts_moderate_upward_recovery(tmp_path: Path) -> None:
     assert "reached the bottom" in prompt
     assert "positive delta_y near 500" in prompt
     assert "Do not scroll down again" in prompt
+
+
+def test_model_history_preserves_native_scroll_sign_before_fixture_projection() -> None:
+    response = {
+        "choices": [
+            {
+                "message": {
+                    "tool_calls": [
+                        {"function": {"name": "desktop_action", "arguments": '{"action":"scroll","delta_y":-500}'}}
+                    ]
+                }
+            }
+        ]
+    }
+    assert _action_for_model_history(response, {"action": "scroll", "delta_y": 500}) == {
+        "action": "scroll",
+        "delta_y": -500,
+    }
+
+
+def test_top_noop_prompts_downward_recovery(tmp_path: Path) -> None:
+    class RepeatedUpBackend:
+        name = "scripted"
+        model_id = "scroll-test-model"
+        model_revision = "test"
+        processor_revision = "test"
+
+        def decide(self, *, messages, image, **_kwargs):
+            request = build_request(messages, image, self.model_id)
+            response = {"choices": [{"message": {"content": '{"action":"scroll","delta_y":-500}'}}]}
+            return request, response, {"action": "scroll", "delta_y": -500}
+
+    bundle, _result = capture_run(
+        backend=RepeatedUpBackend(),
+        output_root=tmp_path,
+        seed=0,
+        max_steps=2,
+        task="cheapest",
+    )
+    second_request = json.loads((bundle / "requests/0001.json").read_text())
+    prompt = json.dumps(second_request["messages"])
+    assert "reached the top" in prompt
+    assert "negative delta_y near -500" in prompt
+    assert "Do not scroll up again" in prompt

@@ -47,6 +47,19 @@ def _native_action_history(action: dict[str, Any]) -> str:
     )
 
 
+def _action_for_model_history(response: dict[str, Any], applied_action: dict[str, Any]) -> dict[str, Any]:
+    """Recover the model-native action before coordinate/sign projection."""
+
+    try:
+        arguments = response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"]
+        action = json.loads(arguments) if isinstance(arguments, str) else arguments
+        if isinstance(action, dict) and isinstance(action.get("action"), str):
+            return action
+    except (IndexError, KeyError, TypeError, ValueError):
+        pass
+    return applied_action
+
+
 def _artifact(path: Path, bundle: Path, role: str) -> dict[str, Any]:
     data = path.read_bytes()
     result = {"path": path.relative_to(bundle).as_posix(), "sha256": sha256_bytes(data), "role": role}
@@ -266,7 +279,8 @@ def capture_run(
             # while the final appended screenshot remains the current frame.
             messages.append(deepcopy(request["messages"][-1]))
             model_input_history.append(image_ref)
-            messages.append({"role": "assistant", "content": _native_action_history(action)})
+            model_history_action = _action_for_model_history(response, action)
+            messages.append({"role": "assistant", "content": _native_action_history(model_history_action)})
             if fixture_assertion:
                 success = True
                 terminal_reason = "fixture_success"
@@ -290,10 +304,15 @@ def capture_run(
                         "Every hotel price has appeared, but the cheapest card is in an earlier frame. Use a moderate "
                         "positive delta_y near 500 to scroll up toward it; click only when its card is visible."
                     )
-                elif no_scroll_movement:
+                elif no_scroll_movement and action["delta_y"] > 0:
                     progress = (
                         "The last scroll did not move: you reached the bottom while skipping at least one price row. "
                         "Do not scroll down again. Use a moderate positive delta_y near 500 to inspect the missed rows above."
+                    )
+                elif no_scroll_movement:
+                    progress = (
+                        "The last scroll did not move because you reached the top. Do not scroll up again. Use a "
+                        "moderate negative delta_y near -500 to continue inspecting later results below."
                     )
                 else:
                     progress = (
