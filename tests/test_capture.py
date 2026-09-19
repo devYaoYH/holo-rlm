@@ -3,12 +3,13 @@ import hashlib
 import json
 from pathlib import Path
 
+import httpx
 from PIL import Image
 
 from capture.normalizer import classify_holo_event, omit_hidden_reasoning
 from capture.validator import validate_bundle
 from demo.backends import BackendDecisionError, ScriptedBackend, build_request
-from demo.runner import capture_run
+from demo.runner import _safe_exception, capture_run
 
 
 def _lines(path: Path) -> list[dict]:
@@ -113,7 +114,8 @@ def test_cheapest_task_targets_lowest_price(tmp_path: Path) -> None:
     second_request = json.loads((bundle / "requests/0001.json").read_text())
     assert "frame 0" in second_request["messages"][2]["content"][0]["text"]
     assert "<function=desktop_action>" in second_request["messages"][3]["content"]
-    assert "do not reverse direction prematurely" in second_request["messages"][4]["content"]
+    assert "moderate wheel increments near 500" in second_request["messages"][4]["content"]
+    assert "reverse with positive delta_y" in second_request["messages"][4]["content"]
     assert "frame 1" in second_request["messages"][5]["content"][0]["text"]
     historical_images = [
         part["image_url"]["url"]
@@ -182,3 +184,42 @@ def test_stop_on_click_finalizes_after_first_issued_click(tmp_path: Path) -> Non
     assert annotations["terminal_reason"] == "click_issued"
     assert result["replay"]["actions"] == 1
     assert len(list((bundle / "actions").glob("*.json"))) == 1
+
+
+def test_http_failure_diagnostic_omits_remote_library_help_url() -> None:
+    request = httpx.Request("POST", "http://127.0.0.1:8001/v1/chat/completions")
+    response = httpx.Response(500, request=request)
+    error = httpx.HTTPStatusError(
+        "500 error; see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+        request=request,
+        response=response,
+    )
+    diagnostic = _safe_exception(error)
+    assert diagnostic == "HTTPStatusError: 500 response from local inference endpoint"
+    assert "https://" not in diagnostic
+
+
+def test_bottom_noop_prompts_moderate_upward_recovery(tmp_path: Path) -> None:
+    class RepeatedScrollBackend:
+        name = "scripted"
+        model_id = "scroll-test-model"
+        model_revision = "test"
+        processor_revision = "test"
+
+        def decide(self, *, messages, image, **_kwargs):
+            request = build_request(messages, image, self.model_id)
+            response = {"choices": [{"message": {"content": '{"action":"scroll","delta_y":800}'}}]}
+            return request, response, {"action": "scroll", "delta_y": 800}
+
+    bundle, _result = capture_run(
+        backend=RepeatedScrollBackend(),
+        output_root=tmp_path,
+        seed=0,
+        max_steps=5,
+        task="cheapest",
+    )
+    fifth_request = json.loads((bundle / "requests/0004.json").read_text())
+    prompt = json.dumps(fifth_request["messages"])
+    assert "reached the bottom" in prompt
+    assert "positive delta_y near 500" in prompt
+    assert "Do not scroll down again" in prompt

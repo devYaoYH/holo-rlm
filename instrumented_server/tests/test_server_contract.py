@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 from instrumented_holo.app import create_app
@@ -117,3 +118,15 @@ def test_model_metadata_maps_captured_attention_blocks_to_transformer_layers(tmp
     )
     engine = InstrumentedHolo(Settings(model_path=tmp_path, trace_dir=tmp_path / "traces"))
     assert engine.model_metadata()["attention_layer_indices"] == [1, 3]
+
+
+def test_processor_metadata_records_effective_runtime_pixel_bounds(tmp_path: Path) -> None:
+    engine = InstrumentedHolo(Settings(model_path=tmp_path, trace_dir=tmp_path / "traces"))
+    engine.processor = SimpleNamespace(
+        image_processor=SimpleNamespace(size={"shortest_edge": 65_536, "longest_edge": 262_144})
+    )
+    metadata = engine.processor_metadata()
+    assert metadata["runtime_image_processor_size"] == {
+        "shortest_edge": 65_536,
+        "longest_edge": 262_144,
+    }

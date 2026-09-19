@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import httpx
 from PIL import ImageDraw
 
 from capture.bundle import BundleWriter, canonical_json, sha256_bytes
@@ -25,7 +26,8 @@ INITIAL_TASK = "Inspect the deterministic booking results, note the options, and
 CHEAPEST_TASK = (
     "Find the hotel with the lowest nightly price across all deterministic search results. "
     "You have not seen all results yet: your first action must scroll down, and you must not click any currently "
-    "visible hotel. Inspect every option, then open the cheapest hotel's local View details link. "
+    "visible hotel. Inspect every option using moderate native wheel increments near -500 so no price row is skipped, "
+    "then open the cheapest hotel's local View details link. "
     "Take exactly one desktop action per turn."
 )
 
@@ -143,7 +145,7 @@ def capture_run(
                     step=step, messages=messages, image=image, config=config, state=state
                 )
             except Exception as exc:
-                invalid_error = f"{type(exc).__name__}: {exc}"
+                invalid_error = _safe_exception(exc)
                 terminal_reason = "backend_or_action_error"
                 failure_artifacts = [image_ref]
                 if isinstance(exc, BackendDecisionError):
@@ -276,16 +278,29 @@ def capture_run(
                 break
             if task == "cheapest":
                 all_results_seen = len(seen_hotel_ids) == len(config["hotels"])
-                progress = (
-                    "Every hotel result has now appeared across the frames you inspected. Do not scroll again. "
-                    "Compare the observed nightly prices and immediately click View details for only the cheapest hotel."
-                    if all_results_seen
-                    else (
-                        "Continue the same task. If results remain below, use a negative delta_y to inspect them and "
-                        "do not reverse direction prematurely. Once every result has been inspected, open View details "
-                        "for only the cheapest hotel."
+                no_scroll_movement = action["action"] == "scroll" and before["scroll_y"] == after["scroll_y"]
+                objective_visible = _target_visible(config, after, objective["id"])
+                if all_results_seen and objective_visible:
+                    progress = (
+                        "Every hotel price has appeared and the cheapest hotel's card is visible now. Do not scroll. "
+                        "Immediately click View details for only the cheapest hotel."
                     )
-                )
+                elif all_results_seen:
+                    progress = (
+                        "Every hotel price has appeared, but the cheapest card is in an earlier frame. Use a moderate "
+                        "positive delta_y near 500 to scroll up toward it; click only when its card is visible."
+                    )
+                elif no_scroll_movement:
+                    progress = (
+                        "The last scroll did not move: you reached the bottom while skipping at least one price row. "
+                        "Do not scroll down again. Use a moderate positive delta_y near 500 to inspect the missed rows above."
+                    )
+                else:
+                    progress = (
+                        "Continue the same task. Inspect adjacent results with moderate wheel increments near 500 so no "
+                        "price row is skipped. Use negative delta_y while moving down; if the viewport stops changing, "
+                        "reverse with positive delta_y. Once every price is known, open only the cheapest hotel's details."
+                    )
                 messages.append(
                     {
                         "role": "user",
@@ -369,6 +384,14 @@ def _event(
         interpretability_replay_ready=replay_ready,
         interpretability=interpretability,
     )
+
+
+def _safe_exception(exc: Exception) -> str:
+    """Keep diagnostics useful without copying library help URLs into local-only bundles."""
+
+    if isinstance(exc, httpx.HTTPStatusError):
+        return f"HTTPStatusError: {exc.response.status_code} response from local inference endpoint"
+    return f"{type(exc).__name__}: {exc}"
 
 
 def _target_visible(config: dict, state: dict, hotel_id: str | None = None) -> bool:

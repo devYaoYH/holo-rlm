@@ -20,6 +20,8 @@ On this approximately 18 GiB usable-memory Mac, that still leaves a tight practi
 
 The validated native-BF16 load used 6.02 GiB after shard one and 9.64 GiB after both shards. The server logs these MPS figures at every shard boundary and asserts that no parameter remains on `meta` or silently changes dtype.
 
+Historical-frame requests bound each image to 262,144 pixels before visual tokenization (`HOLO_IMAGE_MAX_PIXELS`, with a 65,536-pixel minimum). This keeps exact source PNGs in the trace while preventing full prompt-attention matrices from growing beyond Metal memory as frames accumulate. The effective runtime limits and resulting `image_grid_thw` are stored with every trace.
+
 ## Trace request
 
 Send screenshots as base64 data URLs. The server deliberately refuses remote URLs so a trace is self-contained and inference does not fetch browser-provided addresses.

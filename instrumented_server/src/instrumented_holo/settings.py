@@ -29,6 +29,8 @@ class Settings:
     allow_dtype_conversion: bool = False
     eager_attention: bool = True
     default_max_tokens: int = 128
+    image_min_pixels: int = 65_536
+    image_max_pixels: int = 262_144
 
     @classmethod
     def from_environment(cls) -> Settings:
@@ -43,4 +45,6 @@ class Settings:
             allow_dtype_conversion=os.environ.get("HOLO_ALLOW_DTYPE_CONVERSION", "0") == "1",
             eager_attention=os.environ.get("HOLO_EAGER_ATTENTION", "1") != "0",
             default_max_tokens=int(os.environ.get("HOLO_DEFAULT_MAX_TOKENS", "128")),
+            image_min_pixels=int(os.environ.get("HOLO_IMAGE_MIN_PIXELS", "65536")),
+            image_max_pixels=int(os.environ.get("HOLO_IMAGE_MAX_PIXELS", "262144")),
         )

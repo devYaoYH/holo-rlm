@@ -146,6 +146,16 @@ class InstrumentedHolo:
             self.dtype = getattr(torch, self.settings.dtype)
 
         self.processor = AutoProcessor.from_pretrained(self.settings.model_path, local_files_only=True)
+        if self.settings.image_max_pixels < self.settings.image_min_pixels:
+            raise ValueError("HOLO_IMAGE_MAX_PIXELS must be greater than or equal to HOLO_IMAGE_MIN_PIXELS")
+        # Bound each historical frame before visual tokenization. Full prompt
+        # attention is quadratic in the combined text+image sequence length;
+        # the checkpoint default admits up to 16M pixels per image and a
+        # four-frame traced request exhausted a 24 GiB unified-memory machine.
+        self.processor.image_processor.size = {
+            "shortest_edge": self.settings.image_min_pixels,
+            "longest_edge": self.settings.image_max_pixels,
+        }
         if self.settings.load_strategy != "stream":
             raise ValueError(
                 f"Unsupported HOLO_LOAD_STRATEGY={self.settings.load_strategy!r}; "
@@ -287,6 +297,8 @@ class InstrumentedHolo:
             "dtype": str(self.dtype).replace("torch.", "") if self.dtype else None,
             "load_strategy": self.settings.load_strategy,
             "eager_attention": self.settings.eager_attention,
+            "image_min_pixels": self.settings.image_min_pixels,
+            "image_max_pixels": self.settings.image_max_pixels,
             "torch_version": version("torch"),
             "transformers_version": version("transformers"),
         }
@@ -305,6 +317,10 @@ class InstrumentedHolo:
             path = self.settings.model_path / name
             if path.is_file():
                 result["files"][name] = json.loads(path.read_text())
+        if self.processor is not None:
+            size = getattr(self.processor.image_processor, "size", None)
+            if isinstance(size, dict):
+                result["runtime_image_processor_size"] = dict(size)
         return result
 
     def _prepare_inputs(
