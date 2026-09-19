@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import copy
 import json
 from io import BytesIO
 from typing import Any, Protocol
@@ -12,9 +13,32 @@ from PIL import Image
 
 from capture.schema import ACTION_SCHEMA, validate_action
 
-from .renderer import target_click, target_scroll
+from .renderer import hotel_click, hotel_scroll, target_click, target_scroll
 
 SYSTEM_PROMPT = """You control only a deterministic localhost booking fixture. Never navigate to an external URL or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."""
+CHEAPEST_ONLY_SYSTEM_INSTRUCTION = (
+    "CRITICAL CHEAPEST-HOTEL CONSTRAINT: VIEW DETAILS OF ONLY THE CHEAPEST HOTEL. "
+    "Inspect all results before deciding. Never open View details for any other hotel, even temporarily. "
+    "As soon as every result has appeared, compare the observed prices and click the cheapest visible View details "
+    "button immediately; do not scroll again. Do not narrate. Emit only the desktop tool call. "
+    "In the native desktop tool, use a negative delta_y to scroll down and a positive delta_y to scroll up."
+)
+
+MODEL_ACTION_SCHEMA = copy.deepcopy(ACTION_SCHEMA)
+MODEL_ACTION_SCHEMA["oneOf"][0]["properties"]["x"]["maximum"] = 1000
+MODEL_ACTION_SCHEMA["oneOf"][0]["properties"]["y"]["maximum"] = 1000
+MODEL_ACTION_SCHEMA["oneOf"][1]["properties"]["delta_y"]["description"] = (
+    "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results."
+)
+
+
+class BackendDecisionError(ValueError):
+    """A completion arrived, but it could not be reduced to one valid action."""
+
+    def __init__(self, message: str, *, request: dict[str, Any], response: dict[str, Any]) -> None:
+        super().__init__(message)
+        self.request = request
+        self.response = response
 
 
 class ActionBackend(Protocol):
@@ -33,14 +57,55 @@ def png_data_url(image: Image.Image) -> tuple[str, bytes]:
     return "data:image/png;base64," + base64.b64encode(data).decode(), data
 
 
-def build_request(messages: list[dict[str, Any]], image: Image.Image, model_id: str) -> dict[str, Any]:
+def project_model_action(action: dict[str, Any], image_size: tuple[int, int]) -> dict[str, Any]:
+    """Project Holo's normalized pointer and wheel conventions into fixture coordinates."""
+
+    if action.get("action") == "scroll":
+        return {"action": "scroll", "delta_y": -int(action["delta_y"])}
+    if action.get("action") != "click":
+        return dict(action)
+    width, height = image_size
+    return {
+        "action": "click",
+        "x": round(int(action["x"]) * (width - 1) / 1000),
+        "y": round(int(action["y"]) * (height - 1) / 1000),
+    }
+
+
+def is_cheapest_task(messages: list[dict[str, Any]]) -> bool:
+    """Recognize the bounded cheapest-hotel objective from its user instruction."""
+
+    return any(
+        message.get("role") == "user" and "lowest nightly price" in str(message.get("content", "")).lower()
+        for message in messages
+    )
+
+
+def build_request(
+    messages: list[dict[str, Any]],
+    image: Image.Image,
+    model_id: str,
+    *,
+    normalized_coordinates: bool = False,
+    frame_index: int | None = None,
+) -> dict[str, Any]:
     image_url, _ = png_data_url(image)
-    request_messages = [{"role": "system", "content": SYSTEM_PROMPT}, *messages]
+    system_prompt = SYSTEM_PROMPT
+    if is_cheapest_task(messages):
+        system_prompt = f"{system_prompt}\n\n{CHEAPEST_ONLY_SYSTEM_INSTRUCTION}"
+    request_messages = [{"role": "system", "content": system_prompt}, *messages]
     request_messages.append(
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": "Current exact fixture screenshot. Choose one action."},
+                {
+                    "type": "text",
+                    "text": (
+                        f"Exact fixture screenshot for frame {frame_index}; this is the current frame. Choose one action."
+                        if frame_index is not None
+                        else "Current exact fixture screenshot. Choose one action."
+                    ),
+                },
                 {"type": "image_url", "image_url": {"url": image_url}},
             ],
         }
@@ -49,8 +114,16 @@ def build_request(messages: list[dict[str, Any]], image: Image.Image, model_id: 
         "model": model_id,
         "messages": request_messages,
         "temperature": 0,
-        "max_tokens": 128,
-        "tools": [{"type": "function", "function": {"name": "desktop_action", "parameters": ACTION_SCHEMA}}],
+        "max_tokens": 256,
+        "tools": [
+            {
+                "type": "function",
+                "function": {
+                    "name": "desktop_action",
+                    "parameters": MODEL_ACTION_SCHEMA if normalized_coordinates else ACTION_SCHEMA,
+                },
+            }
+        ],
         "tool_choice": {"type": "function", "function": {"name": "desktop_action"}},
     }
 
@@ -62,8 +135,16 @@ class ScriptedBackend:
     processor_revision = "fixture-renderer-v1"
 
     def decide(self, *, step: int, messages: list[dict[str, Any]], image: Image.Image, config: dict, state: dict) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-        request = build_request(messages, image, self.model_id)
-        if step == 0:
+        request = build_request(messages, image, self.model_id, frame_index=step)
+        cheapest_task = is_cheapest_task(messages)
+        if cheapest_task:
+            cheapest = min(config["hotels"], key=lambda hotel: (hotel["price"], hotel["id"]))
+            if step == 0:
+                action = {"action": "scroll", "delta_y": hotel_scroll(config, cheapest["id"])}
+            else:
+                x, y = hotel_click(config, state, cheapest["id"])
+                action = {"action": "click", "x": x, "y": y}
+        elif step == 0:
             action = {"action": "scroll", "delta_y": config["initial_scroll_delta"]}
         elif step == 1:
             action = {"action": "scroll", "delta_y": target_scroll(config) - state["scroll_y"]}
@@ -82,12 +163,22 @@ class ScriptedBackend:
 class OpenAIBackend:
     name = "local"
 
-    def __init__(self, base_url: str, model_id: str, model_revision: str | None, processor_revision: str | None) -> None:
+    def __init__(
+        self,
+        base_url: str,
+        model_id: str,
+        model_revision: str | None,
+        processor_revision: str | None,
+        trace_generation_steps: int = 4,
+    ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model_id = model_id
         self.model_revision = model_revision
         self.processor_revision = processor_revision
-        self._http = httpx.Client(timeout=300, trust_env=False)
+        self.trace_generation_steps = trace_generation_steps
+        # Native Metal generation plus compression of square rollout matrices
+        # can exceed fifteen minutes on the first request after model load.
+        self._http = httpx.Client(timeout=3600, trust_env=False)
         try:
             models = self._http.get(f"{self.base_url}/models").json().get("data", [])
             selected = next((item for item in models if item.get("id") == model_id), None)
@@ -98,26 +189,51 @@ class OpenAIBackend:
             pass  # The actual completion request will provide the authoritative connectivity error.
 
     def decide(self, *, step: int, messages: list[dict[str, Any]], image: Image.Image, config: dict, state: dict) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-        request = build_request(messages, image, self.model_id)
+        request = build_request(
+            messages,
+            image,
+            self.model_id,
+            normalized_coordinates=True,
+            frame_index=step,
+        )
         request["chat_template_kwargs"] = {"enable_thinking": False}
         request["trace"] = {
             "capture_attentions": True,
-            "capture_hidden_states": True,
+            # Saliency uses attention rows, value norms, and prompt rollout.
+            # Retaining every layer's hidden state for every generated token
+            # adds substantial Metal memory pressure without affecting maps.
+            "capture_hidden_states": False,
             "capture_kv": False,
-            "max_generation_steps": 4,
+            "capture_value_norms": True,
+            "capture_rollout": True,
+            "max_generation_steps": self.trace_generation_steps,
         }
+        # Observed action calls are under 64 tokens. Keep at least that normal
+        # action budget, or a larger explicitly requested capture budget, while
+        # preventing a malformed non-terminating completion from running to the
+        # generic 256-token default during expensive Metal tracing.
+        request["max_tokens"] = max(64, self.trace_generation_steps)
         response = self._http.post(f"{self.base_url}/chat/completions", json=request)
         response.raise_for_status()
         payload = response.json()
-        message = payload["choices"][0]["message"]
-        if message.get("tool_calls"):
-            arguments = message["tool_calls"][0]["function"]["arguments"]
-            action = json.loads(arguments) if isinstance(arguments, str) else arguments
-        else:
-            content = message.get("content", "")
-            content = content.strip().removeprefix("```json").removesuffix("```").strip()
-            action = json.loads(content)
-        return request, payload, validate_action(action)
+        try:
+            message = payload["choices"][0]["message"]
+            if message.get("tool_calls"):
+                arguments = message["tool_calls"][0]["function"]["arguments"]
+                action = json.loads(arguments) if isinstance(arguments, str) else arguments
+            else:
+                content = message.get("content", "")
+                content = content.strip().removeprefix("```json").removesuffix("```").strip()
+                action = json.loads(content)
+            action = project_model_action(action, image.size)
+            validated = validate_action(action)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise BackendDecisionError(
+                f"completion did not contain exactly one valid action: {exc}",
+                request=request,
+                response=payload,
+            ) from exc
+        return request, payload, validated
 
     def close(self) -> None:
         self._http.close()

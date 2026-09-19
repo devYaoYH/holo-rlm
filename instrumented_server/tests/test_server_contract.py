@@ -5,9 +5,9 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 from instrumented_holo.app import create_app
-from instrumented_holo.model import parse_assistant_output
+from instrumented_holo.model import InstrumentedHolo, parse_assistant_output
 from instrumented_holo.settings import Settings
-from instrumented_holo.traces import TraceWriter, append_trace_response
+from instrumented_holo.traces import TraceOptions, TraceWriter, append_trace_response
 
 
 def test_native_tool_call_is_projected_without_hidden_reasoning() -> None:
@@ -84,6 +84,16 @@ def test_openai_tools_contract_reaches_engine(tmp_path: Path) -> None:
     assert payload["choices"][0]["message"]["content"] is None
 
 
+def test_compact_value_norm_capture_defaults_on_without_full_kv_capture() -> None:
+    options = TraceOptions.from_request({"trace": {"capture_kv": False}})
+    assert options.capture_value_norms is True
+    assert options.capture_rollout is True
+    assert options.capture_kv is False
+
+    disabled = TraceOptions.from_request({"trace": {"capture_value_norms": False}})
+    assert disabled.capture_value_norms is False
+
+
 def test_response_is_hashed_into_trace_manifest(tmp_path: Path) -> None:
     trace_id, writer = TraceWriter.create(tmp_path)
     writer.write_json("request.json", {"messages": []})
@@ -92,3 +102,18 @@ def test_response_is_hashed_into_trace_manifest(tmp_path: Path) -> None:
     manifest = json.loads((tmp_path / trace_id / "manifest.json").read_text())
     names = {item["path"] for item in manifest["files"]}
     assert names == {"request.json", "response.json"}
+
+
+def test_model_metadata_maps_captured_attention_blocks_to_transformer_layers(tmp_path: Path) -> None:
+    (tmp_path / "config.json").write_text(
+        json.dumps(
+            {
+                "model_type": "test",
+                "text_config": {
+                    "layer_types": ["linear_attention", "full_attention", "linear_attention", "full_attention"]
+                },
+            }
+        )
+    )
+    engine = InstrumentedHolo(Settings(model_path=tmp_path, trace_dir=tmp_path / "traces"))
+    assert engine.model_metadata()["attention_layer_indices"] == [1, 3]

@@ -33,12 +33,14 @@ Send screenshots as base64 data URLs. The server deliberately refuses remote URL
     "capture_attentions": true,
     "capture_hidden_states": true,
     "capture_kv": false,
+    "capture_value_norms": true,
+    "capture_rollout": true,
     "max_generation_steps": 4
   }
 }
 ```
 
-Trace bundles are written to `data/traces/` and must remain uncommitted. They contain the exact request/response and model-input image bytes, input/generated token IDs, image-grid metadata, checkpoint and processor provenance, focused attention rows, and per-layer last-query hidden states. `capture_kv: true` writes very large tensors and is off by default.
+Trace bundles are written to `data/traces/` and must remain uncommitted. They contain the exact request/response and model-input image bytes, input/generated token IDs, image-grid metadata, checkpoint and processor provenance, focused attention rows, and per-layer last-query hidden states. `capture_value_norms` stores one L2 norm per KV head and sequence key. `capture_rollout` stores float16 head-mean square prompt matrices, both direct and value-weighted, for cross-layer rollout; it is on by default and materially increases trace size. `capture_kv: true` writes the much larger full tensors and remains off by default.
 
 ## HoloDesktop route
 

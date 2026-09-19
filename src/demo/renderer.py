@@ -13,11 +13,13 @@ def render_fixture(config: dict, state: dict) -> Image.Image:
     font = ImageFont.load_default()
     bold = ImageFont.load_default()
     if state["details_open"]:
+        selected_id = state.get("selected_hotel_id") or config["target_id"]
+        selected = next(hotel for hotel in config["hotels"] if hotel["id"] == selected_id)
         draw.rectangle((0, 0, width, 78), fill="#102b4e")
         draw.text((48, 30), "StayLocal   LOCAL FIXTURE", fill="white", font=bold)
         draw.rounded_rectangle((160, 155, 1120, 550), radius=14, fill="white", outline="#d7e0ea")
         draw.text((215, 215), "LOCAL DETAILS PAGE", fill="#0e7490", font=bold)
-        draw.text((215, 260), "Harbor Lantern Hotel", fill="#172033", font=bold)
+        draw.text((215, 260), selected["name"], fill="#172033", font=bold)
         draw.text((215, 310), "SUCCESS: local details open", fill="#116466", font=bold)
         draw.text((215, 350), "No booking, payment, account, or external navigation is available.", fill="#607086", font=font)
         return image
@@ -55,11 +57,19 @@ def render_fixture(config: dict, state: dict) -> Image.Image:
 
 
 def target_click(config: dict, state: dict) -> tuple[int, int]:
-    target = next(hotel for hotel in config["hotels"] if hotel["id"] == config["target_id"])
-    top = 250 + target["index"] * 262 - state["scroll_y"]
+    return hotel_click(config, state, config["target_id"])
+
+
+def hotel_click(config: dict, state: dict, hotel_id: str) -> tuple[int, int]:
+    hotel = next(hotel for hotel in config["hotels"] if hotel["id"] == hotel_id)
+    top = 250 + hotel["index"] * 262 - state["scroll_y"]
     return 1080, top + 190
 
 
 def target_scroll(config: dict) -> int:
-    target = next(hotel for hotel in config["hotels"] if hotel["id"] == config["target_id"])
-    return max(0, 250 + target["index"] * 262 - 160)
+    return hotel_scroll(config, config["target_id"])
+
+
+def hotel_scroll(config: dict, hotel_id: str) -> int:
+    hotel = next(hotel for hotel in config["hotels"] if hotel["id"] == hotel_id)
+    return max(0, 250 + hotel["index"] * 262 - 160)

@@ -49,7 +49,7 @@ For each replay-ready step, ordering is exactly:
 observation → model_request → model_response → proposed_action → action_result
 ```
 
-The observation's `model_input` PNG is the exact image encoded into the request. The request repeats that file path and hash, plus the complete messages, action schema hash, sampling/generation settings, model and processor revisions, and conversation/session IDs. The action result records before/after fixture state, local destination URL, success, fixture assertion, and a post-action debugging image.
+The observation's `model_input` PNG is the exact current image encoded into the request. The model request links that image plus every earlier model-input image retained in its complete message history, including each file path and hash. It also records the action schema hash, sampling/generation settings, model and processor revisions, and conversation/session IDs. The action result records before/after fixture state, local destination URL, success, fixture assertion, and a post-action debugging image.
 
 The constrained action union is:
 
@@ -64,7 +64,7 @@ No additional action fields are accepted. Coordinates are bounded to the fixed 1
 
 ## Exact input and redaction semantics
 
-The outer local harness owns request construction, so `frames/*-model-input.png` and the base64 image in `requests/*.json` are byte-for-byte the same PNG. A convenience OS screenshot is never substituted for model input. Optional post-action screenshots are debugging artifacts only.
+The outer local harness owns request construction, so each `frames/*-model-input.png` and its corresponding base64 image in the current or later `requests/*.json` are byte-for-byte the same PNG. Requests retain prior screenshot-bearing user turns in chronological order and append the current observation last. A convenience OS screenshot is never substituted for model input. Optional post-action screenshots are debugging artifacts only.
 
 Configured redaction rectangles are painted solid black before PNG serialization or request construction. The manifest records the coordinates and method. A capture cannot claim to retain pre-redaction pixels.
 

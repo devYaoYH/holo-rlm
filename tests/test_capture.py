@@ -7,6 +7,8 @@ from PIL import Image
 
 from capture.normalizer import classify_holo_event, omit_hidden_reasoning
 from capture.validator import validate_bundle
+from demo.backends import BackendDecisionError, ScriptedBackend, build_request
+from demo.runner import capture_run
 
 
 def _lines(path: Path) -> list[dict]:
@@ -90,3 +92,93 @@ def test_installed_runtime_envelope_and_reasoning_omission() -> None:
 def test_model_frames_have_manifest_dimensions(valid_bundle: Path) -> None:
     with Image.open(valid_bundle / "frames/0001-model-input.png") as image:
         assert image.size == (1280, 800)
+
+
+def test_cheapest_task_targets_lowest_price(tmp_path: Path) -> None:
+    bundle, result = capture_run(
+        backend=ScriptedBackend(),
+        output_root=tmp_path,
+        seed=0,
+        max_steps=3,
+        task="cheapest",
+    )
+    annotations = json.loads((bundle / "annotations.json").read_text())
+    assert result["annotations"]["task_success"] is True
+    assert annotations["target"] == {
+        "hotel": "Signal Quay Rooms",
+        "hotel_id": "signal-quay",
+        "price": 172,
+        "expected_destination": "/details/signal-quay",
+    }
+    second_request = json.loads((bundle / "requests/0001.json").read_text())
+    assert "frame 0" in second_request["messages"][2]["content"][0]["text"]
+    assert "<function=desktop_action>" in second_request["messages"][3]["content"]
+    assert "do not reverse direction prematurely" in second_request["messages"][4]["content"]
+    assert "frame 1" in second_request["messages"][5]["content"][0]["text"]
+    historical_images = [
+        part["image_url"]["url"]
+        for message in second_request["messages"]
+        if isinstance(message.get("content"), list)
+        for part in message["content"]
+        if part.get("type") == "image_url"
+    ]
+    assert len(historical_images) == 2
+    assert base64.b64decode(historical_images[0].split(",", 1)[1]) == (
+        bundle / "frames/0000-model-input.png"
+    ).read_bytes()
+    assert base64.b64decode(historical_images[1].split(",", 1)[1]) == (
+        bundle / "frames/0001-model-input.png"
+    ).read_bytes()
+
+
+def test_invalid_completion_is_retained_without_an_orphan_step(tmp_path: Path) -> None:
+    class InvalidBackend:
+        name = "local"
+        model_id = "invalid-test-model"
+        model_revision = "test"
+        processor_revision = "test"
+
+        def decide(self, *, messages, image, **_kwargs):
+            request = build_request(messages, image, self.model_id, normalized_coordinates=True)
+            response = {"instrumented_trace_id": "trace-invalid", "choices": [{"message": {"content": "bad"}}]}
+            raise BackendDecisionError("invalid output", request=request, response=response)
+
+    bundle, result = capture_run(
+        backend=InvalidBackend(),
+        output_root=tmp_path,
+        seed=0,
+        max_steps=1,
+        task="cheapest",
+    )
+    events = _lines(bundle / "events.jsonl")
+    assert [event["event_type"] for event in events] == ["user_turn", "termination"]
+    assert result["validation"]["replay_ready"] is False
+    assert result["annotations"]["instrumented_trace_ids"] == ["trace-invalid"]
+
+
+def test_stop_on_click_finalizes_after_first_issued_click(tmp_path: Path) -> None:
+    class ImmediateClickBackend:
+        name = "scripted"
+        model_id = "click-test-model"
+        model_revision = "test"
+        processor_revision = "test"
+
+        def decide(self, *, messages, image, **_kwargs):
+            request = build_request(messages, image, self.model_id)
+            response = {"choices": [{"message": {"content": '{"action":"click","x":1,"y":1}'}}]}
+            return request, response, {"action": "click", "x": 1, "y": 1}
+
+    bundle, result = capture_run(
+        backend=ImmediateClickBackend(),
+        output_root=tmp_path,
+        seed=0,
+        max_steps=4,
+        task="cheapest",
+        stop_on_click=True,
+    )
+    annotations = json.loads((bundle / "annotations.json").read_text())
+    assert annotations["completed_steps"] == 1
+    assert annotations["captured_click"] is True
+    assert annotations["terminal_reason"] == "click_issued"
+    assert result["replay"]["actions"] == 1
+    assert len(list((bundle / "actions").glob("*.json"))) == 1

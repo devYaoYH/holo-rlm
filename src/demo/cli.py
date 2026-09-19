@@ -8,6 +8,13 @@ import os
 import sys
 from pathlib import Path
 
+from attribution import (
+    AttributionError,
+    load_attribution,
+    resolve_trace_path,
+    write_attribution_viewer,
+    write_trajectory_viewer,
+)
 from capture.validator import ValidationError, validate_bundle
 
 from .backends import OpenAIBackend, ScriptedBackend
@@ -30,6 +37,19 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--seed", type=int, default=0)
     run.add_argument("--variant", type=int, choices=range(5), default=0)
     run.add_argument("--max-steps", type=int, default=int(os.environ.get("HOLO_MAX_STEPS", "8")))
+    run.add_argument("--task", choices=("target-after-scroll", "cheapest"), default="target-after-scroll")
+    run.add_argument(
+        "--stop-on-click",
+        action="store_true",
+        help="finalize the trajectory immediately after the first click, whether or not it hits the task target",
+    )
+    run.add_argument(
+        "--trace-generation-steps",
+        type=int,
+        choices=range(1, 257),
+        default=int(os.environ.get("HOLO_TRACE_GENERATION_STEPS", "4")),
+        help="generated token steps retained in each activation trace",
+    )
     run.add_argument("--redact", action="append", default=[], metavar="X1,Y1,X2,Y2")
     holo = sub.add_parser("holo")
     holo.add_argument("--backend", choices=("local", "hosted"), default=os.environ.get("BACKEND", "local"))
@@ -45,6 +65,16 @@ def parser() -> argparse.ArgumentParser:
     benchmark = sub.add_parser("benchmark")
     benchmark.add_argument("--backend", choices=("scripted", "local"), default=os.environ.get("BACKEND", "scripted"))
     benchmark.add_argument("--count", type=int, choices=range(1, 21), default=20)
+    attribution = sub.add_parser("attribution")
+    attribution.add_argument("path", type=Path, help="instrumented trace or trajectory bundle")
+    attribution.add_argument("--trace-index", type=int, default=0, help="trace within a multi-step trajectory")
+    attribution.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
+    attribution.add_argument("--output", type=Path)
+    attribution.add_argument(
+        "--all-frames",
+        action="store_true",
+        help="for a trajectory bundle, build a multi-frame action viewer and every linked trace viewer",
+    )
     return result
 
 
@@ -70,6 +100,7 @@ def main(argv: list[str] | None = None) -> None:
             model_id,
             os.environ.get("HOLO_MODEL_REVISION", "local-checkpoint"),
             os.environ.get("HOLO_PROCESSOR_REVISION", "local-checkpoint"),
+            args.trace_generation_steps,
         )
         rectangles = tuple(_rectangle(value) for value in args.redact)
         try:
@@ -79,6 +110,8 @@ def main(argv: list[str] | None = None) -> None:
                 seed=args.seed,
                 variant=args.variant,
                 max_steps=args.max_steps,
+                task=args.task,
+                stop_on_click=args.stop_on_click,
                 redactions=rectangles,
             )
         finally:
@@ -174,6 +207,19 @@ def main(argv: list[str] | None = None) -> None:
                 }
             )
         _print({"count": len(results), "successful": sum(item["success"] for item in results), "runs": results})
+    elif args.command == "attribution":
+        try:
+            if args.all_frames:
+                output = args.output or PROJECT_ROOT / "data" / "attributions" / args.path.name
+                _print(write_trajectory_viewer(args.path, args.trace_root, output))
+            else:
+                trace_path = resolve_trace_path(args.path, trace_root=args.trace_root, trace_index=args.trace_index)
+                attribution = load_attribution(trace_path)
+                output = args.output or PROJECT_ROOT / "data" / "attributions" / trace_path.name
+                _print(write_attribution_viewer(attribution, output))
+        except AttributionError as exc:
+            print(f"attribution failed: {exc}", file=sys.stderr)
+            raise SystemExit(1) from exc
 
 
 def _rectangle(value: str) -> tuple[int, int, int, int]:

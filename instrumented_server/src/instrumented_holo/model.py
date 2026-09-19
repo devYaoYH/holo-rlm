@@ -271,6 +271,10 @@ class InstrumentedHolo:
     def model_metadata(self) -> dict[str, Any]:
         config_path = self.settings.model_path / "config.json"
         config = json.loads(config_path.read_text())
+        layer_types = config.get("text_config", {}).get("layer_types", [])
+        attention_layer_indices = [
+            index for index, layer_type in enumerate(layer_types) if layer_type == "full_attention"
+        ]
         return {
             "model_path": str(self.settings.model_path),
             "model_revision": self.checkpoint_revision(),
@@ -278,6 +282,7 @@ class InstrumentedHolo:
             "architectures": config.get("architectures"),
             "image_token_id": config.get("image_token_id"),
             "vision_config": config.get("vision_config"),
+            "attention_layer_indices": attention_layer_indices,
             "device": self.device,
             "dtype": str(self.dtype).replace("torch.", "") if self.dtype else None,
             "load_strategy": self.settings.load_strategy,
@@ -351,11 +356,20 @@ class InstrumentedHolo:
             writer.write_json("model.json", self.model_metadata())
             writer.write_json("processor.json", self.processor_metadata())
             writer.write_array("input_ids.npy", inputs["input_ids"].detach().cpu().numpy())
-            vision_metadata = {
-                key: list(value.shape) if hasattr(value, "shape") else str(value)
-                for key, value in inputs.items()
-                if "grid" in key or "pixel" in key or "image" in key
-            }
+            vision_metadata = {}
+            for key, value in inputs.items():
+                if "grid" not in key and "pixel" not in key and "image" not in key:
+                    continue
+                if hasattr(value, "shape"):
+                    metadata: dict[str, Any] = {"shape": list(value.shape)}
+                    # Grid coordinates are tiny and essential for projecting
+                    # merged image tokens back to patches. Pixel tensors stay
+                    # out of JSON; their exact source image is already stored.
+                    if "grid" in key and hasattr(value, "numel") and value.numel() <= 256:
+                        metadata["values"] = value.detach().cpu().tolist()
+                    vision_metadata[key] = metadata
+                else:
+                    vision_metadata[key] = {"value": str(value)}
             writer.write_json("vision_inputs.json", vision_metadata)
 
         generate_kwargs: dict[str, Any] = {
@@ -372,7 +386,7 @@ class InstrumentedHolo:
             generate_kwargs["output_attentions"] = True
         if trace_options.enabled and trace_options.capture_hidden_states:
             generate_kwargs["output_hidden_states"] = True
-        if trace_options.enabled and trace_options.capture_kv:
+        if trace_options.enabled and (trace_options.capture_kv or trace_options.capture_value_norms):
             generate_kwargs["use_cache"] = True
         if tools:
             generate_kwargs["stop_strings"] = ["</tool_call>"]
@@ -389,12 +403,24 @@ class InstrumentedHolo:
         if writer is not None:
             writer.write_array("generated_ids.npy", generated_tokens.detach().cpu().numpy())
             writer.write_json(
+                "generated_tokens.json",
+                {
+                    "token_ids": [int(value) for value in generated_tokens[0].detach().cpu().tolist()],
+                    "tokens": self.processor.tokenizer.convert_ids_to_tokens(
+                        generated_tokens[0].detach().cpu().tolist()
+                    ),
+                },
+            )
+            writer.write_json(
                 "positions.json",
                 {
                     "prompt_token_count": prompt_tokens,
                     "generated_token_count": int(generated_tokens.shape[-1]),
                     "image_token_id": self.model.config.image_token_id,
-                    "note": "Attention keys use these sequence positions. Vision-grid tensor shapes are in vision_inputs.json.",
+                    "note": (
+                        "Attention keys use these sequence positions. Vision-grid shapes and exact grid coordinates "
+                        "are in vision_inputs.json."
+                    ),
                 },
             )
             self._write_focused_attentions(writer, generated, trace_options)
@@ -443,7 +469,7 @@ class InstrumentedHolo:
             writer.write_npz("hidden_state_last_query_rows.npz", arrays)
 
     def _write_focused_attentions(self, writer: TraceWriter, generated: Any, options: TraceOptions) -> None:
-        """Persist only last-query rows for the first few generated steps, never full matrices."""
+        """Persist focused rows plus head-mean prompt matrices for full rollout."""
 
         attentions = getattr(generated, "attentions", None)
         if not options.capture_attentions or not attentions:
@@ -458,6 +484,60 @@ class InstrumentedHolo:
                 arrays[f"step_{step_index:03d}_layer_{layer_index:03d}"] = attention[0, :, -1, :].float().cpu().numpy()
         if arrays:
             writer.write_npz("attention_last_query_rows.npz", arrays)
+        if not options.capture_rollout:
+            return
+
+        first_step = attentions[0]
+        prompt_arrays: dict[str, Any] = {}
+        weighted_prompt_arrays: dict[str, Any] = {}
+        cache = getattr(generated, "past_key_values", None)
+        cache_layers = getattr(cache, "layers", cache) if cache is not None else None
+        layer_indices = self.model_metadata().get("attention_layer_indices", [])
+        for ordinal, attention in enumerate(first_step):
+            if attention is None or attention.ndim != 4:
+                continue
+            layer_index = int(layer_indices[ordinal]) if ordinal < len(layer_indices) else ordinal
+            key = f"layer_{layer_index:03d}"
+            prompt_attention = attention[0]
+            prompt_arrays[key] = (
+                prompt_attention.mean(dim=0).to(device="cpu", dtype=self.torch.float16).numpy()
+            )
+            if not options.capture_value_norms or cache_layers is None:
+                continue
+            value = getattr(cache_layers[layer_index], "values", None)
+            if value is None:
+                continue
+            norms = self.torch.linalg.vector_norm(value.detach(), ord=2, dim=-1)[0]
+            attention_heads = int(prompt_attention.shape[0])
+            kv_heads = int(norms.shape[0])
+            if kv_heads < 1 or attention_heads % kv_heads:
+                continue
+            key_count = int(prompt_attention.shape[-1])
+            expanded_norms = norms[:, :key_count].repeat_interleave(attention_heads // kv_heads, dim=0)
+            weighted = prompt_attention * expanded_norms[:, None, :]
+            weighted_prompt_arrays[key] = weighted.mean(dim=0).to(
+                device="cpu", dtype=self.torch.float16
+            ).numpy()
+        if prompt_arrays:
+            writer.write_npz("attention_prompt_mean.npz", prompt_arrays)
+        if weighted_prompt_arrays:
+            writer.write_npz("attention_prompt_value_weighted_mean.npz", weighted_prompt_arrays)
+        if prompt_arrays:
+            writer.write_json(
+                "attention_rollout.json",
+                {
+                    "schema_version": 1,
+                    "prompt_matrix_shape": "[prompt_queries, prompt_keys]",
+                    "head_reduction": "mean",
+                    "residual_rule": "row_normalize(attention), then mix 0.5 attention + 0.5 identity",
+                    "value_weighting": (
+                        "mean over query heads of attention * corresponding KV-head value L2 norm"
+                        if weighted_prompt_arrays
+                        else None
+                    ),
+                    "layers": [int(key.removeprefix("layer_")) for key in prompt_arrays],
+                },
+            )
 
     def _write_kv_metadata(self, writer: TraceWriter, generated: Any, options: TraceOptions) -> None:
         cache = getattr(generated, "past_key_values", None)
@@ -466,6 +546,7 @@ class InstrumentedHolo:
         try:
             summary = []
             arrays: dict[str, Any] = {}
+            value_norm_arrays: dict[str, Any] = {}
             layers = getattr(cache, "layers", cache)
             for layer_index, layer in enumerate(layers):
                 layer_summary: dict[str, Any] = {"layer": layer_index, "type": type(layer).__name__, "states": {}}
@@ -475,6 +556,14 @@ class InstrumentedHolo:
                         layer_summary["states"][field_name] = list(value.shape)
                         if options.capture_kv:
                             arrays[f"layer_{layer_index:03d}_{field_name}"] = value.detach().float().cpu().numpy()
+                        if field_name == "values" and options.capture_value_norms:
+                            # Keep only one scalar per key and KV head. Computing the
+                            # reduction on-device avoids retaining a second full-sized
+                            # float32 copy of the cache or model weights.
+                            norms = self.torch.linalg.vector_norm(value.detach(), ord=2, dim=-1)
+                            if norms.ndim == 3 and norms.shape[0] == 1:
+                                norms = norms[0]
+                            value_norm_arrays[f"layer_{layer_index:03d}"] = norms.float().cpu().numpy()
                 # Qwen3.5 interleaves conventional attention with linear-attention
                 # layers whose cache is a compact convolution/recurrent state, not K/V.
                 for field_name in ("conv_states", "recurrent_states"):
@@ -493,9 +582,25 @@ class InstrumentedHolo:
                 summary.append(layer_summary)
             writer.write_json(
                 "kv_layout.json",
-                {"cache_type": type(cache).__name__, "layers": summary, "values_saved": options.capture_kv},
+                {
+                    "cache_type": type(cache).__name__,
+                    "layers": summary,
+                    "values_saved": options.capture_kv,
+                    "value_norms_saved": bool(value_norm_arrays),
+                },
             )
             if arrays:
                 writer.write_npz("kv_cache.npz", arrays)
+            if value_norm_arrays:
+                writer.write_npz("value_norms.npz", value_norm_arrays)
+                writer.write_json(
+                    "value_norms.json",
+                    {
+                        "schema_version": 1,
+                        "formula": "L2 norm over the value-cache head dimension",
+                        "array_shape": "[kv_heads, sequence_keys]",
+                        "layers": [int(key.removeprefix("layer_")) for key in value_norm_arrays],
+                    },
+                )
         except Exception as exc:  # Cache implementations vary across Transformers versions.
             writer.write_json("kv_layout_error.json", {"error": repr(exc)})

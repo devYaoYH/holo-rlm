@@ -87,6 +87,7 @@ class FixtureState:
     scroll_y: int = 0
     details_open: bool = False
     destination: str = "/"
+    selected_hotel_id: str | None = None
     action_count: int = 0
     lock: threading.Lock = field(default_factory=threading.Lock)
 
@@ -97,6 +98,7 @@ class FixtureState:
             self.scroll_y = 0
             self.details_open = False
             self.destination = "/"
+            self.selected_hotel_id = None
             self.action_count = 0
             return self.snapshot()
 
@@ -107,6 +109,7 @@ class FixtureState:
             "scroll_y": self.scroll_y,
             "details_open": self.details_open,
             "destination": self.destination,
+            "selected_hotel_id": self.selected_hotel_id,
             "action_count": self.action_count,
         }
 
@@ -169,8 +172,9 @@ class FixtureHandler(BaseHTTPRequestHandler):
                 self._json({"error": "unknown local hotel"}, HTTPStatus.NOT_FOUND)
                 return
             with self.server.state.lock:
-                self.server.state.details_open = hotel_id == TARGET_ID
+                self.server.state.details_open = True
                 self.server.state.destination = path
+                self.server.state.selected_hotel_id = hotel_id
                 self.server.state.action_count += 1
             body = (ROOT / "details.html").read_text().replace(
                 "Harbor Lantern Hotel",
@@ -208,15 +212,25 @@ class FixtureHandler(BaseHTTPRequestHandler):
             if action == "click":
                 x, y = int(payload.get("x", -1)), int(payload.get("y", -1))
                 config = fixture_config(self.server.state.seed, self.server.state.variant)
-                target_index = next(h["index"] for h in config["hotels"] if h["id"] == TARGET_ID)
-                target_top = 250 + target_index * 262 - self.server.state.scroll_y
-                hit = 1030 <= x <= 1135 and target_top + 160 <= y <= target_top + 225
+                clicked_hotel = next(
+                    (
+                        hotel
+                        for hotel in config["hotels"]
+                        if 1030 <= x <= 1135
+                        and 250 + hotel["index"] * 262 - self.server.state.scroll_y + 160
+                        <= y
+                        <= 250 + hotel["index"] * 262 - self.server.state.scroll_y + 225
+                    ),
+                    None,
+                )
+                hit = clicked_hotel is not None
                 with self.server.state.lock:
                     self.server.state.action_count += 1
                 if hit:
                     with self.server.state.lock:
                         self.server.state.details_open = True
-                        self.server.state.destination = f"/details/{TARGET_ID}"
+                        self.server.state.selected_hotel_id = clicked_hotel["id"]
+                        self.server.state.destination = f"/details/{clicked_hotel['id']}"
                 self._json({**self.server.state.snapshot(), "click_hit": hit})
             elif action == "wait":
                 with self.server.state.lock:

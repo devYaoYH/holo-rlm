@@ -23,6 +23,8 @@ class TraceOptions:
     capture_attentions: bool = True
     capture_hidden_states: bool = True
     capture_kv: bool = False
+    capture_value_norms: bool = True
+    capture_rollout: bool = True
     max_traced_generation_steps: int = 4
 
     @classmethod
@@ -35,6 +37,8 @@ class TraceOptions:
                 capture_attentions=bool(trace.get("capture_attentions", True)),
                 capture_hidden_states=bool(trace.get("capture_hidden_states", True)),
                 capture_kv=bool(trace.get("capture_kv", False)),
+                capture_value_norms=bool(trace.get("capture_value_norms", True)),
+                capture_rollout=bool(trace.get("capture_rollout", True)),
                 max_traced_generation_steps=max(0, int(trace.get("max_generation_steps", 4))),
             )
         return cls(enabled=bool(trace))

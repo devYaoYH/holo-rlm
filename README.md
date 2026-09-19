@@ -47,6 +47,38 @@ HOLO_BASE_URL=http://127.0.0.1:8000/v1 make demo BACKEND=local SEED=0
 
 The local model must emit exactly one schema-valid action per step, either as a native tool call or JSON fallback. Invalid output stops cleanly and is retained. Each local response carries an `instrumented_trace_id`; the trajectory event and annotations retain that ID so the exact request/frame can be joined to its attention and hidden-state bundle under `data/traces/`. A successful run opens only a local details route.
 
+## Visual attention attribution
+
+See [the attention attribution pipeline](docs/attention-attribution.md) for the capture artifacts, value-norm correction, cross-layer rollout, parameter-span aggregation, multi-frame linkage, and interpretation limits.
+
+Turn any traced local request—or a trajectory bundle that references one—into an interactive patch-level viewer:
+
+```bash
+uv run holo-capture attribution data/trajectories/v0/<trajectory-id>
+# or select a trace directly
+uv run holo-capture attribution data/traces/<trace-id>
+```
+
+To compare every completed pre-action frame in one filmstrip, while also generating the detailed token viewer for each trace:
+
+```bash
+uv run holo-capture attribution data/trajectories/v0/<trajectory-id> --all-frames
+```
+
+The command writes a self-contained `viewer.html`, an `attribution.json` summary, and aggregate PNG previews under `data/attributions/<trace-id>/`. The image is shown first with the controls below it. Each request retains all earlier model-input screenshots, and the viewer's **Input frame** selector lets you project a later output token or parameter value back onto any historical or current frame. You can also isolate layers or heads for direct maps and switch among direct attention, value-norm correction, and cross-layer rollout. Parameter maps are arithmetic means over the value's generated tokens, so token length cannot inflate a parameter's attribution. **Subtract previous-token baseline** removes the mean map of only the tokens generated before the selected token or parameter began; future output tokens are never used.
+
+The corrected view computes `A' = A * ||V||₂ / sum(A * ||V||₂)` over all keys for every captured layer and query head before selecting and reshaping the contiguous image-token span. Grouped-query heads reuse the norm of their corresponding KV head. Rollout row-normalizes the head-mean matrix, mixes it equally with the identity residual path, and composes all eight conventional full-attention blocks in model order. Qwen's interleaved linear-attention blocks do not expose square softmax matrices and therefore are not part of this matrix rollout. These remain routing diagnostics rather than causal explanations.
+
+To retain attribution for every generated token in the bounded 64-token action response:
+
+```bash
+uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-click --trace-generation-steps 64
+```
+
+`--stop-on-click` makes the capture boundary explicit: the bundle is finalized immediately after the first click is applied, even if the model selected the wrong result.
+
+Local Holo pointer coordinates are projected from its native 0–1000 space into the captured viewport, and its native wheel sign is converted into fixture scroll direction before replay.
+
 Generate the v0 benchmark slice (four layout seeds × five task variants, with bounded failures included):
 
 ```bash

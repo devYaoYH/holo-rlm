@@ -49,3 +49,15 @@ def test_visible_state_endpoint() -> None:
         assert 'id="fixture-state"' in page
         state = json.loads(urlopen(f"{fixture.base_url}/api/state").read())
         assert state["seed"] == 2
+
+
+def test_fixture_can_open_non_default_local_hotel() -> None:
+    with running_fixture(seed=0) as fixture:
+        config = fixture.config()
+        cheapest = min(config["hotels"], key=lambda hotel: hotel["price"])
+        fixture.apply({"action": "scroll", "delta_y": 250 + cheapest["index"] * 262 - 160})
+        top = 250 + cheapest["index"] * 262 - fixture.state()["scroll_y"]
+        final = fixture.apply({"action": "click", "x": 1080, "y": top + 190})
+        assert final["details_open"] is True
+        assert final["selected_hotel_id"] == cheapest["id"]
+        assert final["destination"] == f"/details/{cheapest['id']}"
