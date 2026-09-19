@@ -1,6 +1,6 @@
 from PIL import Image
 
-from demo.backends import MODEL_ACTION_SCHEMA, build_request, project_model_action
+from demo.backends import MODEL_ACTION_SCHEMA, OpenAIBackend, build_request, project_model_action
 
 
 def test_holo_click_coordinates_project_from_normalized_space() -> None:
@@ -46,3 +46,42 @@ def test_non_cheapest_task_does_not_get_cheapest_constraint() -> None:
         "test-model",
     )
     assert "VIEW DETAILS OF ONLY THE CHEAPEST HOTEL" not in request["messages"][0]["content"]
+
+
+def test_local_backend_keeps_128_token_floor_for_complete_native_tool_call(monkeypatch) -> None:
+    class Response:
+        def __init__(self, payload):
+            self.payload = payload
+
+        def json(self):
+            return self.payload
+
+        def raise_for_status(self):
+            return None
+
+    class Client:
+        def __init__(self, **_kwargs):
+            self.request = None
+
+        def get(self, _url):
+            return Response({"data": []})
+
+        def post(self, _url, *, json):
+            self.request = json
+            return Response({"choices": [{"message": {"content": '{"action":"scroll","delta_y":-800}'}}]})
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr("demo.backends.httpx.Client", Client)
+    backend = OpenAIBackend("http://localhost/v1", "test-model", "test", "test", trace_generation_steps=64)
+    _request, _response, action = backend.decide(
+        step=0,
+        messages=[{"role": "user", "content": "Scroll down."}],
+        image=Image.new("RGB", (1280, 800)),
+        config={},
+        state={},
+    )
+    assert backend._http.request["max_tokens"] == 128
+    assert backend._http.request["trace"]["max_generation_steps"] == 64
+    assert action == {"action": "scroll", "delta_y": 800}

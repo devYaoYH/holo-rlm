@@ -208,11 +208,11 @@ class OpenAIBackend:
             "capture_rollout": True,
             "max_generation_steps": self.trace_generation_steps,
         }
-        # Observed action calls are under 64 tokens. Keep at least that normal
-        # action budget, or a larger explicitly requested capture budget, while
-        # preventing a malformed non-terminating completion from running to the
-        # generic 256-token default during expensive Metal tracing.
-        request["max_tokens"] = max(64, self.trace_generation_steps)
+        # The checkpoint may emit a short natural-language preamble before its
+        # native tool call. A real scroll completion reached 64 tokens before
+        # closing the final parameter tags, so 128 is the tested safe floor.
+        # A larger requested trace window raises the generation budget with it.
+        request["max_tokens"] = max(128, self.trace_generation_steps)
         response = self._http.post(f"{self.base_url}/chat/completions", json=request)
         response.raise_for_status()
         payload = response.json()

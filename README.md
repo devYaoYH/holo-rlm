@@ -69,10 +69,10 @@ The command writes a self-contained `viewer.html`, an `attribution.json` summary
 
 The corrected view computes `A' = A * ||V||₂ / sum(A * ||V||₂)` over all keys for every captured layer and query head before selecting and reshaping the contiguous image-token span. Grouped-query heads reuse the norm of their corresponding KV head. Rollout row-normalizes the head-mean matrix, mixes it equally with the identity residual path, and composes all eight conventional full-attention blocks in model order. Qwen's interleaved linear-attention blocks do not expose square softmax matrices and therefore are not part of this matrix rollout. These remain routing diagnostics rather than causal explanations.
 
-To retain attribution for every generated token in the bounded 64-token action response:
+To retain attribution for every generated token in the bounded 128-token action response:
 
 ```bash
-uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-click --trace-generation-steps 64
+uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-click --trace-generation-steps 128
 ```
 
 `--stop-on-click` makes the capture boundary explicit: the bundle is finalized immediately after the first click is applied, even if the model selected the wrong result.

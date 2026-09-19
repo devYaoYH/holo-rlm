@@ -180,7 +180,7 @@ The detailed viewer provides input-frame, generated-target, method, layer, head,
 To collect a bounded local trajectory with every normal tool-call token retained:
 
 ```bash
-uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-click --trace-generation-steps 64
+uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-click --trace-generation-steps 128
 ```
 
 ## Interpretation limits
