@@ -130,7 +130,37 @@ Negative patches are transparent rather than being misrepresented as positive sa
 
 This is analogous to condition-minus-baseline analysis, but it is not a separately measured resting state. A true null-task control would require a second matched inference request and additional assumptions about prompt comparability.
 
-## 7. Display transform
+## 7. Subtract a same-image diverse-instruction baseline
+
+The ScreenSpot-Pro comparison viewer adds that separately measured control. It sends the exact same image bytes through the same model, processor, tool schema, decoding settings, and click-only task format while changing only the instruction. Controls name visible targets distributed across the interface rather than paraphrasing the target instruction.
+
+For the target and each control request, coordinate attribution averages the captured `x` and `y` value-token maps. Each request is then L1-normalized over every image patch before requests are combined:
+
+```text
+request_map[r,f] = mean_t_in_(x,y) rollout[r,t,f]
+normalized[r,f] = request_map[r,f] / sum_over_all_frames_and_patches(request_map[r])
+prompt_baseline[f] = mean_r_in_controls normalized[r,f]
+prompt_difference[f] = normalized[target,f] - prompt_baseline[f]
+```
+
+Normalizing each request first prevents a completion with more total image allocation from dominating the control mean. The result is signed: positive patches carry more routing mass for the target instruction than for the matched instruction ensemble, while negative patches carry less. The viewer uses a diverging color map and preserves both signs.
+
+Before subtraction, the implementation requires identical image SHA-256 values, frame order, pixel dimensions, patch grids, model metadata, processor metadata, full-attention layer identities, and head counts. A mismatch fails closed rather than resampling incompatible maps.
+
+Control-set sensitivity is reported with leave-one-control-out cosine similarity. A high minimum similarity means the differential direction does not depend on one convenient control prompt. This does not make the attribution causal: all requests remain observational forward passes, and prompt wording may change generation dynamics beyond visual grounding.
+
+## 8. Spatial, layer, and head diagnostics
+
+When a benchmark target box is available, each patch receives the fraction of its area covered by the box. For the positive part of a map, the viewer reports:
+
+- target mass: normalized positive attribution falling inside the box, including fractional boundary patches;
+- target lift: target mass divided by the box's image-area fraction, where `1.0` is uniform allocation;
+- peak distance: distance between the peak patch center and box center, normalized by the image diagonal;
+- normalized entropy: spatial dispersion from zero (concentrated) to one (uniform).
+
+The final rollout averages query heads at each layer before matrix composition, so it has no post hoc head axis. Head and layer diagnostics therefore inspect the value-norm-corrected direct maps immediately before rollout. For every conventional full-attention layer and query head, the analysis computes raw, previous-token differential, and prompt-ensemble differential target metrics. Layer summaries average across heads and identify the best aligned head. These rankings are exploratory diagnostics from a small number of cases, not evidence of a globally specialized GUI-grounding head.
+
+## 9. Display transform
 
 Float32 maps are independently quantized for the self-contained viewer. Each map stores its maximum scale and uint8 codes:
 
@@ -141,7 +171,7 @@ decoded = code / 255 * scale
 
 The maximum absolute round-trip error is one half of a quantization step, `scale / (2*255)`, apart from floating-point tolerance. For coloring, negative and non-finite values become zero, the 99th percentile is the visual ceiling, and a power of `0.62` improves low-signal contrast. This per-view color scaling changes appearance, not the raw allocation or differential metric.
 
-## 8. Computational verification
+## 10. Computational verification
 
 `tests/test_attribution.py` exercises the transformations with tiny tensors whose results are calculated by hand:
 
@@ -153,15 +183,18 @@ The maximum absolute round-trip error is one half of a quantization step, `scale
 - multi-token parameter averaging;
 - previous-only baseline subtraction, including a check that a future token cannot change a step-one baseline;
 - an explicit failure when no previous token exists;
+- exact-image validation and rejection of mismatched prompt-control traces;
+- per-request L1 normalization, control averaging, and signed target-minus-control subtraction;
+- fractional target-box overlap and target-lift calculations;
 - viewer quantization round-trip error bounded by `scale / (2*255)`.
 
 Run the focused proof suite with:
 
 ```bash
-uv run pytest -q tests/test_attribution.py
+uv run pytest -q tests/test_attribution.py tests/test_contrast.py
 ```
 
-## 9. Generate viewers
+## 11. Generate viewers
 
 For one traced completion:
 
@@ -177,12 +210,27 @@ uv run holo-capture attribution data/trajectories/v0/<trajectory-id> --all-frame
 
 The detailed viewer provides input-frame, generated-target, method, layer, head, opacity, patch-boundary, and previous-token-baseline controls. A trajectory viewer links every action to its detailed completion viewer and reports whether a click was captured.
 
+For one ScreenSpot-Pro target plus matched same-image controls:
+
+```bash
+uv run holo-capture screenspot-case <sample-id> \
+  --trace-generation-steps 64 \
+  --control-prompt "<matched click instruction 1>" \
+  --control-prompt "<matched click instruction 2>" \
+  --control-prompt "<matched click instruction 3>" \
+  --control-prompt "<matched click instruction 4>"
+
+uv run holo-capture screenspot-contrast data/screenspot-pro/runs/<sample-id>/case.json
+```
+
+The contrast viewer compares raw value-norm rollout, the strictly previous-token differential, the diverse-instruction mean, and the signed target-minus-instruction differential on the same screen. It also displays the benchmark box, predicted click, control prompts, stability score, and ranked layer/head statistics.
+
 To collect a bounded local trajectory with every normal tool-call token retained:
 
 ```bash
 uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-click --trace-generation-steps 128
 ```
 
-## Interpretation limits
+## 12. Interpretation limits
 
-These maps describe attention routing under a residual-rollout approximation. They do not establish causal necessity or sufficiency of a pixel region. The fixed residual weight is a modeling choice, hybrid linear-attention blocks are omitted, and the baseline is generated-token history rather than an independent resting condition. Strong causal claims require interventions such as patch ablation, activation patching, or controlled counterfactual inputs.
+These maps describe attention routing under a residual-rollout approximation. They do not establish causal necessity or sufficiency of a pixel region. The fixed residual weight is a modeling choice, hybrid linear-attention blocks are omitted, and both token-history and prompt-ensemble baselines depend on reference choices. Strong causal claims require interventions such as patch ablation, activation patching, or controlled counterfactual inputs.

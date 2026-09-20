@@ -24,3 +24,11 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .DS_Store
+
+# Private presentation build/validation output; keep authored sources and the final deck.
+artifacts/**/build/node_modules
+artifacts/**/rendered/
+artifacts/**/rendered-*/
+artifacts/**/.codex-finalizer/
+.codex-finalizer-*/
+.chart-data-*/

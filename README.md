@@ -69,6 +69,8 @@ The command writes a self-contained `viewer.html`, an `attribution.json` summary
 
 The corrected view computes `A' = A * ||V||₂ / sum(A * ||V||₂)` over all keys for every captured layer and query head before selecting and reshaping the contiguous image-token span. Grouped-query heads reuse the norm of their corresponding KV head. Rollout row-normalizes the head-mean matrix, mixes it equally with the identity residual path, and composes all eight conventional full-attention blocks in model order. Qwen's interleaved linear-attention blocks do not expose square softmax matrices and therefore are not part of this matrix rollout. These remain routing diagnostics rather than causal explanations.
 
+The [ScreenSpot-Pro case study](docs/screenspot-case-study.md) adds a same-image diverse-instruction baseline, strict versus visually repaired grounding scores, leave-one-control-out stability, and per-layer/per-head diagnostics for a fixed PowerPoint success/failure pair.
+
 To retain attribution for every generated token in the bounded 128-token action response:
 
 ```bash
@@ -79,10 +81,18 @@ uv run holo-capture run --backend local --task cheapest --max-steps 5 --stop-on-
 
 Local Holo pointer coordinates are projected from its native 0–1000 space into the captured viewport, and its native wheel sign is converted into fixture scroll direction before replay.
 
-Generate the v0 benchmark slice (four layout seeds × five task variants, with bounded failures included):
+The old four-seed fixture is retained for replay compatibility. New cheapest-hotel evaluation uses the frozen 120-item `booking-synth-v2` manifest, with independently seeded ordering, prices, content, visuals, and geometry. See [the synthetic evaluation dataset contract](docs/synthetic-eval.md).
+
+Run the first 20 frozen items, including bounded failures:
 
 ```bash
 make benchmark BACKEND=scripted
+```
+
+Run or inspect a particular frozen item:
+
+```bash
+uv run holo-capture run --backend scripted --eval-item test-0000
 ```
 
 ## Holo CLI plumbing run

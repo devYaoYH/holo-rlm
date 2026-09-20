@@ -134,12 +134,29 @@ class ScriptedBackend:
     model_revision = "v1"
     processor_revision = "fixture-renderer-v1"
 
+    def __init__(self) -> None:
+        self._seen_bottom = False
+
     def decide(self, *, step: int, messages: list[dict[str, Any]], image: Image.Image, config: dict, state: dict) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
         request = build_request(messages, image, self.model_id, frame_index=step)
         cheapest_task = is_cheapest_task(messages)
         if cheapest_task:
             cheapest = min(config["hotels"], key=lambda hotel: (hotel["price"], hotel["id"]))
-            if step == 0:
+            if config.get("generator_version"):
+                max_scroll = int(config["max_scroll"])
+                if state["scroll_y"] >= max_scroll:
+                    self._seen_bottom = True
+                x, y = hotel_click(config, state, cheapest["id"])
+                button_visible = config["layout"]["header_height"] < y < config["viewport"]["height"]
+                if self._seen_bottom and button_visible:
+                    action = {"action": "click", "x": x, "y": y}
+                elif not self._seen_bottom:
+                    action = {"action": "scroll", "delta_y": min(500, max_scroll - state["scroll_y"])}
+                else:
+                    target = hotel_scroll(config, cheapest["id"])
+                    delta = max(-500, min(500, target - state["scroll_y"]))
+                    action = {"action": "scroll", "delta_y": delta}
+            elif step == 0:
                 action = {"action": "scroll", "delta_y": hotel_scroll(config, cheapest["id"])}
             else:
                 x, y = hotel_click(config, state, cheapest["id"])

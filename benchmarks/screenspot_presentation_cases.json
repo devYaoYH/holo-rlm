@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "dataset": "likaixin/ScreenSpot-Pro",
+  "dataset_url": "https://huggingface.co/datasets/likaixin/ScreenSpot-Pro",
+  "selection_policy": {
+    "application": "powerpoint",
+    "platform": "windows",
+    "reason": "Hold application and operating system constant while contrasting a visually grounded success with a grounding miss.",
+    "score_reporting": [
+      "official point-in-bbox with strict tool syntax",
+      "visual point-in-bbox after the documented first-integer format repair"
+    ]
+  },
+  "cases": [
+    {
+      "role": "visual_success",
+      "sample_id": "powerpoint_windows_59",
+      "instruction": "Create a \"Psychedelic vibrant\" presentation",
+      "controls": [
+        "Create a blank presentation",
+        "Select the Scientific discovery theme",
+        "Select the Animal magnetism theme",
+        "Open the File menu"
+      ]
+    },
+    {
+      "role": "grounding_failure",
+      "sample_id": "powerpoint_windows_48",
+      "instruction": "Create new slide",
+      "controls": [
+        "Click the title placeholder",
+        "Click the subtitle placeholder",
+        "Open the Insert tab",
+        "Select the red Standard Template in the right sidebar"
+      ]
+    }
+  ],
+  "baseline": {
+    "name": "same-image diverse-instruction ensemble",
+    "construction": "L1-normalize each control coordinate-token map over all image patches, average the four controls, then subtract from the separately normalized target map.",
+    "stability": "Report the cosine similarity of the full baseline to every leave-one-control-out baseline."
+  }
+}

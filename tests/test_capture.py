@@ -199,7 +199,7 @@ def test_http_failure_diagnostic_omits_remote_library_help_url() -> None:
     assert "https://" not in diagnostic
 
 
-def test_bottom_noop_prompts_moderate_upward_recovery(tmp_path: Path) -> None:
+def test_repeated_downward_scroll_still_demands_visible_cheapest_click(tmp_path: Path) -> None:
     class RepeatedScrollBackend:
         name = "scripted"
         model_id = "scroll-test-model"
@@ -220,9 +220,9 @@ def test_bottom_noop_prompts_moderate_upward_recovery(tmp_path: Path) -> None:
     )
     fifth_request = json.loads((bundle / "requests/0004.json").read_text())
     prompt = json.dumps(fifth_request["messages"])
-    assert "reached the bottom" in prompt
-    assert "positive delta_y near 500" in prompt
-    assert "Do not scroll down again" in prompt
+    assert "cheapest hotel's card is visible now" in prompt
+    assert "Do not scroll" in prompt
+    assert "Immediately click View details" in prompt
 
 
 def test_model_history_preserves_native_scroll_sign_before_fixture_projection() -> None:

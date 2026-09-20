@@ -55,9 +55,13 @@ class FixtureClient:
 
 @contextmanager
 def running_fixture(
-    host: str = "127.0.0.1", port: int = 0, seed: int = 0, variant: int = 0
+    host: str = "127.0.0.1",
+    port: int = 0,
+    seed: int = 0,
+    variant: int = 0,
+    scenario_config: dict | None = None,
 ) -> Iterator[FixtureClient]:
-    server = FixtureServer((host, port), FixtureState())
+    server = FixtureServer((host, port), FixtureState(), scenario_config=scenario_config)
     server.state.reset(seed, variant)
     thread = threading.Thread(target=server.serve_forever, name="booking-fixture", daemon=True)
     thread.start()

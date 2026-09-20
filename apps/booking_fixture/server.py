@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from .generator import default_layout
+
 ROOT = Path(__file__).resolve().parent
 TARGET_ID = "harbor-lantern"
 VIEWPORT = {"width": 1280, "height": 800}
@@ -67,11 +69,17 @@ def fixture_config(seed: int, variant: int = 0) -> dict[str, Any]:
                 "index": index,
             }
         )
+    viewport = dict(VIEWPORT)
+    layout = default_layout(viewport)
+    stride = layout["card_height"] + layout["card_gap"]
+    content_bottom = layout["first_card_y"] + (len(hotels) - 1) * stride + layout["card_height"]
     return {
         "fixture_version": "booking-fixture-v1",
         "seed": seed,
         "variant": variant,
-        "viewport": VIEWPORT,
+        "viewport": viewport,
+        "layout": layout,
+        "max_scroll": max(0, content_bottom - viewport["height"] + layout["header_height"] + 24),
         "target_id": TARGET_ID,
         "target_name": target_name,
         "initial_scroll_delta": [900, 1000, 1100, 1200, 800][variant],
@@ -117,12 +125,21 @@ class FixtureState:
 class FixtureServer(ThreadingHTTPServer):
     allow_reuse_address = True
 
-    def __init__(self, address: tuple[str, int], state: FixtureState | None = None) -> None:
+    def __init__(
+        self,
+        address: tuple[str, int],
+        state: FixtureState | None = None,
+        scenario_config: dict[str, Any] | None = None,
+    ) -> None:
         host = address[0]
         if host not in {"127.0.0.1", "localhost", "::1"}:
             raise ValueError("The fixture may bind only to localhost.")
         self.state = state or FixtureState()
+        self.scenario_config = scenario_config
         super().__init__(address, FixtureHandler)
+
+    def config(self) -> dict[str, Any]:
+        return self.scenario_config or fixture_config(self.state.seed, self.state.variant)
 
 
 class FixtureHandler(BaseHTTPRequestHandler):
@@ -157,7 +174,7 @@ class FixtureHandler(BaseHTTPRequestHandler):
                 self.server.state.reset(int(query["seed"][0]), int(query.get("variant", [0])[0]))
             self._send((ROOT / "index.html").read_bytes(), "text/html; charset=utf-8")
         elif path == "/api/config":
-            self._json(fixture_config(self.server.state.seed, self.server.state.variant))
+            self._json(self.server.config())
         elif path == "/api/state":
             self._json(self.server.state.snapshot())
         elif path == "/api/health":
@@ -166,7 +183,7 @@ class FixtureHandler(BaseHTTPRequestHandler):
             hotel_id = path.removeprefix("/details/")
             allowed = {
                 hotel["id"]
-                for hotel in fixture_config(self.server.state.seed, self.server.state.variant)["hotels"]
+                for hotel in self.server.config()["hotels"]
             }
             if hotel_id not in allowed:
                 self._json({"error": "unknown local hotel"}, HTTPStatus.NOT_FOUND)
@@ -180,7 +197,7 @@ class FixtureHandler(BaseHTTPRequestHandler):
                 "Harbor Lantern Hotel",
                 next(
                     h["name"]
-                    for h in fixture_config(self.server.state.seed, self.server.state.variant)["hotels"]
+                    for h in self.server.config()["hotels"]
                     if h["id"] == hotel_id
                 ),
             )
@@ -203,7 +220,10 @@ class FixtureHandler(BaseHTTPRequestHandler):
             self._json(self.server.state.reset(int(payload.get("seed", 0)), int(payload.get("variant", 0))))
         elif path == "/api/scroll":
             with self.server.state.lock:
-                self.server.state.scroll_y = max(0, min(int(payload.get("scroll_y", 0)), 2400))
+                self.server.state.scroll_y = max(
+                    0,
+                    min(int(payload.get("scroll_y", 0)), int(self.server.config().get("max_scroll", 2400))),
+                )
                 self.server.state.action_count += 1
                 state = self.server.state.snapshot()
             self._json(state)
@@ -211,15 +231,25 @@ class FixtureHandler(BaseHTTPRequestHandler):
             action = payload.get("action")
             if action == "click":
                 x, y = int(payload.get("x", -1)), int(payload.get("y", -1))
-                config = fixture_config(self.server.state.seed, self.server.state.variant)
+                config = self.server.config()
+                layout = config["layout"]
                 clicked_hotel = next(
                     (
                         hotel
                         for hotel in config["hotels"]
-                        if 1030 <= x <= 1135
-                        and 250 + hotel["index"] * 262 - self.server.state.scroll_y + 160
+                        if layout["content_left"] + layout["button_x_offset"]
+                        <= x
+                        <= layout["content_left"] + layout["button_x_offset"] + layout["button_width"]
+                        and layout["first_card_y"]
+                        + hotel["index"] * (layout["card_height"] + layout["card_gap"])
+                        - self.server.state.scroll_y
+                        + layout["button_y_offset"]
                         <= y
-                        <= 250 + hotel["index"] * 262 - self.server.state.scroll_y + 225
+                        <= layout["first_card_y"]
+                        + hotel["index"] * (layout["card_height"] + layout["card_gap"])
+                        - self.server.state.scroll_y
+                        + layout["button_y_offset"]
+                        + layout["button_height"]
                     ),
                     None,
                 )

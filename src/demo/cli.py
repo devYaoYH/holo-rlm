@@ -8,11 +8,14 @@ import os
 import sys
 from pathlib import Path
 
+from apps.booking_fixture.generator import SUPPORTED_SPLITS, load_manifest, manifest_item, write_manifest
 from attribution import (
     AttributionError,
+    build_prompt_contrast,
     load_attribution,
     resolve_trace_path,
     write_attribution_viewer,
+    write_prompt_contrast_viewer,
     write_trajectory_viewer,
 )
 from capture.validator import ValidationError, validate_bundle
@@ -22,8 +25,10 @@ from .fixture import FixtureClient, running_fixture
 from .holo_cli import import_runtime_bundle, run_holo
 from .preflight import run_preflight, smoke_backend
 from .runner import capture_run
+from .screenspot import load_screenspot_sample, run_screenspot_case
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_EVAL_MANIFEST = PROJECT_ROOT / "benchmarks" / "frozen_eval_v2.json"
 
 
 def parser() -> argparse.ArgumentParser:
@@ -38,6 +43,8 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--variant", type=int, choices=range(5), default=0)
     run.add_argument("--max-steps", type=int, default=int(os.environ.get("HOLO_MAX_STEPS", "8")))
     run.add_argument("--task", choices=("target-after-scroll", "cheapest"), default="target-after-scroll")
+    run.add_argument("--eval-item", help="item_id from a frozen synthetic evaluation manifest")
+    run.add_argument("--eval-manifest", type=Path, default=DEFAULT_EVAL_MANIFEST)
     run.add_argument(
         "--stop-on-click",
         action="store_true",
@@ -64,7 +71,13 @@ def parser() -> argparse.ArgumentParser:
     validate.add_argument("--allow-runtime-only", action="store_true")
     benchmark = sub.add_parser("benchmark")
     benchmark.add_argument("--backend", choices=("scripted", "local"), default=os.environ.get("BACKEND", "scripted"))
-    benchmark.add_argument("--count", type=int, choices=range(1, 21), default=20)
+    benchmark.add_argument("--manifest", type=Path, default=DEFAULT_EVAL_MANIFEST)
+    benchmark.add_argument("--offset", type=int, default=0)
+    benchmark.add_argument("--count", type=int, default=20)
+    generate_eval = sub.add_parser("generate-eval")
+    generate_eval.add_argument("--split", choices=SUPPORTED_SPLITS, default="test")
+    generate_eval.add_argument("--count", type=int, default=120)
+    generate_eval.add_argument("--output", type=Path, default=DEFAULT_EVAL_MANIFEST)
     attribution = sub.add_parser("attribution")
     attribution.add_argument("path", type=Path, help="instrumented trace or trajectory bundle")
     attribution.add_argument("--trace-index", type=int, default=0, help="trace within a multi-step trajectory")
@@ -75,6 +88,17 @@ def parser() -> argparse.ArgumentParser:
         action="store_true",
         help="for a trajectory bundle, build a multi-frame action viewer and every linked trace viewer",
     )
+    screenspot = sub.add_parser("screenspot-case")
+    screenspot.add_argument("sample_id")
+    screenspot.add_argument("--annotations", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "annotations")
+    screenspot.add_argument("--images", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "images")
+    screenspot.add_argument("--control-prompt", action="append", default=[])
+    screenspot.add_argument("--trace-generation-steps", type=int, choices=range(0, 257), default=0)
+    screenspot.add_argument("--output", type=Path)
+    contrast = sub.add_parser("screenspot-contrast")
+    contrast.add_argument("case", type=Path, help="case.json written by screenspot-case")
+    contrast.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
+    contrast.add_argument("--output", type=Path)
     return result
 
 
@@ -95,6 +119,11 @@ def main(argv: list[str] | None = None) -> None:
         if not result["ok"]:
             raise SystemExit(1)
     elif args.command == "run":
+        scenario_config = None
+        task = args.task
+        if args.eval_item:
+            scenario_config = manifest_item(load_manifest(args.eval_manifest), args.eval_item)
+            task = "cheapest"
         backend = ScriptedBackend() if args.backend == "scripted" else OpenAIBackend(
             base_url,
             model_id,
@@ -110,8 +139,9 @@ def main(argv: list[str] | None = None) -> None:
                 seed=args.seed,
                 variant=args.variant,
                 max_steps=args.max_steps,
-                task=args.task,
+                task=task,
                 stop_on_click=args.stop_on_click,
+                scenario_config=scenario_config,
                 redactions=rectangles,
             )
         finally:
@@ -178,8 +208,14 @@ def main(argv: list[str] | None = None) -> None:
             raise SystemExit(1) from exc
         _print(results)
     elif args.command == "benchmark":
+        if args.offset < 0 or args.count < 1:
+            raise SystemExit("benchmark offset must be non-negative and count must be positive")
+        manifest = load_manifest(args.manifest)
+        selected = manifest["items"][args.offset : args.offset + args.count]
+        if not selected:
+            raise SystemExit("benchmark selection is empty")
         results = []
-        for index in range(args.count):
+        for item in selected:
             backend = ScriptedBackend() if args.backend == "scripted" else OpenAIBackend(
                 base_url,
                 model_id,
@@ -190,9 +226,11 @@ def main(argv: list[str] | None = None) -> None:
                 bundle, result = capture_run(
                     backend=backend,
                     output_root=PROJECT_ROOT / "data" / "trajectories" / "v0",
-                    seed=index % 4,
-                    variant=(index // 4) % 5,
-                    max_steps=2 if index % 5 == 4 else 8,
+                    seed=item["config"]["item_index"],
+                    max_steps=16,
+                    task="cheapest",
+                    stop_on_click=True,
+                    scenario_config=item["config"],
                 )
             finally:
                 close = getattr(backend, "close", None)
@@ -201,12 +239,25 @@ def main(argv: list[str] | None = None) -> None:
             results.append(
                 {
                     "bundle": str(bundle),
-                    "seed": index % 4,
-                    "variant": (index // 4) % 5,
+                    "item_id": item["item_id"],
                     "success": result["annotations"]["task_success"],
                 }
             )
         _print({"count": len(results), "successful": sum(item["success"] for item in results), "runs": results})
+    elif args.command == "generate-eval":
+        if args.count < 1:
+            raise SystemExit("count must be positive")
+        output = write_manifest(args.output, split=args.split, count=args.count)
+        manifest = load_manifest(output)
+        _print(
+            {
+                "output": str(output),
+                "generator_version": manifest["generator_version"],
+                "split": manifest["split"],
+                "count": manifest["count"],
+                "diversity": manifest["diversity"],
+            }
+        )
     elif args.command == "attribution":
         try:
             if args.all_frames:
@@ -220,6 +271,53 @@ def main(argv: list[str] | None = None) -> None:
         except AttributionError as exc:
             print(f"attribution failed: {exc}", file=sys.stderr)
             raise SystemExit(1) from exc
+    elif args.command == "screenspot-case":
+        sample = load_screenspot_sample(args.annotations, args.images, args.sample_id)
+        output = args.output or PROJECT_ROOT / "data" / "screenspot-pro" / "runs" / args.sample_id
+        _print(
+            run_screenspot_case(
+                sample=sample,
+                controls=args.control_prompt,
+                base_url=base_url,
+                model_id=model_id,
+                output_dir=output,
+                trace_generation_steps=args.trace_generation_steps,
+            )
+        )
+    elif args.command == "screenspot-contrast":
+        case = json.loads(args.case.read_text())
+        target_run = next(run for run in case["runs"] if run["role"] == "target")
+        control_runs = tuple(run for run in case["runs"] if run["role"].startswith("control-"))
+        if not control_runs:
+            raise SystemExit("screenspot contrast requires at least one traced control prompt")
+        trace_ids = [target_run.get("trace_id"), *[run.get("trace_id") for run in control_runs]]
+        if not all(isinstance(trace_id, str) for trace_id in trace_ids):
+            raise SystemExit("screenspot contrast requires target and control activation trace IDs")
+        target = load_attribution(args.trace_root / trace_ids[0])
+        controls = tuple(load_attribution(args.trace_root / trace_id) for trace_id in trace_ids[1:])
+        comparison = build_prompt_contrast(
+            target,
+            controls,
+            control_instructions=tuple(run["instruction"] for run in control_runs),
+        )
+        sample = case["sample"]
+        click_record = target_run.get("click") or target_run.get("repaired_click")
+        if not isinstance(click_record, dict):
+            raise SystemExit("screenspot contrast requires a valid or deterministically repaired target click")
+        click = click_record["pixel"]
+        output = args.output or PROJECT_ROOT / "data" / "attributions" / f"screenspot-{sample['id']}"
+        _print(
+            write_prompt_contrast_viewer(
+                comparison,
+                output,
+                sample_id=sample["id"],
+                target_instruction=sample["instruction"],
+                bbox=tuple(float(value) for value in sample["bbox"]),
+                predicted_click=(float(click["x"]), float(click["y"])),
+                correct=bool(target_run.get("grounding_correct", target_run["correct"])),
+                format_valid=bool(target_run.get("format_valid", True)),
+            )
+        )
 
 
 def _rectangle(value: str) -> tuple[int, int, int, int]:

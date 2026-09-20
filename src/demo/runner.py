@@ -80,9 +80,10 @@ def capture_run(
     max_steps: int = 8,
     task: str = "target-after-scroll",
     stop_on_click: bool = False,
+    scenario_config: dict[str, Any] | None = None,
     redactions: tuple[tuple[int, int, int, int], ...] = (),
 ) -> tuple[Path, dict[str, Any]]:
-    with running_fixture(seed=seed, variant=variant) as fixture:
+    with running_fixture(seed=seed, variant=variant, scenario_config=scenario_config) as fixture:
         config = fixture.config()
         initial_state = fixture.reset(seed, variant)
         if task == "target-after-scroll":
@@ -96,20 +97,26 @@ def capture_run(
             objective = min(config["hotels"], key=lambda hotel: (hotel["price"], hotel["id"]))
             initial_task = CHEAPEST_TASK
             follow_up_task = None
-            task_id = "find-cheapest-hotel-v1"
+            task_id = f"find-cheapest-hotel-v2-{config['item_id']}" if config.get("item_id") else "find-cheapest-hotel-v1"
         else:
             raise ValueError(f"unsupported capture task: {task}")
         expected_destination = f"/details/{objective['id']}"
+        fixture_metadata = {
+            "version": config["fixture_version"],
+            "seed": initial_state["seed"],
+            "variant": initial_state["variant"],
+            "viewport": config["viewport"],
+            "base_url": fixture.base_url,
+            "item_id": config.get("item_id"),
+            "generator_version": config.get("generator_version"),
+            "dataset_split": config.get("dataset_split"),
+        }
+        if scenario_config is not None:
+            fixture_metadata["scenario_config"] = config
         writer = BundleWriter(
             output_root,
             backend=backend.name,
-            fixture={
-                "version": config["fixture_version"],
-                "seed": config["seed"],
-                "variant": config["variant"],
-                "viewport": config["viewport"],
-                "base_url": fixture.base_url,
-            },
+            fixture=fixture_metadata,
             task_id=task_id,
             software={"python": sys.version.split()[0], "platform": platform.platform(), "capture": "0.1.0"},
             model={
@@ -416,16 +423,27 @@ def _safe_exception(exc: Exception) -> str:
 def _target_visible(config: dict, state: dict, hotel_id: str | None = None) -> bool:
     target_id = hotel_id or config["target_id"]
     target = next(hotel for hotel in config["hotels"] if hotel["id"] == target_id)
-    top = 250 + target["index"] * 262 - state["scroll_y"]
-    return top < config["viewport"]["height"] and top + 244 > 78
+    layout = config["layout"]
+    top = (
+        layout["first_card_y"]
+        + target["index"] * (layout["card_height"] + layout["card_gap"])
+        - state["scroll_y"]
+    )
+    return top < config["viewport"]["height"] and top + layout["card_height"] > layout["header_height"]
 
 
 def _visible_hotel_ids(config: dict, state: dict) -> set[str]:
     viewport_height = int(config["viewport"]["height"])
+    layout = config["layout"]
     result = set()
     for hotel in config["hotels"]:
-        price_y = 250 + hotel["index"] * 262 - state["scroll_y"] + 105
-        if 78 < price_y < viewport_height:
+        price_y = (
+            layout["first_card_y"]
+            + hotel["index"] * (layout["card_height"] + layout["card_gap"])
+            - state["scroll_y"]
+            + layout["price_y_offset"]
+        )
+        if layout["header_height"] < price_y < viewport_height:
             result.add(hotel["id"])
     return result
 
@@ -435,7 +453,8 @@ def replay_bundle(bundle: Path) -> dict[str, Any]:
     annotations = json.loads((bundle / "annotations.json").read_text())
     seed = manifest["fixture"]["seed"]
     variant = manifest["fixture"].get("variant", 0)
-    with running_fixture(seed=seed, variant=variant) as fixture:
+    scenario_config = manifest["fixture"].get("scenario_config")
+    with running_fixture(seed=seed, variant=variant, scenario_config=scenario_config) as fixture:
         reset_state = fixture.reset(seed, variant)
         for action_path in sorted((bundle / "actions").glob("*.json")):
             action = json.loads(action_path.read_text())["normalized"]
