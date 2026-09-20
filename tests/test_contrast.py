@@ -87,7 +87,9 @@ def test_prompt_ensemble_difference_is_normalized_and_signed(tmp_path: Path) -> 
     )
     assert Path(result["viewer"]).is_file()
     assert Path(result["previews"]["target-minus-prompt-baseline"]).is_file()
-    assert "__PROMPT_CONTRAST_PAYLOAD__" not in (output / "viewer.html").read_text()
+    viewer_html = (output / "viewer.html").read_text()
+    assert "__PROMPT_CONTRAST_PAYLOAD__" not in viewer_html
+    assert 'id="frame-select"' in viewer_html
     analysis = json.loads((output / "analysis.json").read_text())
     assert analysis["controls"] == ["control A", "control B"]
     assert analysis["layer_head_statistics"]["heads"][0]["prompt_difference"]["target_lift"] == pytest.approx(2.0)
