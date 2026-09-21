@@ -14,13 +14,13 @@ from typing import Any
 import httpx
 from PIL import Image
 
+from .backends import SYSTEM_PROMPT
 from .screenspot import SCREENSPOT_CLICK_SCHEMA, parse_screenspot_click, point_hits_bbox
 
-MULTIFRAME_SYSTEM_PROMPT = """You are evaluating one GUI-grounding instruction on a deterministic booking fixture.
+MULTIFRAME_SYSTEM_PROMPT = f"""{SYSTEM_PROMPT}
 The screenshots are exact observations in chronological order; the final screenshot is the current frame. Use all
-screenshots as visual memory, then return exactly one desktop_action tool call that clicks the requested visible
-target in the current frame. Coordinates are normalized integers from 0 to 1000. Do not scroll, type, wait, navigate,
-or explain. Each coordinate value must contain digits only."""
+screenshots as visual memory, then return exactly one desktop_action tool call for the requested visible target.
+Coordinates are normalized integers from 0 to 1000. Each coordinate value must contain digits only."""
 
 
 def build_multiframe_prompt_request(

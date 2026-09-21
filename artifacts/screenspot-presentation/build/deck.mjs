@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.909.61513/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v27.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v28.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -59,17 +59,25 @@ const targetSizeAnalysis = JSON.parse(
 
 const successRaw = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_59/preview-raw.png");
 const successDiff = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_59/preview-target-minus-prompt-baseline.png");
-const failureDiff = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_48/preview-target-minus-prompt-baseline.png");
-const hotelContrast = path.join(
+const nativeSaliencyDir = path.join(
   workspaceDir,
-  "artifacts/screenspot-presentation/live/hotel-cheapest-multiframe",
+  "artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1",
 );
-const hotelDiffMaps = [0, 1, 2, 3].map((frame) =>
+const nativeSaliency = JSON.parse(
+  await fs.readFile(path.join(nativeSaliencyDir, "native-saliency-summary.json"), "utf8"),
+);
+const powerpointNativeDiff = path.join(
+  nativeSaliencyDir,
+  "powerpoint_windows_48/holo-value-norm-frame-0.png",
+);
+const hotelNativeDiffMaps = [0, 1, 2].map((frame) =>
   path.join(
-    hotelContrast,
-    `preview-frame-${String(frame).padStart(3, "0")}-target-minus-prompt-baseline.png`,
+    nativeSaliencyDir,
+    `hotel_test_0035_large_ui_step_2/holo-value-norm-frame-${frame}.png`,
   ),
 );
+const powerpointNative = nativeSaliency.groups.powerpoint_windows_48.methods.value_norm_attention;
+const hotelNative = nativeSaliency.groups.hotel_test_0035_large_ui_step_2.methods.value_norm_attention;
 const causalDir = path.join(workspaceDir, "artifacts/causal-intervention/powerpoint_windows_59_swap");
 const causalClean = path.join(causalDir, "clean-focus.png");
 const causalCorrupted = path.join(causalDir, "corrupted-focus.png");
@@ -584,51 +592,49 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   slide.speakerNotes.textFrame.setText("4:05–5:05 — This slide establishes the measurement we use from here onward. The raw map is dominated by stable top-left saliency. With four diverse same-image prompts averaged after per-request L1 normalization, the peak moves inside the annotated template and lift rises from 3.85× to 16.08×. Leave-one-control-out cosine is 0.925 mean and 0.828 minimum. The repaired click is visually correct at (1394, 632), but the original tool syntax is malformed, so official correctness remains false. Source: data/attributions/screenspot-powerpoint_windows_59/analysis.json.");
 }
 
-// 7 — failure
+// 7 — native-resolution PowerPoint control ensemble
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Descriptive attribution", "The map reaches the task region but misses the New Slide control", 7);
+  slideTitle(slide, "Descriptive attribution", "The former New Slide miss becomes a hit under the faithful protocol", 7);
   textBox(slide, "Instruction: Create new slide", 80, 126, 500, 28, { fontSize: 19, bold: true, color: C.muted });
-  pill(slide, "WHITE RING = ISSUED CLICK", 558, 121, 276, C.deep, C.white);
-  await image(slide, failureDiff, 64, 164, 770, 438, { alt: "Prompt differential saliency for the Create new slide failure", crop: { left: 0, top: 0, right: 0.34, bottom: 0.43 } });
+  pill(slide, "GREEN BOX = ORACLE", 638, 121, 196, C.deep, C.white);
+  await image(slide, powerpointNativeDiff, 64, 164, 770, 438, { alt: "Native-resolution Holo value-norm prompt differential for Create new slide", crop: { left: 0, top: 0, right: 0.34, bottom: 0.43 } });
   rect(slide, 872, 164, 344, 438, C.deep, true);
-  pill(slide, "GROUNDING MISS", 900, 190, 150, C.orange, C.white);
-  textBox(slide, "The differential map concentrates in the correct top-left task region…", 900, 246, 270, 84, { fontSize: 23, bold: true, color: C.white });
-  textBox(slide, "…but its peak lands on the slide thumbnail, not the tiny New Slide button.", 900, 346, 270, 74, { fontSize: 18, color: "#C5CFD8" });
-  rect(slide, 900, 452, 270, 1, "#465563");
-  textBox(slide, "Predicted click", 900, 474, 132, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
-  textBox(slide, "(331, 270)", 1034, 471, 136, 26, { fontSize: 20, bold: true, color: C.white, alignment: "right" });
-  textBox(slide, "Prompt-diff peak", 900, 514, 142, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
-  textBox(slide, "9.9% diag away", 1032, 511, 138, 26, { fontSize: 18, bold: true, color: C.orange, alignment: "right" });
-  textBox(slide, "Attention reaches the task region, while precise target binding remains off-control.", 900, 554, 270, 34, { fontSize: 13, color: "#F1C7BC" });
-  footer(slide, "Local trace: powerpoint_windows_48 · prompt-baseline stability 0.970 mean / 0.953 minimum");
-  slide.speakerNotes.textFrame.setText("5:05–6:00 — From this point, headline the same-image instruction differential rather than raw attention. The differential favors the top-left slide and ribbon region, yet its peak is on the slide thumbnail and the click lands there. The target itself is only 0.074% of the frame. This is compatible with fine-grained binding or localization failure after coarse semantic routing. Source: data/attributions/screenspot-powerpoint_windows_48/analysis.json.");
+  pill(slide, "STRICT HIT", 900, 190, 118, C.green, C.white);
+  textBox(slide, "The official image-first JSON localizer returns (66, 61), inside New Slide.", 900, 242, 270, 92, { fontSize: 23, bold: true, color: C.white });
+  textBox(slide, "The value-norm target-minus-control map also isolates the same tiny ribbon control.", 900, 348, 270, 64, { fontSize: 17, color: "#C5CFD8" });
+  rect(slide, 900, 438, 270, 1, "#465563");
+  textBox(slide, "Target-box differential", 900, 460, 166, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
+  textBox(slide, `${(powerpointNative.tuned.prompt_difference_target_region_mass * 100).toFixed(2)} pp`, 1062, 457, 108, 26, { fontSize: 20, bold: true, color: C.orange, alignment: "right" });
+  textBox(slide, "Holo − Qwen", 900, 504, 132, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
+  textBox(slide, `+${(powerpointNative.delta_prompt_difference_target_region_mass * 100).toFixed(2)} pp`, 1034, 501, 136, 26, { fontSize: 20, bold: true, color: C.green, alignment: "right" });
+  textBox(slide, "Min LOO cosine", 900, 548, 132, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
+  textBox(slide, powerpointNative.tuned.minimum_leave_one_out_cosine.toFixed(3), 1034, 545, 136, 26, { fontSize: 20, bold: true, color: C.white, alignment: "right" });
+  footer(slide, "Native 2880×1800 input → 56×90 merged-token grid · value-norm · 4 same-image controls · normalized coordinates");
+  slide.speakerNotes.textFrame.setText("5:05–6:00 — This rerun corrects the earlier slide. Under H Company's official image-first element-localization prompt and normalized JSON coordinates, the full benchmark record for powerpoint_windows_48 returns (66,61), a strict hit inside the annotated New Slide box. The saliency map is separately teacher-forced through the annotated box-center coordinate and subtracts four same-image alternate-instruction controls. Holo's value-norm target-box differential is 7.47 percentage points, versus 4.33 for base Qwen, a +3.14-point delta. Minimum leave-one-control-out cosine is 0.946. The source remains 2880×1800 and produces a 56×90 merged-token grid. The earlier miss used a custom desktop-action prompt and a lower-resolution attribution path, so it should not be presented as benchmark-faithful evidence. Sources: data/remote-results/run/screenspot-full-official/summary.json and artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1/native-saliency-summary.json.");
 }
 
-// 8 - multi-turn trajectory
+// 8 - native-resolution multi-turn trajectory
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Descriptive attribution", "Target-card saliency persists, but the click misses", 8);
-  textBox(slide, "Target minus same-history instruction ensemble for the final x/y coordinate tokens", 64, 122, 930, 25, { fontSize: 15, color: C.muted });
-  pill(slide, "WHITE RING = CLICK", 1000, 119, 216, C.deep, C.white);
-  const labels = ["FRAME 0 · START", "FRAME 1 · SCROLL 500", "FRAME 2 · TARGET APPEARS", "FRAME 3 · CLICK"];
-  for (let i = 0; i < hotelDiffMaps.length; i += 1) {
-    const x = 64 + i * 286;
-    await image(slide, hotelDiffMaps[i], x, 166, 270, 169, { alt: `Hotel trajectory prompt-differential frame ${i}` });
-    pill(slide, labels[i], x + 10, 346, 220, i === 3 ? C.orange : C.deep, C.white);
+  slideTitle(slide, "Descriptive attribution", "The action path resolves onto the cheapest button", 8);
+  textBox(slide, "Value-norm target minus 4 same-history alternate instructions on teacher-forced x/y tokens", 64, 122, 930, 25, { fontSize: 15, color: C.muted });
+  pill(slide, "GREEN BOX = ORACLE", 1000, 119, 216, C.deep, C.white);
+  const labels = ["FRAME 0 · TOP RESULTS", "FRAME 1 · MID LIST", "FRAME 2 · CHEAPEST VISIBLE"];
+  for (let i = 0; i < hotelNativeDiffMaps.length; i += 1) {
+    const x = 64 + i * 386;
+    await image(slide, hotelNativeDiffMaps[i], x, 166, 370, 260, { alt: `Native-resolution hotel prompt-differential frame ${i}` });
+    pill(slide, labels[i], x + 12, 438, 250, i === 2 ? C.orange : C.deep, C.white);
   }
-  clickMarker(slide, 922 + (960 / 1280) * 270, 166 + (120 / 800) * 169, 16);
-  metricCard(slide, 64, 398, 350, "Frame 2 target-card lift", "2.78×", C.blue, "target button at viewport edge");
-  metricCard(slide, 432, 398, 350, "Frame 3 target-card lift", "8.59×", C.orange, "current-frame prompt differential");
-  metricCard(slide, 800, 398, 416, "Issued click", "MISS", C.orange, "(960,120): correct card, wrong affordance");
-  rect(slide, 64, 530, 1152, 108, C.deep, true);
-  textBox(slide, "Interpretation", 90, 551, 150, 22, { fontSize: 13, bold: true, color: C.gold });
-  textBox(slide, "Target-card evidence persists across frames. Final control localization still fails.", 90, 579, 680, 34, { fontSize: 23, bold: true, color: C.white });
-  textBox(slide, "Shifted-layout follow-up: £122 gets 4.12× causal lift vs 0.81× for £135, yet the malformed click still misses.", 800, 548, 374, 66, { fontSize: 14, color: "#C4CED7" });
-  footer(slide, "Resolution caveat: 1280×800 source → 640×384 vision raster → 20×12 merged-token map · button ≈ 1.6×1.0 token");
-  slide.speakerNotes.textFrame.setText("6:00–7:10 — Every probe receives the identical four screenshots and identical three-scroll action history. Only the requested click target changes. We normalize each request across every patch in all four frames, average three usable control maps, then subtract. The cheapest hotel button has 2.78× lift when it first appears at the bottom of frame 2 and 8.59× in the current frame. Yet the peak stays outside the button and Holo clicks (960,120), on the Signal Quay card rather than View details. Resolution is an important confound: after patch merging, this 105×65-pixel control spans only about 1.6×1.0 visual tokens, so coarse retrieval can survive while precise binding degrades. The four-frame history and longer prompt also co-vary, so this case does not isolate resolution causally. In a separate single-frame diagnostic, frozen item test-0035 moves the price column from roughly 80% to 58% of viewport width and enlarges the UI. The £122 target price receives 4.12× causal previous-token lift for x versus 0.81× on the £135 runner-up; y is 4.01× versus 0.91×. Holo still emits malformed, off-target coordinates. This supports position-robust price selection but is not a same-image prompt-baseline proof. Three controls are included in the multi-frame map; one is excluded because generation omitted a y span. LOO cosine is 0.898 mean / 0.769 minimum. Sources: data/attributions/hotel-cheapest-multiframe-contrast/analysis.json and data/attributions/hotel-test-0035-large-ui-final/target-viewer/viewer.html.");
+  metricCard(slide, 64, 492, 350, "Holo target-box differential", `${(hotelNative.tuned.prompt_difference_target_region_mass * 100).toFixed(2)} pp`, C.orange, "34.5% of positive residual mass");
+  metricCard(slide, 432, 492, 350, "Holo − Qwen", `+${(hotelNative.delta_prompt_difference_target_region_mass * 100).toFixed(2)} pp`, C.green, "same images, history, and controls");
+  metricCard(slide, 800, 492, 416, "Control stability", hotelNative.tuned.minimum_leave_one_out_cosine.toFixed(3), C.blue, "minimum leave-one-control-out cosine");
+  rect(slide, 64, 616, 1152, 46, C.deep, true);
+  textBox(slide, "The current frame carries 68.1% of Holo's positive prompt differential; the oracle button alone carries 34.5%.", 84, 626, 1112, 26, { fontSize: 17, bold: true, color: C.white, alignment: "center" });
+  footer(slide, "Native 1024×720 → 22×32 per frame · identical 3-frame / 2-scroll history · no max-width downsampling");
+  slide.speakerNotes.textFrame.setText("6:00–7:10 — This rerun uses the exact three 1024×720 trajectory frames at the checkpoint-native 16,777,216-pixel ceiling, producing a 22×32 merged-token grid per frame. Every condition receives the same neutral user setup, the same two teacher-forced scroll actions, and the same image bytes. The generic official hotel system prompt is retained; only the final visible-target instruction changes. Four controls request Juniper's button, Ember's button, the Lumen name, or the StayLocal logo, each with an independently curated oracle coordinate. Holo's value-norm target-box differential is 10.74 percentage points, versus 6.55 for base Qwen, a +4.19-point delta. Minimum leave-one-control-out cosine is 0.957. The current frame carries 68.1% of Holo's positive prompt differential, and the cheapest button carries 34.5%. This is a teacher-forced routing diagnostic, not a free-generation accuracy result. It shows that the final coordinate-token path can retrieve the sequence and bind to the visible cheapest affordance when resolution is preserved. Source: artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1/native-saliency-summary.json.");
 }
 
 // 9 - balanced multi-item layer/head aggregate
@@ -1008,7 +1014,7 @@ const requirements = {
 const fontPolicy = { basis: "design", families: [family] };
 const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v27.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v28.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({

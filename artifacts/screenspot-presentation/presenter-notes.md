@@ -11,7 +11,7 @@
 | 2:55-4:05 | 5 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
 | 4:05-5:05 | 6 | Establish the headline attribution metric: same-image instruction differential. |
 | 5:05-6:00 | 7 | Static miss: coarse task region is salient, but the tiny affordance loses. |
-| 6:00-7:10 | 8 | Multi-turn probe: target evidence is measurable in an earlier frame and stronger in the current frame, yet the click misses the button. |
+| 6:00-7:10 | 8 | Native multi-turn probe: action-row evidence across history resolves onto the cheapest visible button in the current frame. |
 | 7:10-8:15 | 9 | Present the balanced four-item aggregate: Layer 19 ranks first narrowly, with a strong multi-head cluster rather than a unique H10 feature. |
 | 8:15-9:05 | 10 | Define the lossless tile swap and teacher-forced coordinate margin. |
 | 9:05-10:00 | 11 | Show activation restoration and ablation together. Contrast target residuals with the head-level null. |
@@ -26,8 +26,8 @@
 - **UI label and target size:** ScreenSpot-Pro labels the clicked target, not the instruction semantics. An icon target has no text hint; a target with a text label is classified as text even when an icon is also present. Raw text accuracy is **79.4%**, versus **44.0%** for icons. The median normalized text-target area is **4.77×** the icon median, driven mostly by median width (**111 px versus 26 px**) rather than height (**25 px versus 24 px**). The distribution slide reports the observed bucketed geometry rather than an adjusted accuracy estimate. Target size is an important confound, but the histogram does not estimate how much of the accuracy gap it causes.
 - **UI × action breakdown:** the weakest labeled raw cell is **icon + file/transfer at 36.1% (13/36)**, and the larger **icon + navigation/reveal** cell reaches **40.3% (60/149)**. Treat the matrix as a diagnostic breakdown rather than a causal effect of UI type. Action families come from a deterministic first-verb keyword mapping and are not an official ScreenSpot-Pro taxonomy.
 - **ScreenSpot visual hit:** prompt-differential target lift is **16.08x**, versus **3.85x** for raw rollout. Its peak falls inside the annotated target. Leave-one-control-out cosine is **0.925 mean / 0.828 minimum**.
-- **ScreenSpot miss:** the prompt-differential peak is outside the target and **9.9% of the frame diagonal** from its center. The repaired click is `(331, 270)`, on the slide thumbnail rather than the New Slide button. Stability is **0.970 mean / 0.953 minimum**.
-- **Multi-turn hotel probe:** after replaying the same four screenshots and three-scroll history, the cheapest hotel's button has **2.78x** differential lift when it first appears in frame 2 and **8.59x** in the final frame. The probe clicks `(960,120)` on the correct hotel card, outside the button. Three controls are included; one is excluded for missing a `y` span. Stability is **0.898 mean / 0.769 minimum**. The 1280×800 source becomes a 640×384 processor raster and a 20×12 merged-token map, so the 105×65-pixel button spans only about **1.6×1.0 visual tokens**.
+- **Native PowerPoint re-probe:** the earlier New Slide miss does not survive the benchmark-faithful protocol. Holo's official image-first JSON localizer returns normalized `(66,61)`, a strict hit. At native 2880×1800 resolution, the value-norm target-minus-control mass inside the annotated box is **7.47 percentage points for Holo versus 4.33 for Qwen**, a **+3.14-point** delta. Minimum leave-one-control-out cosine is **0.946**.
+- **Native multi-turn hotel probe:** the exact three 1024×720 frames produce a **22×32** grid each with no max-width downsampling. Holo's value-norm target-box differential is **10.74 percentage points versus 6.55 for Qwen**, a **+4.19-point** delta. The current frame carries **68.1%** of Holo's positive prompt differential and the cheapest button carries **34.5%**. Minimum leave-one-control-out cosine is **0.957**. This is a teacher-forced routing result, not free-generation accuracy.
 - **Shifted-layout diagnostic:** frozen item `test-0035` moves the price column to about **58%** of viewport width and enlarges the UI. The £122 target receives **4.12x** causal previous-token lift for x and **4.01x** for y; the £135 runner-up receives **0.81x / 0.91x**. Holo still emits malformed, off-target coordinates. This supports position robustness but is not a same-image prompt-baseline result.
 - **Balanced Layer 19 result:** under the official harness, the frozen pilot contains **four items: two hits and two misses**, each with four visible same-image controls at the 2,097,152-pixel cap. Layer 19 ranks first at **158.4x mean target lift**, narrowly ahead of Layer 15 at **151.4x**. Layer 19 is top on two of four items and has median item rank 2.
 - **Layer architecture:** Layers 15 and 19 are both full-attention layers in Holo3.1-4B. The official configuration uses full attention at zero-based layers **3, 7, 11, 15, 19, 23, 27, and 31**, with Gated DeltaNet linear attention in the intervening layers. Our attention rollout measures only those eight full-attention blocks.
@@ -47,9 +47,9 @@
 1. Open the [ScreenSpot hit viewer](../../data/attributions/screenspot-powerpoint_windows_59/viewer.html).
 2. Start on **Raw value-norm rollout**, then select **Target minus diverse-instruction baseline**. Show the peak entering the template and the 16.08x lift.
 3. Sort heads by **Prompt difference** and point out layer 19 / head 10 as a strong direct value-norm head in this selected case, then contrast that with the balanced aggregate where H11 and H14 rank higher.
-4. Open the [ScreenSpot miss viewer](../../data/attributions/screenspot-powerpoint_windows_48/viewer.html). Show the task-region signal and the click on the slide thumbnail.
-5. Open the [multi-frame hotel viewer](live/hotel-cheapest-multiframe/viewer.html).
-6. Select **Target minus diverse-instruction baseline**. Step from frame 2 to frame 3. The green box marks the target button; the high-contrast white ring/cross on frame 3 marks the failed click.
+4. Show the native `powerpoint_windows_48` value-norm overlay. The green box marks New Slide; the official `(66,61)` output is a strict hit.
+5. Show the three native hotel value-norm overlays in `native-saliency-ppt48-hotel35-v1/`.
+6. Step from frame 0 to frame 2. The final map resolves onto the cheapest visible View details button; emphasize that the coordinates are teacher-forced.
 7. End on the balanced layer/head table as a source of intervention hypotheses, not a causal conclusion.
 8. Show the clean/corrupted tile pair, then the intervention chart. Contrast the target-patch result with the layer-19/head-10 null.
 
@@ -91,17 +91,17 @@ At each captured full-attention block, row-normalize the value-weighted attentio
 
 For each control instruction, run the same model, processor, decoding settings, image bytes, and, for the hotel case, the same action and frame history. L1-normalize each coordinate-token map across all retained image patches, average controls, then subtract from the target map. Leave-one-control-out cosine checks sensitivity to any one control.
 
-### Why include a malformed hotel control?
+### How are the new hotel controls constructed?
 
-One logo control emitted invalid tool JSON but retained complete `x` and `y` parameter spans, so it is usable for a semantic coordinate-token baseline even though it is not executable. A different control omitted `y` entirely and is excluded. The viewer and `analysis.json` disclose the exclusion.
+Every condition uses the same generic official hotel system prompt, neutral task setup, three image bytes, and two teacher-forced scroll actions. Only the final visible-target instruction changes. The four controls request Juniper's button, Ember's button, the Lumen name, or the StayLocal logo. Each uses an independently curated oracle coordinate, so malformed free generation cannot enter the control mean.
 
 ### Does the hotel trace prove long-term memory?
 
 No. It shows that the final action's differential attribution allocates positive mass to the target button in an earlier retained frame and more mass in the current frame. That is consistent with cross-frame retrieval. A causal memory claim needs frame removal, shuffling, or patch intervention.
 
-### Could downsampling explain the hotel miss?
+### Did the rerun remove the downsampling confound?
 
-It is a plausible contributor, not an isolated cause. After patch merging, the button is about one token high, so the model can preserve coarse hotel identity while losing affordance-level localization. But the four-frame history and longer prompt change at the same time. Test a factorial sweep: fixed task and layout across vision-token budgets, plus a UI-scale sweep that enlarges text and controls while keeping price order and position fixed. Uniformly shrinking the screenshot is not enough because it shrinks the UI too. A practical multi-scale input is a low-resolution full frame plus a high-resolution content or price-strip crop; it adds image context without introducing an environment-specific memory tool.
+Yes for this descriptive probe. PowerPoint remains 2880×1800 and becomes a 56×90 merged-token grid; each hotel frame remains 1024×720 and becomes 22×32. Both use the checkpoint-native 16,777,216-pixel ceiling. This does not prove that resolution caused the older miss, because the prompt and trajectory protocol were corrected at the same time. A causal resolution claim still needs a factorial sweep that holds the prompt, task, and layout fixed while varying only the vision-token budget.
 
 ### Why is the uncertainty statement on slide 8 so cautious?
 
@@ -164,7 +164,10 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Paired ScreenSpot instruction-control delta: `data/local-results/attention-delta-ppt59-controls-v1/`
 - Paired hotel attention delta: `data/local-results/attention-delta-hotel-step2-native-v1/`
 - Slide-ready paired attention assets: `artifacts/screenspot-presentation/delta-lens-paired-controls-v1/`
+- Native slide-7/8 control manifest: `benchmarks/attention_attribution/powerpoint48_hotel35_native_controls_v1.json`
+- Native slide-7/8 paired results: `data/local-results/attention-delta-ppt48-hotel35-native-controls-v1/`
+- Native slide-7/8 overlays: `artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1/`
 - Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
 - Tracked hotel viewer and measurement: `artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/`
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)
-- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v27.pptx`
+- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v28.pptx`

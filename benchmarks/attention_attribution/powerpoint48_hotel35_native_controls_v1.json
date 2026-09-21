@@ -1,0 +1,1629 @@
+{
+  "schema_version": 1,
+  "name": "powerpoint48_hotel35_native_controls_v1",
+  "processor_path": "../../models/Holo-3.1-4B",
+  "models": [
+    {
+      "label": "Qwen3.5-4B",
+      "role": "base",
+      "path": "../../models/Qwen3.5-4B"
+    },
+    {
+      "label": "Holo3.1-4B",
+      "role": "tuned",
+      "path": "../../models/Holo-3.1-4B"
+    }
+  ],
+  "image_min_pixels": 65536,
+  "image_max_pixels": 16777216,
+  "score_reduction": "mean",
+  "experiment_design": {
+    "primary_method": "value_norm_attention",
+    "construction": "For each checkpoint and group, subtract the mean of four separately L1-normalized same-image alternate-instruction maps from the separately normalized target map.",
+    "teacher_forcing": "Every target and control uses an independently image-derived oracle coordinate; no model rollout selects a coordinate.",
+    "resolution": "Checkpoint-native image_max_pixels=16777216; no diagnostic max-frame-width downsampling.",
+    "hotel_history": "All five hotel conditions use identical three-frame image and scroll history. The generic official hotel system prompt is retained; only the final visible-target instruction changes."
+  },
+  "cases": [
+    {
+      "id": "powerpoint_windows_48_target_new_slide",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate new slide"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [
+            66,
+            58
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "json_coordinate": [
+            66,
+            58
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "target",
+        "instruction": "Create new slide",
+        "bbox": [
+          164,
+          68,
+          218,
+          139
+        ],
+        "bbox_source": "ScreenSpot-Pro annotation",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            164,
+            68,
+            218,
+            139
+          ]
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_title",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the title placeholder"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [
+            505,
+            403
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "json_coordinate": [
+            66,
+            58
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Click the title placeholder",
+        "bbox": [
+          735,
+          535,
+          2175,
+          914
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            735,
+            535,
+            2175,
+            914
+          ]
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_subtitle",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the subtitle placeholder"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [
+            505,
+            588
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "json_coordinate": [
+            66,
+            58
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Click the subtitle placeholder",
+        "bbox": [
+          735,
+          925,
+          2175,
+          1189
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            735,
+            925,
+            2175,
+            1189
+          ]
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_insert",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nOpen the Insert tab"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [
+            99,
+            29
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "json_coordinate": [
+            66,
+            58
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Open the Insert tab",
+        "bbox": [
+          258,
+          38,
+          314,
+          65
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            258,
+            38,
+            314,
+            65
+          ]
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_template",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nSelect the red Standard Template in the right sidebar"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [
+            904,
+            420
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "json_coordinate": [
+            66,
+            58
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Select the red Standard Template in the right sidebar",
+        "bbox": [
+          2480,
+          674,
+          2725,
+          837
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            2480,
+            674,
+            2725,
+            837
+          ]
+        ]
+      }
+    },
+    {
+      "id": "hotel35_target_cheapest_button",
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."
+          },
+          {
+            "role": "user",
+            "content": "Inspect the hotel search results across the screenshots. Take exactly one desktop action per turn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 0."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "The previous scroll was applied. Continue inspecting the adjacent results."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 1."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "Every hotel price has appeared. Click View details for the cheapest hotel."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 2; this is the current frame."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0002-model-input.png"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "title": "DesktopAction",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "y": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "type": "integer",
+                        "minimum": -1600,
+                        "maximum": 1600,
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "desktop_action"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_click",
+          "tool_action": {
+            "action": "click",
+            "x": 643,
+            "y": 616
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "hotel_test_0035_large_ui_step_2",
+        "ensemble_role": "target",
+        "instruction": "Every hotel price has appeared. Click View details for the cheapest hotel.",
+        "bbox": [
+          601,
+          414,
+          714,
+          472
+        ],
+        "bbox_source": "fixture layout geometry",
+        "image_size": [
+          1024,
+          720
+        ],
+        "frame_bboxes": [
+          null,
+          null,
+          [
+            601,
+            414,
+            714,
+            472
+          ]
+        ],
+        "source_trajectory": "data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0"
+      }
+    },
+    {
+      "id": "hotel35_control_juniper_button",
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."
+          },
+          {
+            "role": "user",
+            "content": "Inspect the hotel search results across the screenshots. Take exactly one desktop action per turn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 0."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "The previous scroll was applied. Continue inspecting the adjacent results."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 1."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "Click View details for Juniper Signal Inn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 2; this is the current frame."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0002-model-input.png"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "title": "DesktopAction",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "y": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "type": "integer",
+                        "minimum": -1600,
+                        "maximum": 1600,
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "desktop_action"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_click",
+          "tool_action": {
+            "action": "click",
+            "x": 643,
+            "y": 257
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "hotel_test_0035_large_ui_step_2",
+        "ensemble_role": "control",
+        "instruction": "Click View details for Juniper Signal Inn.",
+        "bbox": [
+          601,
+          156,
+          714,
+          214
+        ],
+        "bbox_source": "fixture layout geometry",
+        "image_size": [
+          1024,
+          720
+        ],
+        "frame_bboxes": [
+          null,
+          null,
+          [
+            601,
+            156,
+            714,
+            214
+          ]
+        ],
+        "source_trajectory": "data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0"
+      }
+    },
+    {
+      "id": "hotel35_control_ember_button",
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."
+          },
+          {
+            "role": "user",
+            "content": "Inspect the hotel search results across the screenshots. Take exactly one desktop action per turn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 0."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "The previous scroll was applied. Continue inspecting the adjacent results."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 1."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "Click View details for Ember Quay Inn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 2; this is the current frame."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0002-model-input.png"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "title": "DesktopAction",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "y": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "type": "integer",
+                        "minimum": -1600,
+                        "maximum": 1600,
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "desktop_action"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_click",
+          "tool_action": {
+            "action": "click",
+            "x": 643,
+            "y": 967
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "hotel_test_0035_large_ui_step_2",
+        "ensemble_role": "control",
+        "instruction": "Click View details for Ember Quay Inn.",
+        "bbox": [
+          601,
+          672,
+          714,
+          719
+        ],
+        "bbox_source": "fixture layout geometry",
+        "image_size": [
+          1024,
+          720
+        ],
+        "frame_bboxes": [
+          null,
+          null,
+          [
+            601,
+            672,
+            714,
+            719
+          ]
+        ],
+        "source_trajectory": "data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0"
+      }
+    },
+    {
+      "id": "hotel35_control_lumen_name",
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."
+          },
+          {
+            "role": "user",
+            "content": "Inspect the hotel search results across the screenshots. Take exactly one desktop action per turn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 0."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "The previous scroll was applied. Continue inspecting the adjacent results."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 1."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "Click the Lumen Harbor Rooms hotel name."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 2; this is the current frame."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0002-model-input.png"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "title": "DesktopAction",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "y": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "type": "integer",
+                        "minimum": -1600,
+                        "maximum": 1600,
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "desktop_action"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_click",
+          "tool_action": {
+            "action": "click",
+            "x": 557,
+            "y": 426
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "hotel_test_0035_large_ui_step_2",
+        "ensemble_role": "control",
+        "instruction": "Click the Lumen Harbor Rooms hotel name.",
+        "bbox": [
+          495,
+          296,
+          645,
+          316
+        ],
+        "bbox_source": "fixture layout geometry",
+        "image_size": [
+          1024,
+          720
+        ],
+        "frame_bboxes": [
+          null,
+          null,
+          [
+            495,
+            296,
+            645,
+            316
+          ]
+        ],
+        "source_trajectory": "data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0"
+      }
+    },
+    {
+      "id": "hotel35_control_logo",
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."
+          },
+          {
+            "role": "user",
+            "content": "Inspect the hotel search results across the screenshots. Take exactly one desktop action per turn."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 0."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "The previous scroll was applied. Continue inspecting the adjacent results."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 1."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+          },
+          {
+            "role": "user",
+            "content": "Click the StayLocal logo."
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Exact hotel-search screenshot for frame 2; this is the current frame."
+              },
+              {
+                "type": "image_path",
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0002-model-input.png"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 256,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "title": "DesktopAction",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "y": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "type": "integer",
+                        "minimum": -1600,
+                        "maximum": 1600,
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3000
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "function": {
+            "name": "desktop_action"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_click",
+          "tool_action": {
+            "action": "click",
+            "x": 109,
+            "y": 56
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "label": "target_anchor",
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          },
+          "scored_fields": [
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "hotel_test_0035_large_ui_step_2",
+        "ensemble_role": "control",
+        "instruction": "Click the StayLocal logo.",
+        "bbox": [
+          31,
+          31,
+          192,
+          50
+        ],
+        "bbox_source": "fixture layout geometry",
+        "image_size": [
+          1024,
+          720
+        ],
+        "frame_bboxes": [
+          null,
+          null,
+          [
+            31,
+            31,
+            192,
+            50
+          ]
+        ],
+        "source_trajectory": "data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0"
+      }
+    }
+  ]
+}
