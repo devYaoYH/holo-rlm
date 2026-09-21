@@ -1,0 +1,293 @@
+{
+  "cases": [
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "powerpoint_windows_59",
+      "images": [
+        {
+          "effective_area_ratio": 0.9955555555555555,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            2880,
+            1792
+          ],
+          "processor_grid_thw": [
+            1,
+            112,
+            180
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 5184000,
+          "source_size": [
+            2880,
+            1800
+          ]
+        }
+      ],
+      "protocol": "hcompany_element_localization_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "powerpoint_windows_48",
+      "images": [
+        {
+          "effective_area_ratio": 0.9955555555555555,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            2880,
+            1792
+          ],
+          "processor_grid_thw": [
+            1,
+            112,
+            180
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 5184000,
+          "source_size": [
+            2880,
+            1800
+          ]
+        }
+      ],
+      "protocol": "hcompany_element_localization_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "photoshop_windows_1",
+      "images": [
+        {
+          "effective_area_ratio": 1.0,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            2560,
+            1440
+          ],
+          "processor_grid_thw": [
+            1,
+            90,
+            160
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 3686400,
+          "source_size": [
+            2560,
+            1440
+          ]
+        }
+      ],
+      "protocol": "hcompany_element_localization_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "photoshop_windows_9",
+      "images": [
+        {
+          "effective_area_ratio": 1.0,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            2560,
+            1440
+          ],
+          "processor_grid_thw": [
+            1,
+            90,
+            160
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 3686400,
+          "source_size": [
+            2560,
+            1440
+          ]
+        }
+      ],
+      "protocol": "hcompany_element_localization_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "vscode_macos_3",
+      "images": [
+        {
+          "effective_area_ratio": 1.0,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            2560,
+            1664
+          ],
+          "processor_grid_thw": [
+            1,
+            104,
+            160
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 4259840,
+          "source_size": [
+            2560,
+            1664
+          ]
+        }
+      ],
+      "protocol": "hcompany_element_localization_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "hotel_test_0035_large_ui_step_0",
+      "images": [
+        {
+          "effective_area_ratio": 0.9777777777777777,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            1024,
+            704
+          ],
+          "processor_grid_thw": [
+            1,
+            44,
+            64
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 737280,
+          "source_size": [
+            1024,
+            720
+          ]
+        }
+      ],
+      "protocol": "holo_desktop_action_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "hotel_test_0035_large_ui_step_1",
+      "images": [
+        {
+          "effective_area_ratio": 0.9777777777777777,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            1024,
+            704
+          ],
+          "processor_grid_thw": [
+            1,
+            44,
+            64
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 737280,
+          "source_size": [
+            1024,
+            720
+          ]
+        },
+        {
+          "effective_area_ratio": 0.9777777777777777,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            1024,
+            704
+          ],
+          "processor_grid_thw": [
+            1,
+            44,
+            64
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 737280,
+          "source_size": [
+            1024,
+            720
+          ]
+        }
+      ],
+      "protocol": "holo_desktop_action_v1"
+    },
+    {
+      "candidate_coordinates_0_1000": true,
+      "coordinate_schema_0_1000": true,
+      "id": "hotel_test_0035_large_ui_step_2",
+      "images": [
+        {
+          "effective_area_ratio": 0.9777777777777777,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            1024,
+            704
+          ],
+          "processor_grid_thw": [
+            1,
+            44,
+            64
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 737280,
+          "source_size": [
+            1024,
+            720
+          ]
+        },
+        {
+          "effective_area_ratio": 0.9777777777777777,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            1024,
+            704
+          ],
+          "processor_grid_thw": [
+            1,
+            44,
+            64
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 737280,
+          "source_size": [
+            1024,
+            720
+          ]
+        },
+        {
+          "effective_area_ratio": 0.9777777777777777,
+          "no_material_downsample": true,
+          "pixel_ceiling": 16777216,
+          "processor_effective_size": [
+            1024,
+            704
+          ],
+          "processor_grid_thw": [
+            1,
+            44,
+            64
+          ],
+          "source_below_ceiling": true,
+          "source_pixels": 737280,
+          "source_size": [
+            1024,
+            720
+          ]
+        }
+      ],
+      "protocol": "holo_desktop_action_v1"
+    }
+  ],
+  "manifest": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/benchmarks/delta_lens/qwen35_4b_vs_holo31_4b.json",
+  "ok": true,
+  "patch_size": 16,
+  "processor": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+  "schema_version": 1
+}

@@ -11,9 +11,31 @@ from instrumented_holo.model import (
     generated_parameter_token_spans,
     generation_stop_strings,
     parse_assistant_output,
+    unexpected_missing_checkpoint_keys,
 )
 from instrumented_holo.settings import Settings
 from instrumented_holo.traces import TraceOptions, TraceWriter, append_trace_response
+
+
+def test_tied_lm_head_may_be_omitted_but_other_missing_weights_are_rejected() -> None:
+    model_keys = {"model.embed_tokens.weight", "model.layers.0.weight", "lm_head.weight"}
+    loaded_keys = {"model.embed_tokens.weight", "model.layers.0.weight"}
+
+    assert unexpected_missing_checkpoint_keys(
+        model_keys,
+        loaded_keys,
+        tie_word_embeddings=True,
+    ) == set()
+    assert unexpected_missing_checkpoint_keys(
+        model_keys,
+        loaded_keys,
+        tie_word_embeddings=False,
+    ) == {"lm_head.weight"}
+    assert unexpected_missing_checkpoint_keys(
+        model_keys,
+        {"model.embed_tokens.weight"},
+        tie_word_embeddings=True,
+    ) == {"model.layers.0.weight"}
 
 
 def test_native_tool_call_is_projected_without_hidden_reasoning() -> None:

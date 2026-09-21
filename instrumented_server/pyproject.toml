@@ -18,6 +18,7 @@ instrumented-holo-server = "instrumented_holo.app:main"
 holo-causal-experiment = "instrumented_holo.causal_experiment:main"
 holo-gpu-doctor = "instrumented_holo.gpu_doctor:main"
 holo-activation-patch = "instrumented_holo.patching_cli:main"
+holo-delta-lens = "instrumented_holo.delta_lens:main"
 
 [dependency-groups]
 dev = [

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import json
 import math
 from collections.abc import Callable, Mapping, Sequence
 from contextlib import ExitStack
@@ -216,6 +217,56 @@ def coordinate_tool_candidate(label: str, coordinate: tuple[int, int]) -> Candid
         label=label,
         text=prefix + x_text + middle + y_text + suffix,
         scored_spans=(x_span, y_span),
+    )
+
+
+def json_coordinate_candidate(label: str, coordinate: tuple[int, int]) -> CandidateSequence:
+    """Build the canonical compact ScreenSpot JSON response, scoring only x/y values."""
+
+    x, y = coordinate
+    text = json.dumps({"x": x, "y": y}, separators=(",", ":"))
+    x_text, y_text = str(x), str(y)
+    x_start = text.index(x_text, text.index('"x"'))
+    y_start = text.index(y_text, text.index('"y"'))
+    return CandidateSequence(
+        label=label,
+        text=text,
+        scored_spans=((x_start, x_start + len(x_text)), (y_start, y_start + len(y_text))),
+    )
+
+
+def native_tool_candidate(
+    label: str,
+    action: Mapping[str, Any],
+    *,
+    scored_fields: Sequence[str] | None = None,
+) -> CandidateSequence:
+    """Build one native Holo tool call and score the declared parameter values."""
+
+    if not action or "action" not in action:
+        raise ValueError("tool action must contain an action field")
+    fields = tuple(scored_fields or action.keys())
+    unknown = [field for field in fields if field not in action]
+    if unknown:
+        raise ValueError(f"scored tool fields are absent from the action: {unknown}")
+    chunks = ["<tool_call>\n<function=desktop_action>\n"]
+    spans: dict[str, tuple[int, int]] = {}
+    length = len(chunks[0])
+    for field, raw_value in action.items():
+        value = json.dumps(raw_value, separators=(",", ":"))
+        if isinstance(raw_value, str):
+            value = raw_value
+        prefix = f"<parameter={field}>\n"
+        suffix = "\n</parameter>\n"
+        chunks.extend((prefix, value, suffix))
+        start = length + len(prefix)
+        spans[str(field)] = (start, start + len(value))
+        length += len(prefix) + len(value) + len(suffix)
+    chunks.append("</function>\n</tool_call>")
+    return CandidateSequence(
+        label=label,
+        text="".join(chunks),
+        scored_spans=tuple(spans[field] for field in fields),
     )
 
 

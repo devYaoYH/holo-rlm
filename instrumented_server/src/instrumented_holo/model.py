@@ -27,6 +27,18 @@ _JSON_COORDINATE_RE = re.compile(r'"(?P<parameter>x|y)"\s*:\s*(?P<value>-?\d+)')
 logger = logging.getLogger(__name__)
 
 
+def unexpected_missing_checkpoint_keys(
+    model_keys: set[str],
+    loaded_keys: set[str],
+    *,
+    tie_word_embeddings: bool,
+) -> set[str]:
+    """Return missing tensors after accounting for the standard tied LM-head alias."""
+
+    allowed = {"lm_head.weight"} if tie_word_embeddings else set()
+    return model_keys - loaded_keys - allowed
+
+
 def generated_parameter_token_spans(
     text: str,
     token_offsets: tuple[tuple[int, int], ...],
@@ -199,7 +211,8 @@ class InstrumentedHolo:
         else:
             self.dtype = getattr(torch, self.settings.dtype)
 
-        self.processor = AutoProcessor.from_pretrained(self.settings.model_path, local_files_only=True)
+        processor_path = self.settings.processor_path or self.settings.model_path
+        self.processor = AutoProcessor.from_pretrained(processor_path, local_files_only=True)
         if self.settings.image_max_pixels < self.settings.image_min_pixels:
             raise ValueError("HOLO_IMAGE_MAX_PIXELS must be greater than or equal to HOLO_IMAGE_MIN_PIXELS")
         # Bound each historical frame before visual tokenization. Full prompt
@@ -287,7 +300,15 @@ class InstrumentedHolo:
                     torch.mps.current_allocated_memory() / 2**30,
                     torch.mps.driver_allocated_memory() / 2**30,
                 )
-        missing_keys = model_keys - loaded_keys
+        tie_word_embeddings = bool(
+            getattr(config, "tie_word_embeddings", False)
+            or getattr(getattr(config, "text_config", None), "tie_word_embeddings", False)
+        )
+        missing_keys = unexpected_missing_checkpoint_keys(
+            model_keys,
+            loaded_keys,
+            tie_word_embeddings=tie_word_embeddings,
+        )
         if missing_keys:
             examples = ", ".join(sorted(missing_keys)[:5])
             raise RuntimeError(f"Checkpoint did not contain {len(missing_keys)} model tensors (for example: {examples})")
@@ -341,6 +362,7 @@ class InstrumentedHolo:
         ]
         return {
             "model_path": str(self.settings.model_path),
+            "processor_path": str(self.settings.processor_path or self.settings.model_path),
             "model_revision": self.checkpoint_revision(),
             "model_type": config.get("model_type"),
             "architectures": config.get("architectures"),

@@ -20,6 +20,7 @@ class Settings:
     """Configuration sourced from environment variables or explicit CLI options."""
 
     model_path: Path = field(default_factory=_default_model_path)
+    processor_path: Path | None = None
     trace_dir: Path = field(default_factory=_default_trace_dir)
     host: str = "127.0.0.1"
     port: int = 8000
@@ -36,6 +37,11 @@ class Settings:
     def from_environment(cls) -> Settings:
         return cls(
             model_path=Path(os.environ.get("HOLO_MODEL_PATH", _default_model_path())),
+            processor_path=(
+                Path(os.environ["HOLO_PROCESSOR_PATH"])
+                if os.environ.get("HOLO_PROCESSOR_PATH")
+                else None
+            ),
             trace_dir=Path(os.environ.get("HOLO_TRACE_DIR", _default_trace_dir())),
             host=os.environ.get("HOLO_SERVER_HOST", "127.0.0.1"),
             port=int(os.environ.get("HOLO_SERVER_PORT", "8000")),

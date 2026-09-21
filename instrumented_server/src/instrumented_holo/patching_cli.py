@@ -18,6 +18,8 @@ from .activation_patching import (
     CandidateSequence,
     ImageRegion,
     coordinate_tool_candidate,
+    json_coordinate_candidate,
+    native_tool_candidate,
     png_data_url,
     swap_equal_tiles,
     validate_box,
@@ -167,6 +169,19 @@ def _candidates(raw: list[dict[str, Any]]) -> tuple[CandidateSequence, Candidate
             if any(value < 0 or value > 1000 for value in coordinate):
                 raise ValueError(f"candidate {label!r} coordinate must stay within 0..1000")
             result.append(coordinate_tool_candidate(label, coordinate))  # type: ignore[arg-type]
+        elif "json_coordinate" in candidate:
+            coordinate = tuple(int(value) for value in candidate["json_coordinate"])
+            if len(coordinate) != 2 or any(value < 0 or value > 1000 for value in coordinate):
+                raise ValueError(f"candidate {label!r} JSON coordinate must contain x/y within 0..1000")
+            result.append(json_coordinate_candidate(label, coordinate))  # type: ignore[arg-type]
+        elif "tool_action" in candidate:
+            action = candidate["tool_action"]
+            if not isinstance(action, dict):
+                raise ValueError(f"candidate {label!r} tool_action must be an object")
+            scored_fields = candidate.get("scored_fields")
+            if scored_fields is not None and not isinstance(scored_fields, list):
+                raise ValueError(f"candidate {label!r} scored_fields must be a list")
+            result.append(native_tool_candidate(label, action, scored_fields=scored_fields))
         else:
             spans = tuple(tuple(int(value) for value in span) for span in candidate["scored_spans"])
             text = str(candidate["text"])
