@@ -9,6 +9,7 @@ from apps.booking_fixture.generator import (
     build_manifest,
     config_sha256,
     generate_config,
+    large_ui_diagnostic,
     load_manifest,
 )
 from demo.backends import ScriptedBackend
@@ -133,3 +134,17 @@ def test_generated_scenario_capture_validates_and_replays(tmp_path: Path) -> Non
     assert manifest["fixture"]["item_id"] == "test-0017"
     assert manifest["fixture"]["generator_version"] == GENERATOR_VERSION
     assert manifest["fixture"]["scenario_config"] == config
+
+
+def test_large_ui_diagnostic_preserves_layout_and_marks_non_frozen_variant() -> None:
+    config = generate_config(35, "test")
+    diagnostic = large_ui_diagnostic(config)
+
+    assert diagnostic["viewport"] == config["viewport"]
+    assert diagnostic["layout"]["price_x_offset"] == config["layout"]["price_x_offset"]
+    assert diagnostic["hotels"] == config["hotels"]
+    assert diagnostic["layout"]["price_font_size"] > diagnostic["layout"]["font_size"]
+    assert diagnostic["layout"]["price_y_offset"] <= diagnostic["layout"]["button_y_offset"] - 28
+    assert diagnostic["item_id"] == "test-0035-large-ui"
+    assert diagnostic["generator_version"].endswith("large-ui-diagnostic")
+    assert config["item_id"] == "test-0035"

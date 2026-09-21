@@ -1,0 +1,281 @@
+{
+  "schema_version": 2,
+  "experiment": "matched_tile_swap_teacher_forced_activation_patching",
+  "instruction": "Create a \"Psychedelic vibrant\" presentation",
+  "model": {
+    "model_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+    "model_revision": "624347ebe6ab4df6f9701bcfc3c1bdfcfbc20b56",
+    "model_type": "qwen3_5",
+    "architectures": [
+      "Qwen3_5ForConditionalGeneration"
+    ],
+    "image_token_id": 248056,
+    "vision_config": {
+      "deepstack_visual_indexes": [],
+      "depth": 24,
+      "dtype": "float32",
+      "hidden_act": "gelu_pytorch_tanh",
+      "hidden_size": 1024,
+      "in_channels": 3,
+      "initializer_range": 0.02,
+      "intermediate_size": 4096,
+      "model_type": "qwen3_5_vision",
+      "num_heads": 16,
+      "num_position_embeddings": 2304,
+      "out_hidden_size": 2560,
+      "patch_size": 16,
+      "spatial_merge_size": 2,
+      "temporal_patch_size": 2
+    },
+    "attention_layer_indices": [
+      3,
+      7,
+      11,
+      15,
+      19,
+      23,
+      27,
+      31
+    ],
+    "device": "mps",
+    "dtype": "bfloat16",
+    "load_strategy": "stream",
+    "eager_attention": true,
+    "image_min_pixels": 65536,
+    "image_max_pixels": 262144,
+    "torch_version": "2.14.0",
+    "transformers_version": "5.17.0"
+  },
+  "source_image": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/data/screenspot-pro/images/powerpoint_windows_59.png",
+  "clean_image": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/causal-intervention/powerpoint_windows_59_swap/clean.png",
+  "corrupted_image": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/causal-intervention/powerpoint_windows_59_swap/corrupted.png",
+  "image_sha256": {
+    "clean": "30c36875a81da4911d5bb54ad92318169b2e3306ccd69c95813f6995adc2c8eb",
+    "corrupted": "a2991d6a90e789fd8d38c1fd938bf45031a626cf2d1e911a90607cfb59643d0e"
+  },
+  "corruption": {
+    "operation": "lossless equal-size tile swap",
+    "target_swap_box": [
+      1289,
+      563,
+      1489,
+      735
+    ],
+    "distractor_swap_box": [
+      1069,
+      563,
+      1269,
+      735
+    ],
+    "changed_bbox": [
+      1069,
+      563,
+      1489,
+      735
+    ],
+    "changed_pixel_fraction": 0.009051697530864197,
+    "layout_preserved": true,
+    "pixel_method": "crop both source rectangles first, then paste each crop into the other box",
+    "resized_or_resampled": false
+  },
+  "coordinates": {
+    "correct": {
+      "normalized": [
+        482,
+        351
+      ],
+      "pixel_box": [
+        1289,
+        563,
+        1489,
+        702
+      ]
+    },
+    "distractor": {
+      "normalized": [
+        406,
+        351
+      ],
+      "pixel_box": [
+        1069,
+        563,
+        1269,
+        702
+      ]
+    }
+  },
+  "metric": {
+    "name": "teacher_forced_coordinate_sequence_log_likelihood_ratio",
+    "formula": "sum ln p(original-target-slot x/y tokens) - sum ln p(distractor-slot x/y tokens)",
+    "units": "nats (natural-log probability ratio)",
+    "score_reduction": "sum",
+    "coordinate_tokens_per_sequence": 6,
+    "syntax_tokens_scored": false,
+    "equal_scored_token_count_required_for_sum": true,
+    "odds_ratio_interpretation": "exp(margin_nats) = target-sequence probability / distractor-sequence probability"
+  },
+  "patch_grid": {
+    "rows": 12,
+    "columns": 20,
+    "image_token_count": 240,
+    "target_patch_count": 4,
+    "distractor_patch_count": 4,
+    "target_patch_indices": [
+      69,
+      70,
+      89,
+      90
+    ],
+    "distractor_patch_indices": [
+      67,
+      68,
+      87,
+      88
+    ]
+  },
+  "intervention_protocol": {
+    "patching": "replace the named corrupted activation with its clean-run value under the same candidate suffix",
+    "visual_ablation": "replace all visual-token residuals with their image-token mean",
+    "regional_ablation": "replace selected residuals with the mean of remaining image tokens",
+    "head_and_mlp_ablation": "zero the named output at coordinate prediction queries",
+    "one_component_per_forward_pass": true
+  },
+  "baselines": {
+    "clean_margin_nats": 1.7001161575317383,
+    "corrupted_margin_nats": -2.644266128540039,
+    "clean_minus_corrupted_nats": 4.344382286071777,
+    "clean_target_over_distractor_probability_ratio": 5.474583268875333,
+    "corrupted_target_over_distractor_probability_ratio": 0.07105748166751066,
+    "clean_sequence_log_prob": {
+      "correct": -8.084521293640137,
+      "distractor": -9.784637451171875
+    },
+    "corrupted_sequence_log_prob": {
+      "correct": -11.065202713012695,
+      "distractor": -8.420936584472656
+    }
+  },
+  "interventions": [
+    {
+      "component": "layer_19_visual_token_residuals",
+      "scope": "all image-token positions",
+      "patched_corrupted_margin_nats": -0.7910261154174805,
+      "restoration_nats": 1.8532400131225586,
+      "recovery_fraction": 0.4265830884782177,
+      "ablated_clean_margin_nats": 0.8541107177734375,
+      "ablation_drop_nats": 0.8460054397583008,
+      "patched_sequence_log_prob": {
+        "correct": -9.625418663024902,
+        "distractor": -8.834392547607422
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -8.449386596679688,
+        "distractor": -9.303497314453125
+      }
+    },
+    {
+      "component": "layer_19_head_10_attention_output",
+      "scope": "head slice before o_proj at coordinate prediction queries",
+      "patched_corrupted_margin_nats": -2.620547294616699,
+      "restoration_nats": 0.023718833923339844,
+      "recovery_fraction": 0.005459656255247875,
+      "ablated_clean_margin_nats": 1.6098709106445312,
+      "ablation_drop_nats": 0.09024524688720703,
+      "patched_sequence_log_prob": {
+        "correct": -11.206130981445312,
+        "distractor": -8.585583686828613
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -8.351350784301758,
+        "distractor": -9.961221694946289
+      }
+    },
+    {
+      "component": "layer_15_mlp_output",
+      "scope": "MLP output at coordinate prediction queries",
+      "patched_corrupted_margin_nats": -2.5619401931762695,
+      "restoration_nats": 0.08232593536376953,
+      "recovery_fraction": 0.018949974919957896,
+      "ablated_clean_margin_nats": 1.49859619140625,
+      "ablation_drop_nats": 0.20151996612548828,
+      "patched_sequence_log_prob": {
+        "correct": -11.084110260009766,
+        "distractor": -8.522170066833496
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -9.222210884094238,
+        "distractor": -10.720807075500488
+      }
+    },
+    {
+      "component": "layer_19_mlp_output",
+      "scope": "MLP output at coordinate prediction queries",
+      "patched_corrupted_margin_nats": -3.073240280151367,
+      "restoration_nats": -0.4289741516113281,
+      "recovery_fraction": -0.09874226607235564,
+      "ablated_clean_margin_nats": 1.4478559494018555,
+      "ablation_drop_nats": 0.2522602081298828,
+      "patched_sequence_log_prob": {
+        "correct": -11.572345733642578,
+        "distractor": -8.499105453491211
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -8.963943481445312,
+        "distractor": -10.411799430847168
+      }
+    },
+    {
+      "component": "layer_23_mlp_output",
+      "scope": "MLP output at coordinate prediction queries",
+      "patched_corrupted_margin_nats": -3.123140335083008,
+      "restoration_nats": -0.47887420654296875,
+      "recovery_fraction": -0.11022837655844747,
+      "ablated_clean_margin_nats": 2.7555112838745117,
+      "ablation_drop_nats": -1.0553951263427734,
+      "patched_sequence_log_prob": {
+        "correct": -11.643330574035645,
+        "distractor": -8.520190238952637
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -7.986960411071777,
+        "distractor": -10.742471694946289
+      }
+    },
+    {
+      "component": "layer_19_target_patch_residuals",
+      "scope": "image patches overlapping the original target tile",
+      "patched_corrupted_margin_nats": -1.200718879699707,
+      "restoration_nats": 1.443547248840332,
+      "recovery_fraction": 0.33227905690260934,
+      "ablated_clean_margin_nats": 0.21889209747314453,
+      "ablation_drop_nats": 1.4812240600585938,
+      "patched_sequence_log_prob": {
+        "correct": -9.933012008666992,
+        "distractor": -8.732293128967285
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -8.909258842468262,
+        "distractor": -9.128150939941406
+      }
+    },
+    {
+      "component": "layer_19_distractor_patch_residuals",
+      "scope": "matched image patches overlapping the adjacent distractor tile",
+      "patched_corrupted_margin_nats": -2.7744312286376953,
+      "restoration_nats": -0.13016510009765625,
+      "recovery_fraction": -0.02996170491601753,
+      "ablated_clean_margin_nats": 2.215104103088379,
+      "ablation_drop_nats": -0.5149879455566406,
+      "patched_sequence_log_prob": {
+        "correct": -11.527875900268555,
+        "distractor": -8.75344467163086
+      },
+      "ablated_sequence_log_prob": {
+        "correct": -7.859707832336426,
+        "distractor": -10.074811935424805
+      }
+    }
+  ],
+  "runtime_seconds": 351.34568762779236,
+  "interpretation_guardrail": "Recovery fraction is an additive fraction of the clean-minus-corrupted log-margin gap, not a fraction of probability mass. A component supports this coordinate contrast only when clean-to-corrupt patching restores the margin and clean-run ablation reduces it. One matched screenshot remains a case study, not a population claim."
+}

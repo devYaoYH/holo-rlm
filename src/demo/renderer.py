@@ -5,14 +5,30 @@ from __future__ import annotations
 from PIL import Image, ImageDraw, ImageFont
 
 
+def _font(size: int | None = None) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    if size is None:
+        return ImageFont.load_default()
+    for path in (
+        "/System/Library/Fonts/SFNS.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+    ):
+        try:
+            return ImageFont.truetype(path, size)
+        except OSError:
+            continue
+    return ImageFont.load_default(size=size)
+
+
 def render_fixture(config: dict, state: dict) -> Image.Image:
     width = int(config["viewport"]["width"])
     height = int(config["viewport"]["height"])
     layout = config["layout"]
     image = Image.new("RGB", (width, height), "#eef3f8")
     draw = ImageDraw.Draw(image)
-    font = ImageFont.load_default()
-    bold = ImageFont.load_default()
+    font = _font(layout.get("font_size"))
+    bold = _font(layout.get("bold_font_size"))
+    price_font = _font(layout.get("price_font_size"))
+    button_font = _font(layout.get("button_font_size"))
     if state["details_open"]:
         selected_id = state.get("selected_hotel_id") or config["target_id"]
         selected = next(hotel for hotel in config["hotels"] if hotel["id"] == selected_id)
@@ -49,7 +65,12 @@ def render_fixture(config: dict, state: dict) -> Image.Image:
         draw.text((left + layout["name_x_offset"], top + layout["name_y_offset"]), hotel["name"], fill="#172033", font=bold)
         draw.text((left + layout["name_x_offset"], top + layout["description_y_offset"]), hotel["description"], fill="#607086", font=font)
         draw.text((left + layout["rating_x_offset"], top + layout["rating_y_offset"]), f"{hotel['rating']} / 10", fill="#116466", font=bold)
-        draw.text((left + layout["price_x_offset"], top + layout["price_y_offset"]), f"{hotel.get('currency', '$')}{hotel['price']}", fill="#172033", font=bold)
+        draw.text(
+            (left + layout["price_x_offset"], top + layout["price_y_offset"]),
+            f"{hotel.get('currency', '$')}{hotel['price']}",
+            fill="#172033",
+            font=price_font,
+        )
         button_left = left + layout["button_x_offset"]
         button_top = top + layout["button_y_offset"]
         draw.rounded_rectangle(
@@ -62,7 +83,12 @@ def render_fixture(config: dict, state: dict) -> Image.Image:
             radius=7,
             fill="#0d6e73",
         )
-        draw.text((button_left + 10, button_top + max(10, layout["button_height"] // 2 - 6)), "View details", fill="white", font=bold)
+        draw.text(
+            (button_left + 10, button_top + max(8, layout["button_height"] // 2 - 8)),
+            "View details",
+            fill="white",
+            font=button_font,
+        )
     # The browser fixture's sticky header has z-index 5, so it must occlude
     # scrolled cards rather than being painted underneath them.
     draw.rectangle((0, 0, width, layout["header_height"]), fill="#102b4e")

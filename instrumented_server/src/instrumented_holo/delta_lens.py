@@ -29,6 +29,7 @@ class DeltaLensCase:
     protocol: str
     request: dict[str, Any]
     candidates: tuple[CandidateSequence, CandidateSequence]
+    metadata: dict[str, Any]
     reduction: str
     image_min_pixels: int
     image_max_pixels: int
@@ -112,6 +113,7 @@ def load_delta_lens_plan(
                 protocol=str(raw_case["protocol"]),
                 request=request,
                 candidates=_candidates(raw_case["candidates"]),
+                metadata=dict(raw_case.get("case_metadata", {})),
                 reduction=reduction,
                 image_min_pixels=int(raw_case.get("image_min_pixels", raw.get("image_min_pixels", 65_536))),
                 image_max_pixels=int(

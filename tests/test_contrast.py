@@ -52,6 +52,23 @@ def _coordinate_trace(tmp_path: Path, name: str, allocation: tuple[float, float]
     return trace
 
 
+def _json_coordinate_trace(tmp_path: Path, name: str) -> Path:
+    trace = _coordinate_trace(tmp_path, name, (0.6, 0.4))
+    tokens = ['{"', "x", '":', "2", "0", "6", ',"', "y", '":', "2", "4", "0", "}"]
+    np.save(trace / "generated_ids.npy", np.asarray([range(40, 53)], dtype=np.int64))
+    (trace / "generated_tokens.json").write_text(
+        json.dumps({"token_ids": list(range(40, 53)), "tokens": tokens})
+    )
+    arrays = {}
+    for step in range(13):
+        row = np.zeros((1, 4 + step), dtype=np.float32)
+        row[0, 1:3] = (0.6, 0.4)
+        arrays[f"step_{step:03d}_layer_000"] = row
+    np.savez_compressed(trace / "attention_last_query_rows.npz", **arrays)
+    np.savez_compressed(trace / "value_norms.npz", layer_003=np.ones((1, 16), dtype=np.float32))
+    return trace
+
+
 def _multiframe_coordinate_trace(
     tmp_path: Path,
     name: str,
@@ -136,6 +153,16 @@ def test_prompt_ensemble_difference_is_normalized_and_signed(tmp_path: Path) -> 
     analysis = json.loads((output / "analysis.json").read_text())
     assert analysis["controls"] == ["control A", "control B"]
     assert analysis["layer_head_statistics"]["heads"][0]["prompt_difference"]["target_lift"] == pytest.approx(2.0)
+
+
+def test_official_json_coordinate_fields_are_parameter_spans(tmp_path: Path) -> None:
+    attribution = load_attribution(_json_coordinate_trace(tmp_path, "json-target"))
+
+    assert [(span.parameter, span.value, span.steps) for span in attribution.generated_spans] == [
+        ("x", "206", (3, 4, 5)),
+        ("y", "240", (9, 10, 11)),
+    ]
+    assert parameter_steps(attribution, ("x", "y")) == (3, 4, 5, 9, 10, 11)
 
 
 def test_prompt_ensemble_rejects_a_different_image(tmp_path: Path) -> None:

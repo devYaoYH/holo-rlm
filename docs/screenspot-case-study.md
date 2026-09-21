@@ -80,6 +80,8 @@ For the visual hit, the raw value-norm rollout peaks on a generic top-left patch
 
 For the miss, the prompt differential concentrates in the correct top-left task neighborhood but peaks on the slide thumbnail rather than the tiny New Slide toolbar control. This is consistent with coarse semantic selection followed by fine-grained target-binding failure. It is not evidence that attention caused the miss.
 
+The Layer 19 claim has since been rerun under the official protocol on a frozen four-item cohort balanced by benchmark outcome. In that pilot, Layer 19 ranks first by aggregate target lift, narrowly ahead of Layer 15, while heads 11, 14, 10, and 2 form the four strongest aggregate heads. See [Balanced ScreenSpot-Pro Layer 19 pilot](screenspot-balanced-layer19.md) for the current evidence and calibrated interpretation.
+
 ## Interpretation guardrails
 
 - ScreenSpot-Pro uses point-in-bounding-box scoring; attribution alignment is a separate diagnostic.

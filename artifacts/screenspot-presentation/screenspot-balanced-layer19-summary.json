@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "source": {
+    "aggregate_path": "data/remote-results/attention-layer19-balanced-v1/aggregate/aggregate.json",
+    "aggregate_sha256": "e3529d11672d7ba2ce795d484ba53061b33d729ee3b8e61d89fadb6e3ab75227",
+    "cohort_manifest": "benchmarks/attention_attribution/screenspot_balanced_layer19_v1.json",
+    "trace_archive_sha256": "b6ad83121a809cbd11349ef2f1e6fcc248165d36f07ddf6ba192bed051f2e462"
+  },
+  "cohort": {
+    "items": 4,
+    "successes": 2,
+    "failures": 2,
+    "controls_per_item": 4,
+    "max_pixels": 2097152,
+    "benchmark_protocol": "hcompany_element_localization_v1"
+  },
+  "metric": {
+    "name": "same-image prompt-differential target lift",
+    "uniform_reference": 1.0
+  },
+  "layers": [
+    { "transformer_layer": 3, "mean": 3.34131428058647 },
+    { "transformer_layer": 7, "mean": 6.755677123702684 },
+    { "transformer_layer": 11, "mean": 85.05914417196193 },
+    { "transformer_layer": 15, "mean": 151.3746062352633 },
+    { "transformer_layer": 19, "mean": 158.44214597091684 },
+    { "transformer_layer": 23, "mean": 124.9826604413111 },
+    { "transformer_layer": 27, "mean": 94.63878645313098 },
+    { "transformer_layer": 31, "mean": 67.00815944075936 }
+  ],
+  "top_heads": [
+    { "transformer_layer": 19, "head": 11, "mean": 312.0594443229306, "aggregate_rank": 1 },
+    { "transformer_layer": 19, "head": 14, "mean": 293.7676281077944, "aggregate_rank": 2 },
+    { "transformer_layer": 19, "head": 10, "mean": 264.71944741454405, "aggregate_rank": 3 },
+    { "transformer_layer": 19, "head": 2, "mean": 245.59752719112032, "aggregate_rank": 4 }
+  ],
+  "focus": {
+    "layer": 19,
+    "head": 10,
+    "layer_mean": 158.44214597091684,
+    "layer_aggregate_rank": 1,
+    "layer_top_item_count": 2,
+    "layer_median_item_rank": 2.0,
+    "mean_ratio_to_next_best_layer": 1.0466890709837378,
+    "next_best_layer": 15,
+    "next_best_layer_mean": 151.3746062352633,
+    "layer_bootstrap_mean_ci95_lower": 23.23225777508225,
+    "layer_bootstrap_mean_ci95_upper": 293.65203416675143,
+    "success_mean": 293.65203416675143,
+    "failure_mean": 23.23225777508225,
+    "head_mean": 264.71944741454405,
+    "head_aggregate_rank": 3,
+    "head_rank_within_layer": 3,
+    "head_top_within_layer_item_count": 0
+  },
+  "per_item": [
+    {
+      "sample_id": "powerpoint_windows_63",
+      "label": "PowerPoint text success",
+      "benchmark_correct": true,
+      "focus_layer_target_lift": 373.0128368223402,
+      "focus_layer_rank": 3,
+      "focus_head_target_lift": 661.0533276774162,
+      "focus_head_rank_within_layer": 3
+    },
+    {
+      "sample_id": "powerpoint_windows_54",
+      "label": "PowerPoint text failure",
+      "benchmark_correct": false,
+      "focus_layer_target_lift": 2.1940593106582797,
+      "focus_layer_rank": 5,
+      "focus_head_target_lift": 1.4264159083066505,
+      "focus_head_rank_within_layer": 7
+    },
+    {
+      "sample_id": "windows_common_windows_18",
+      "label": "Windows icon success",
+      "benchmark_correct": true,
+      "focus_layer_target_lift": 214.2912315111627,
+      "focus_layer_rank": 1,
+      "focus_head_target_lift": 353.22237827568676,
+      "focus_head_rank_within_layer": 3
+    },
+    {
+      "sample_id": "windows_common_windows_53",
+      "label": "Windows icon failure",
+      "benchmark_correct": false,
+      "focus_layer_target_lift": 44.27045623950622,
+      "focus_layer_rank": 1,
+      "focus_head_target_lift": 43.17566779676656,
+      "focus_head_rank_within_layer": 6
+    }
+  ],
+  "caveat": "Four-item balanced pilot. The item bootstrap range describes this frozen cohort, not a population confidence interval."
+}

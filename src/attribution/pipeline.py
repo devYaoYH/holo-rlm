@@ -14,6 +14,10 @@ from PIL import Image
 _ATTENTION_KEY = re.compile(r"^step_(\d+)_layer_(\d+)$")
 _VALUE_NORM_KEY = re.compile(r"^layer_(\d+)$")
 _PARAMETER_SPAN = re.compile(r"<parameter=([^>]+)>\s*(.*?)\s*</parameter>", re.DOTALL)
+_JSON_FIELD_SPAN = re.compile(
+    r'"(?P<parameter>(?:\\.|[^"\\])+)"\s*:\s*'
+    r'(?P<value>"(?:\\.|[^"\\])*"|-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null)'
+)
 
 
 class AttributionError(ValueError):
@@ -792,7 +796,7 @@ def _generated_parameter_spans(
     steps: tuple[int, ...],
     pieces: tuple[str | None, ...],
 ) -> tuple[GeneratedSpan, ...]:
-    """Recover tool-parameter value spans and their contributing token steps."""
+    """Recover XML-tool or JSON-field value spans and contributing token steps."""
 
     normalized_pieces = [
         (piece or "").replace("Ġ", " ").replace("Ċ", "\n")
@@ -805,11 +809,23 @@ def _generated_parameter_spans(
         cursor += len(piece)
     text = "".join(normalized_pieces)
     captured_steps = set(steps)
+    matches: list[tuple[int, str, str, tuple[int, int]]] = []
+    matches.extend(
+        (match.start(), match.group(1).strip(), match.group(2).strip(), match.span(2))
+        for match in _PARAMETER_SPAN.finditer(text)
+    )
+    matches.extend(
+        (
+            match.start(),
+            json.loads(f'"{match.group("parameter")}"'),
+            _decode_json_scalar(match.group("value")),
+            match.span("value"),
+        )
+        for match in _JSON_FIELD_SPAN.finditer(text)
+    )
+
     spans: list[GeneratedSpan] = []
-    for index, match in enumerate(_PARAMETER_SPAN.finditer(text)):
-        parameter = match.group(1).strip()
-        value = match.group(2).strip()
-        start, end = match.span(2)
+    for index, (_, parameter, value, (start, end)) in enumerate(sorted(matches)):
         token_steps = tuple(
             step
             for step, (piece_start, piece_end) in zip(steps, offsets, strict=True)
@@ -827,6 +843,17 @@ def _generated_parameter_spans(
             )
         )
     return tuple(spans)
+
+
+def _decode_json_scalar(value: str) -> str:
+    decoded = json.loads(value)
+    if decoded is None:
+        return "null"
+    if decoded is True:
+        return "true"
+    if decoded is False:
+        return "false"
+    return str(decoded)
 
 
 def _read_json(path: Path, default: object) -> object:

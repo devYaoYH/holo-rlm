@@ -19,6 +19,7 @@ holo-causal-experiment = "instrumented_holo.causal_experiment:main"
 holo-gpu-doctor = "instrumented_holo.gpu_doctor:main"
 holo-activation-patch = "instrumented_holo.patching_cli:main"
 holo-delta-lens = "instrumented_holo.delta_lens:main"
+holo-attention-delta = "instrumented_holo.attention_delta:main"
 
 [dependency-groups]
 dev = [

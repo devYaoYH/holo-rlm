@@ -24,10 +24,10 @@ from .renderer import render_fixture
 
 INITIAL_TASK = "Inspect the deterministic booking results, note the options, and scroll down. Do not open a details link yet."
 CHEAPEST_TASK = (
-    "Find the hotel with the lowest nightly price across all deterministic search results. "
+    "Find the hotel with the lowest nightly price across all search results. "
     "You have not seen all results yet: your first action must scroll down, and you must not click any currently "
     "visible hotel. Inspect every option using moderate native wheel increments near -500 so no price row is skipped, "
-    "then open the cheapest hotel's local View details link. "
+    "then open the cheapest hotel's View details link. "
     "Take exactly one desktop action per turn."
 )
 
@@ -58,6 +58,45 @@ def _action_for_model_history(response: dict[str, Any], applied_action: dict[str
     except (IndexError, KeyError, TypeError, ValueError):
         pass
     return applied_action
+
+
+def cheapest_progress_message(
+    *,
+    scroll_y: int,
+    action: dict[str, Any],
+    all_results_seen: bool,
+    objective_visible: bool,
+    no_scroll_movement: bool,
+) -> str:
+    """Return the official state update used between cheapest-hotel turns."""
+
+    if all_results_seen and objective_visible:
+        progress = (
+            "Every hotel price has appeared and the cheapest hotel's card is visible now. Do not scroll. "
+            "Immediately click View details for only the cheapest hotel."
+        )
+    elif all_results_seen:
+        progress = (
+            "Every hotel price has appeared, but the cheapest card is in an earlier frame. Use a moderate "
+            "positive delta_y near 500 to scroll up toward it; click only when its card is visible."
+        )
+    elif no_scroll_movement and action["delta_y"] > 0:
+        progress = (
+            "The last scroll did not move: you reached the bottom while skipping at least one price row. "
+            "Do not scroll down again. Use a moderate positive delta_y near 500 to inspect the missed rows above."
+        )
+    elif no_scroll_movement:
+        progress = (
+            "The last scroll did not move because you reached the top. Do not scroll up again. Use a "
+            "moderate negative delta_y near -500 to continue inspecting later results below."
+        )
+    else:
+        progress = (
+            "Continue the same task. Inspect adjacent results with moderate wheel increments near 500 so no "
+            "price row is skipped. Use negative delta_y while moving down; if the viewport stops changing, "
+            "reverse with positive delta_y. Once every price is known, open only the cheapest hotel's details."
+        )
+    return f"The previous action was applied; the current scroll offset is {scroll_y}. {progress}"
 
 
 def _artifact(path: Path, bundle: Path, role: str) -> dict[str, Any]:
@@ -301,38 +340,15 @@ def capture_run(
                 all_results_seen = len(seen_hotel_ids) == len(config["hotels"])
                 no_scroll_movement = action["action"] == "scroll" and before["scroll_y"] == after["scroll_y"]
                 objective_visible = _target_visible(config, after, objective["id"])
-                if all_results_seen and objective_visible:
-                    progress = (
-                        "Every hotel price has appeared and the cheapest hotel's card is visible now. Do not scroll. "
-                        "Immediately click View details for only the cheapest hotel."
-                    )
-                elif all_results_seen:
-                    progress = (
-                        "Every hotel price has appeared, but the cheapest card is in an earlier frame. Use a moderate "
-                        "positive delta_y near 500 to scroll up toward it; click only when its card is visible."
-                    )
-                elif no_scroll_movement and action["delta_y"] > 0:
-                    progress = (
-                        "The last scroll did not move: you reached the bottom while skipping at least one price row. "
-                        "Do not scroll down again. Use a moderate positive delta_y near 500 to inspect the missed rows above."
-                    )
-                elif no_scroll_movement:
-                    progress = (
-                        "The last scroll did not move because you reached the top. Do not scroll up again. Use a "
-                        "moderate negative delta_y near -500 to continue inspecting later results below."
-                    )
-                else:
-                    progress = (
-                        "Continue the same task. Inspect adjacent results with moderate wheel increments near 500 so no "
-                        "price row is skipped. Use negative delta_y while moving down; if the viewport stops changing, "
-                        "reverse with positive delta_y. Once every price is known, open only the cheapest hotel's details."
-                    )
                 messages.append(
                     {
                         "role": "user",
-                        "content": (
-                            f"The previous action was applied; the current scroll offset is {after['scroll_y']}. "
-                            f"{progress}"
+                        "content": cheapest_progress_message(
+                            scroll_y=after["scroll_y"],
+                            action=action,
+                            all_results_seen=all_results_seen,
+                            objective_visible=objective_visible,
+                            no_scroll_movement=no_scroll_movement,
                         ),
                     }
                 )

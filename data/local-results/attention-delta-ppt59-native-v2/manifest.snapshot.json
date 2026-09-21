@@ -1,0 +1,1081 @@
+{
+  "cases": [
+    {
+      "candidates": [
+        {
+          "json_coordinate": [
+            482,
+            351
+          ],
+          "label": "oracle_bbox_center"
+        },
+        {
+          "json_coordinate": [
+            406,
+            351
+          ],
+          "label": "diagnostic_distractor"
+        }
+      ],
+      "case_metadata": {
+        "application": "powerpoint",
+        "bbox": [
+          1289.0,
+          563.0,
+          1489.0,
+          702.0
+        ],
+        "distractor_selection": "adjacent matched theme tile from the slide-8 intervention",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "instruction": "Create a \"Psychedelic vibrant\" presentation",
+        "interpretation": "exploratory matched-token diagnostic; distractors other than the slide-8 tile are post-hoc",
+        "platform": "windows",
+        "ui_type": "text"
+      },
+      "id": "powerpoint_windows_59",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 64,
+        "messages": [
+          {
+            "content": [
+              {
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png",
+                "type": "image_path"
+              },
+              {
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate a \"Psychedelic vibrant\" presentation",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        },
+        "temperature": 0
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "json_coordinate": [
+            66,
+            58
+          ],
+          "label": "oracle_bbox_center"
+        },
+        {
+          "json_coordinate": [
+            115,
+            150
+          ],
+          "label": "diagnostic_distractor"
+        }
+      ],
+      "case_metadata": {
+        "application": "powerpoint",
+        "bbox": [
+          164.0,
+          68.0,
+          218.0,
+          139.0
+        ],
+        "distractor_selection": "prior Holo diagnostic click on the same screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "instruction": "Create new slide",
+        "interpretation": "exploratory matched-token diagnostic; distractors other than the slide-8 tile are post-hoc",
+        "platform": "windows",
+        "ui_type": "text"
+      },
+      "id": "powerpoint_windows_48",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 64,
+        "messages": [
+          {
+            "content": [
+              {
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png",
+                "type": "image_path"
+              },
+              {
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate new slide",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        },
+        "temperature": 0
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "json_coordinate": [
+            8,
+            289
+          ],
+          "label": "oracle_bbox_center"
+        },
+        {
+          "json_coordinate": [
+            11,
+            151
+          ],
+          "label": "diagnostic_distractor"
+        }
+      ],
+      "case_metadata": {
+        "application": "photoshop",
+        "bbox": [
+          4.0,
+          403.0,
+          37.0,
+          428.0
+        ],
+        "distractor_selection": "prior Holo diagnostic click on the same screenshot",
+        "image_size": [
+          2560,
+          1440
+        ],
+        "instruction": "select gradient tool",
+        "interpretation": "exploratory matched-token diagnostic; distractors other than the slide-8 tile are post-hoc",
+        "platform": "windows",
+        "ui_type": "icon"
+      },
+      "id": "photoshop_windows_1",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 64,
+        "messages": [
+          {
+            "content": [
+              {
+                "path": "../../data/screenspot-pro/images/photoshop_windows_1.png",
+                "type": "image_path"
+              },
+              {
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nselect gradient tool",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        },
+        "temperature": 0
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "json_coordinate": [
+            17,
+            9
+          ],
+          "label": "oracle_bbox_center"
+        },
+        {
+          "json_coordinate": [
+            10,
+            70
+          ],
+          "label": "diagnostic_distractor"
+        }
+      ],
+      "case_metadata": {
+        "application": "photoshop",
+        "bbox": [
+          32.0,
+          5.0,
+          56.0,
+          20.0
+        ],
+        "distractor_selection": "prior Holo diagnostic click on the same screenshot",
+        "image_size": [
+          2560,
+          1440
+        ],
+        "instruction": "open the file menu",
+        "interpretation": "exploratory matched-token diagnostic; distractors other than the slide-8 tile are post-hoc",
+        "platform": "windows",
+        "ui_type": "text"
+      },
+      "id": "photoshop_windows_9",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 64,
+        "messages": [
+          {
+            "content": [
+              {
+                "path": "../../data/screenspot-pro/images/photoshop_windows_9.png",
+                "type": "image_path"
+              },
+              {
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nopen the file menu",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        },
+        "temperature": 0
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "json_coordinate": [
+            205,
+            47
+          ],
+          "label": "oracle_bbox_center"
+        },
+        {
+          "json_coordinate": [
+            144,
+            89
+          ],
+          "label": "diagnostic_distractor"
+        }
+      ],
+      "case_metadata": {
+        "application": "vscode",
+        "bbox": [
+          394.0,
+          67.0,
+          654.0,
+          90.0
+        ],
+        "distractor_selection": "prior Holo diagnostic click on the same screenshot",
+        "image_size": [
+          2560,
+          1664
+        ],
+        "instruction": "Open a terminal in vscode.",
+        "interpretation": "exploratory matched-token diagnostic; distractors other than the slide-8 tile are post-hoc",
+        "platform": "macos",
+        "ui_type": "text"
+      },
+      "id": "vscode_macos_3",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 64,
+        "messages": [
+          {
+            "content": [
+              {
+                "path": "../../data/screenspot-pro/images/vscode_macos_3.png",
+                "type": "image_path"
+              },
+              {
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nOpen a terminal in vscode.",
+                "type": "text"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        },
+        "temperature": 0
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "label": "oracle_scroll_down",
+          "scored_fields": [
+            "action"
+          ],
+          "tool_action": {
+            "action": "scroll",
+            "delta_y": -500
+          }
+        },
+        {
+          "label": "premature_click",
+          "scored_fields": [
+            "action"
+          ],
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          }
+        }
+      ],
+      "case_metadata": {
+        "coordinate_space": "normalized_0_1000",
+        "distractor_click_normalized": null,
+        "distractor_click_pixel": null,
+        "distractor_target": "premature action type",
+        "fixture_item": "test-0035-large-ui",
+        "oracle_click_normalized": null,
+        "oracle_click_pixel": null,
+        "oracle_target": "test-0035-lumen-harbor-rooms",
+        "scroll_offset": 0,
+        "source_trajectory": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0",
+        "step": 0,
+        "viewport": [
+          1024,
+          720
+        ]
+      },
+      "id": "hotel_test_0035_large_ui_step_0",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 256,
+        "messages": [
+          {
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning.\n\nCRITICAL CHEAPEST-HOTEL CONSTRAINT: VIEW DETAILS OF ONLY THE CHEAPEST HOTEL. Inspect all results before deciding. Never open View details for any other hotel, even temporarily. After every result has appeared, compare the observed prices. If the cheapest hotel's card is not visible, scroll back to it; click its View details button only when it is visible. Do not narrate. Emit only the desktop tool call. In the native desktop tool, use a negative delta_y to scroll down and a positive delta_y to scroll up.",
+            "role": "system"
+          },
+          {
+            "content": "Find the hotel with the lowest nightly price across all search results. You have not seen all results yet: your first action must scroll down, and you must not click any currently visible hotel. Inspect every option using moderate native wheel increments near -500 so no price row is skipped, then open the cheapest hotel's View details link. Take exactly one desktop action per turn.",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Exact fixture screenshot for frame 0; this is the current frame. Choose one action.",
+                "type": "text"
+              },
+              {
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png",
+                "type": "image_path"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "temperature": 0,
+        "tool_choice": {
+          "function": {
+            "name": "desktop_action"
+          },
+          "type": "function"
+        },
+        "tools": [
+          {
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "maximum": 1000,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "y": {
+                        "maximum": 1000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results.",
+                        "maximum": 1600,
+                        "minimum": -1600,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "maximum": 3000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "maxLength": 500,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "title": "DesktopAction"
+              }
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "label": "oracle_scroll_down",
+          "scored_fields": [
+            "action"
+          ],
+          "tool_action": {
+            "action": "scroll",
+            "delta_y": -500
+          }
+        },
+        {
+          "label": "premature_click",
+          "scored_fields": [
+            "action"
+          ],
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          }
+        }
+      ],
+      "case_metadata": {
+        "coordinate_space": "normalized_0_1000",
+        "distractor_click_normalized": null,
+        "distractor_click_pixel": null,
+        "distractor_target": "premature action type",
+        "fixture_item": "test-0035-large-ui",
+        "oracle_click_normalized": null,
+        "oracle_click_pixel": null,
+        "oracle_target": "test-0035-lumen-harbor-rooms",
+        "scroll_offset": 500,
+        "source_trajectory": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0",
+        "step": 1,
+        "viewport": [
+          1024,
+          720
+        ]
+      },
+      "id": "hotel_test_0035_large_ui_step_1",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 256,
+        "messages": [
+          {
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning.\n\nCRITICAL CHEAPEST-HOTEL CONSTRAINT: VIEW DETAILS OF ONLY THE CHEAPEST HOTEL. Inspect all results before deciding. Never open View details for any other hotel, even temporarily. After every result has appeared, compare the observed prices. If the cheapest hotel's card is not visible, scroll back to it; click its View details button only when it is visible. Do not narrate. Emit only the desktop tool call. In the native desktop tool, use a negative delta_y to scroll down and a positive delta_y to scroll up.",
+            "role": "system"
+          },
+          {
+            "content": "Find the hotel with the lowest nightly price across all search results. You have not seen all results yet: your first action must scroll down, and you must not click any currently visible hotel. Inspect every option using moderate native wheel increments near -500 so no price row is skipped, then open the cheapest hotel's View details link. Take exactly one desktop action per turn.",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Exact fixture screenshot for frame 0; this is the current frame. Choose one action.",
+                "type": "text"
+              },
+              {
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png",
+                "type": "image_path"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>",
+            "role": "assistant"
+          },
+          {
+            "content": "The previous action was applied; the current scroll offset is 500. Continue the same task. Inspect adjacent results with moderate wheel increments near 500 so no price row is skipped. Use negative delta_y while moving down; if the viewport stops changing, reverse with positive delta_y. Once every price is known, open only the cheapest hotel's details.",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Exact fixture screenshot for frame 1; this is the current frame. Choose one action.",
+                "type": "text"
+              },
+              {
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png",
+                "type": "image_path"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "temperature": 0,
+        "tool_choice": {
+          "function": {
+            "name": "desktop_action"
+          },
+          "type": "function"
+        },
+        "tools": [
+          {
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "maximum": 1000,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "y": {
+                        "maximum": 1000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results.",
+                        "maximum": 1600,
+                        "minimum": -1600,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "maximum": 3000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "maxLength": 500,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "title": "DesktopAction"
+              }
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "score_reduction": "mean"
+    },
+    {
+      "candidates": [
+        {
+          "label": "oracle_cheapest_click",
+          "scored_fields": [
+            "x",
+            "y"
+          ],
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 616
+          }
+        },
+        {
+          "label": "visible_noncheapest_click",
+          "scored_fields": [
+            "x",
+            "y"
+          ],
+          "tool_action": {
+            "action": "click",
+            "x": 642,
+            "y": 257
+          }
+        }
+      ],
+      "case_metadata": {
+        "coordinate_space": "normalized_0_1000",
+        "distractor_click_normalized": [
+          642,
+          257
+        ],
+        "distractor_click_pixel": [
+          657,
+          185
+        ],
+        "distractor_target": "test-0035-juniper-signal-inn",
+        "fixture_item": "test-0035-large-ui",
+        "oracle_click_normalized": [
+          642,
+          616
+        ],
+        "oracle_click_pixel": [
+          657,
+          443
+        ],
+        "oracle_target": "test-0035-lumen-harbor-rooms",
+        "scroll_offset": 1000,
+        "source_trajectory": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0",
+        "step": 2,
+        "viewport": [
+          1024,
+          720
+        ]
+      },
+      "id": "hotel_test_0035_large_ui_step_2",
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536,
+      "protocol": "holo_desktop_action_v1",
+      "request": {
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "max_tokens": 256,
+        "messages": [
+          {
+            "content": "You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning.\n\nCRITICAL CHEAPEST-HOTEL CONSTRAINT: VIEW DETAILS OF ONLY THE CHEAPEST HOTEL. Inspect all results before deciding. Never open View details for any other hotel, even temporarily. After every result has appeared, compare the observed prices. If the cheapest hotel's card is not visible, scroll back to it; click its View details button only when it is visible. Do not narrate. Emit only the desktop tool call. In the native desktop tool, use a negative delta_y to scroll down and a positive delta_y to scroll up.",
+            "role": "system"
+          },
+          {
+            "content": "Find the hotel with the lowest nightly price across all search results. You have not seen all results yet: your first action must scroll down, and you must not click any currently visible hotel. Inspect every option using moderate native wheel increments near -500 so no price row is skipped, then open the cheapest hotel's View details link. Take exactly one desktop action per turn.",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Exact fixture screenshot for frame 0; this is the current frame. Choose one action.",
+                "type": "text"
+              },
+              {
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0000-model-input.png",
+                "type": "image_path"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>",
+            "role": "assistant"
+          },
+          {
+            "content": "The previous action was applied; the current scroll offset is 500. Continue the same task. Inspect adjacent results with moderate wheel increments near 500 so no price row is skipped. Use negative delta_y while moving down; if the viewport stops changing, reverse with positive delta_y. Once every price is known, open only the cheapest hotel's details.",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Exact fixture screenshot for frame 1; this is the current frame. Choose one action.",
+                "type": "text"
+              },
+              {
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0001-model-input.png",
+                "type": "image_path"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>",
+            "role": "assistant"
+          },
+          {
+            "content": "The previous action was applied; the current scroll offset is 1000. Every hotel price has appeared and the cheapest hotel's card is visible now. Do not scroll. Immediately click View details for only the cheapest hotel.",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Exact fixture screenshot for frame 2; this is the current frame. Choose one action.",
+                "type": "text"
+              },
+              {
+                "path": "../../data/trajectories/v0/traj-20260921T080837Z-2a0fda4eb0/frames/0002-model-input.png",
+                "type": "image_path"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "Hcompany/Holo-3.1-4B",
+        "temperature": 0,
+        "tool_choice": {
+          "function": {
+            "name": "desktop_action"
+          },
+          "type": "function"
+        },
+        "tools": [
+          {
+            "function": {
+              "name": "desktop_action",
+              "parameters": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "click"
+                      },
+                      "x": {
+                        "maximum": 1000,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "y": {
+                        "maximum": 1000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "x",
+                      "y"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "scroll"
+                      },
+                      "delta_y": {
+                        "description": "Native wheel delta: negative scrolls down toward later results; positive scrolls up toward earlier results.",
+                        "maximum": 1600,
+                        "minimum": -1600,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "delta_y"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "wait"
+                      },
+                      "milliseconds": {
+                        "maximum": 3000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "milliseconds"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "finish"
+                      },
+                      "summary": {
+                        "maxLength": 500,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "summary"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "title": "DesktopAction"
+              }
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "score_reduction": "mean"
+    }
+  ],
+  "comparison_contract": {
+    "delta_sign": "Holo3.1-4B minus Qwen3.5-4B base",
+    "hotel_prompt": "checked-in Holo desktop-action harness prompt and tool schema",
+    "model_loading": "sequential",
+    "processor_and_chat_template": "Holo3.1-4B for both checkpoints",
+    "screen_prompt": "H Company's official hcompany_element_localization_v1 image-first protocol",
+    "temperature": 0,
+    "thinking": false
+  },
+  "models": [
+    {
+      "label": "Qwen3.5-4B base",
+      "path": "../../models/Qwen3.5-4B",
+      "role": "base"
+    },
+    {
+      "label": "Holo3.1-4B",
+      "path": "../../models/Holo-3.1-4B",
+      "role": "tuned"
+    }
+  ],
+  "name": "qwen35_4b_vs_holo31_4b_official_protocol_delta_lens",
+  "processor_path": "../../models/Holo-3.1-4B",
+  "schema_version": 1
+}

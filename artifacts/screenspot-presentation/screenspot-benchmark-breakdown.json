@@ -1,0 +1,623 @@
+{
+  "action_family_order": [
+    "Navigate / reveal",
+    "Select / activate",
+    "Create / insert",
+    "Edit / format",
+    "Remove / close",
+    "File / transfer",
+    "Other"
+  ],
+  "by_action_family": {
+    "Create / insert": {
+      "accuracy": 0.6738197424892703,
+      "correct": 157,
+      "count": 233,
+      "wilson95_lower": 0.6112276736166107,
+      "wilson95_upper": 0.7307732598488548
+    },
+    "Edit / format": {
+      "accuracy": 0.6884615384615385,
+      "correct": 179,
+      "count": 260,
+      "wilson95_lower": 0.6297682241502318,
+      "wilson95_upper": 0.7416669568028893
+    },
+    "File / transfer": {
+      "accuracy": 0.6329113924050633,
+      "correct": 50,
+      "count": 79,
+      "wilson95_lower": 0.5227691853982361,
+      "wilson95_upper": 0.730727074795025
+    },
+    "Navigate / reveal": {
+      "accuracy": 0.5935483870967742,
+      "correct": 184,
+      "count": 310,
+      "wilson95_lower": 0.5380505560160761,
+      "wilson95_upper": 0.6467561301940364
+    },
+    "Other": {
+      "accuracy": 0.6407506702412868,
+      "correct": 239,
+      "count": 373,
+      "wilson95_lower": 0.5908538413275656,
+      "wilson95_upper": 0.6877779215591192
+    },
+    "Remove / close": {
+      "accuracy": 0.7171717171717171,
+      "correct": 71,
+      "count": 99,
+      "wilson95_lower": 0.6216388444158312,
+      "wilson95_upper": 0.7964804675143045
+    },
+    "Select / activate": {
+      "accuracy": 0.7136563876651982,
+      "correct": 162,
+      "count": 227,
+      "wilson95_lower": 0.6516777214623939,
+      "wilson95_upper": 0.7685240936515223
+    }
+  },
+  "by_application": [
+    {
+      "accuracy": 0.3870967741935484,
+      "application": "origin",
+      "correct": 24,
+      "count": 62,
+      "wilson95_lower": 0.27584645167113864,
+      "wilson95_upper": 0.5115215646098165
+    },
+    {
+      "accuracy": 0.4230769230769231,
+      "application": "premiere",
+      "correct": 22,
+      "count": 52,
+      "wilson95_lower": 0.2986805208350091,
+      "wilson95_upper": 0.5580567462609698
+    },
+    {
+      "accuracy": 0.47058823529411764,
+      "application": "autocad",
+      "correct": 16,
+      "count": 34,
+      "wilson95_lower": 0.3145150447508847,
+      "wilson95_upper": 0.6326328701993107
+    },
+    {
+      "accuracy": 0.47368421052631576,
+      "application": "fruitloops",
+      "correct": 27,
+      "count": 57,
+      "wilson95_lower": 0.3498716798112528,
+      "wilson95_upper": 0.6008198378125881
+    },
+    {
+      "accuracy": 0.5111111111111111,
+      "application": "quartus",
+      "correct": 23,
+      "count": 45,
+      "wilson95_lower": 0.3700446464458318,
+      "wilson95_upper": 0.650429762471215
+    },
+    {
+      "accuracy": 0.5142857142857142,
+      "application": "inventor",
+      "correct": 36,
+      "count": 70,
+      "wilson95_lower": 0.39954383919009234,
+      "wilson95_upper": 0.6275412161696143
+    },
+    {
+      "accuracy": 0.5510204081632653,
+      "application": "stata",
+      "correct": 27,
+      "count": 49,
+      "wilson95_lower": 0.413151082194979,
+      "wilson95_upper": 0.6814715893131335
+    },
+    {
+      "accuracy": 0.5686274509803921,
+      "application": "photoshop",
+      "correct": 29,
+      "count": 51,
+      "wilson95_lower": 0.43265302109302245,
+      "wilson95_upper": 0.6949876389209046
+    },
+    {
+      "accuracy": 0.5802469135802469,
+      "application": "windows_common",
+      "correct": 47,
+      "count": 81,
+      "wilson95_lower": 0.471536601425932,
+      "wilson95_upper": 0.6816903725170137
+    },
+    {
+      "accuracy": 0.5909090909090909,
+      "application": "davinci",
+      "correct": 26,
+      "count": 44,
+      "wilson95_lower": 0.444097537410319,
+      "wilson95_upper": 0.7231214437245027
+    },
+    {
+      "accuracy": 0.6,
+      "application": "vscode",
+      "correct": 33,
+      "count": 55,
+      "wilson95_lower": 0.46812799210121386,
+      "wilson95_upper": 0.7188150276753689
+    },
+    {
+      "accuracy": 0.6129032258064516,
+      "application": "illustrator",
+      "correct": 19,
+      "count": 31,
+      "wilson95_lower": 0.4382410861966073,
+      "wilson95_upper": 0.7626689857961975
+    },
+    {
+      "accuracy": 0.6375,
+      "application": "android_studio",
+      "correct": 51,
+      "count": 80,
+      "wilson95_lower": 0.5281079450222215,
+      "wilson95_upper": 0.7342920693555084
+    },
+    {
+      "accuracy": 0.6493506493506493,
+      "application": "solidworks",
+      "correct": 50,
+      "count": 77,
+      "wilson95_lower": 0.5379942353978194,
+      "wilson95_upper": 0.7465132479593756
+    },
+    {
+      "accuracy": 0.66,
+      "application": "linux_common",
+      "correct": 33,
+      "count": 50,
+      "wilson95_lower": 0.521538260502326,
+      "wilson95_upper": 0.7756305077749992
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "application": "pycharm",
+      "correct": 52,
+      "count": 78,
+      "wilson95_lower": 0.556414097126188,
+      "wilson95_upper": 0.761273299636414
+    },
+    {
+      "accuracy": 0.6875,
+      "application": "vivado",
+      "correct": 55,
+      "count": 80,
+      "wilson95_lower": 0.5793222425531256,
+      "wilson95_upper": 0.7784959588710517
+    },
+    {
+      "accuracy": 0.704225352112676,
+      "application": "blender",
+      "correct": 50,
+      "count": 71,
+      "wilson95_lower": 0.5898146180172532,
+      "wilson95_upper": 0.7976711479868337
+    },
+    {
+      "accuracy": 0.7384615384615385,
+      "application": "macos_common",
+      "correct": 48,
+      "count": 65,
+      "wilson95_lower": 0.6204919730397745,
+      "wilson95_upper": 0.8298180658677862
+    },
+    {
+      "accuracy": 0.7419354838709677,
+      "application": "matlab",
+      "correct": 69,
+      "count": 93,
+      "wilson95_lower": 0.6446622365756588,
+      "wilson95_upper": 0.8200147782896307
+    },
+    {
+      "accuracy": 0.765625,
+      "application": "excel",
+      "correct": 49,
+      "count": 64,
+      "wilson95_lower": 0.6486674241743136,
+      "wilson95_upper": 0.8525010440607586
+    },
+    {
+      "accuracy": 0.7714285714285715,
+      "application": "unreal_engine",
+      "correct": 27,
+      "count": 35,
+      "wilson95_lower": 0.6098268310800976,
+      "wilson95_upper": 0.879341201658083
+    },
+    {
+      "accuracy": 0.8536585365853658,
+      "application": "vmware",
+      "correct": 35,
+      "count": 41,
+      "wilson95_lower": 0.7155654195751904,
+      "wilson95_upper": 0.9311575185870407
+    },
+    {
+      "accuracy": 0.8658536585365854,
+      "application": "powerpoint",
+      "correct": 71,
+      "count": 82,
+      "wilson95_lower": 0.7755498725711748,
+      "wilson95_upper": 0.9234130857043615
+    },
+    {
+      "accuracy": 0.9047619047619048,
+      "application": "word",
+      "correct": 76,
+      "count": 84,
+      "wilson95_lower": 0.8231736440500729,
+      "wilson95_upper": 0.9509482900904406
+    },
+    {
+      "accuracy": 0.94,
+      "application": "eviews",
+      "correct": 47,
+      "count": 50,
+      "wilson95_lower": 0.8378290831116182,
+      "wilson95_upper": 0.979385029651026
+    }
+  ],
+  "by_platform_ui": [
+    {
+      "accuracy": 0.631578947368421,
+      "correct": 12,
+      "count": 19,
+      "platform": "linux",
+      "ui_type": "icon",
+      "wilson95_lower": 0.41039533164803066,
+      "wilson95_upper": 0.8085048725486492
+    },
+    {
+      "accuracy": 0.6774193548387096,
+      "correct": 21,
+      "count": 31,
+      "platform": "linux",
+      "ui_type": "text",
+      "wilson95_lower": 0.5014100930808565,
+      "wilson95_upper": 0.8143057343364082
+    },
+    {
+      "accuracy": 0.5048543689320388,
+      "correct": 104,
+      "count": 206,
+      "platform": "macos",
+      "ui_type": "icon",
+      "wilson95_lower": 0.4371179088724194,
+      "wilson95_upper": 0.5724130961598558
+    },
+    {
+      "accuracy": 0.8417085427135679,
+      "correct": 335,
+      "count": 398,
+      "platform": "macos",
+      "ui_type": "text",
+      "wilson95_lower": 0.8026040800626644,
+      "wilson95_upper": 0.8742797855251552
+    },
+    {
+      "accuracy": 0.39577836411609496,
+      "correct": 150,
+      "count": 379,
+      "platform": "windows",
+      "ui_type": "icon",
+      "wilson95_lower": 0.34782800845022954,
+      "wilson95_upper": 0.44582025461053765
+    },
+    {
+      "accuracy": 0.7664233576642335,
+      "correct": 420,
+      "count": 548,
+      "platform": "windows",
+      "ui_type": "text",
+      "wilson95_lower": 0.7292188135253866,
+      "wilson95_upper": 0.7999186685043523
+    }
+  ],
+  "by_ui_type": {
+    "icon": {
+      "accuracy": 0.44039735099337746,
+      "correct": 266,
+      "count": 604,
+      "wilson95_lower": 0.4013069548660729,
+      "wilson95_upper": 0.4802411051499533
+    },
+    "text": {
+      "accuracy": 0.7942681678607983,
+      "correct": 776,
+      "count": 977,
+      "wilson95_lower": 0.7677916150302131,
+      "wilson95_upper": 0.8184397221844129
+    }
+  },
+  "format_valid": {
+    "accuracy": 1.0,
+    "correct": 1581,
+    "count": 1581,
+    "wilson95_lower": 0.9975761242240895,
+    "wilson95_upper": 1.0
+  },
+  "overall": {
+    "accuracy": 0.6590765338393422,
+    "correct": 1042,
+    "count": 1581,
+    "wilson95_lower": 0.635350416358711,
+    "wilson95_upper": 0.6820314878061954
+  },
+  "reported_reference_accuracy": 0.665,
+  "reported_reference_note": "Reference value supplied by the project owner from H Company's Holo3.1-4B benchmark report.",
+  "schema_version": 1,
+  "source": {
+    "image_max_pixels": 16777216,
+    "inference_protocol": "hcompany_element_localization_v1",
+    "model_id": "Hcompany/Holo-3.1-4B",
+    "model_revision": "624347ebe6ab4df6f9701bcfc3c1bdfcfbc20b56",
+    "path": "data/remote-results/run/screenspot-full-official/summary.json",
+    "runtime_seconds": 5599.6042194366455,
+    "sha256": "722f2b88927480b6f05f1f18ad2a6980f1dd3f24869f082cab1d460c33a7a5f6"
+  },
+  "taxonomy": {
+    "caveat": "Action families are a deterministic diagnostic taxonomy, not an official ScreenSpot-Pro label.",
+    "families": {
+      "Create / insert": [
+        "add",
+        "attach",
+        "build",
+        "create",
+        "draw",
+        "duplicate",
+        "enter",
+        "generate",
+        "input",
+        "insert",
+        "make",
+        "new",
+        "plot",
+        "type"
+      ],
+      "Edit / format": [
+        "adjust",
+        "align",
+        "arrange",
+        "blur",
+        "change",
+        "color",
+        "convert",
+        "crop",
+        "decrease",
+        "edit",
+        "fill",
+        "filter",
+        "flip",
+        "increase",
+        "modify",
+        "move",
+        "rename",
+        "resize",
+        "rotate",
+        "set",
+        "stretch",
+        "update",
+        "zoom"
+      ],
+      "File / transfer": [
+        "copy",
+        "cut",
+        "download",
+        "export",
+        "import",
+        "install",
+        "paste",
+        "print",
+        "save",
+        "send",
+        "share",
+        "upload"
+      ],
+      "Navigate / reveal": [
+        "access",
+        "back",
+        "collapse",
+        "display",
+        "expand",
+        "find",
+        "forward",
+        "go",
+        "hide",
+        "launch",
+        "maximize",
+        "minimize",
+        "navigate",
+        "open",
+        "preview",
+        "refresh",
+        "return",
+        "search",
+        "show",
+        "switch",
+        "view"
+      ],
+      "Remove / close": [
+        "cancel",
+        "clear",
+        "close",
+        "delete",
+        "disable",
+        "dismiss",
+        "erase",
+        "exit",
+        "remove",
+        "stop",
+        "unpin"
+      ],
+      "Select / activate": [
+        "activate",
+        "apply",
+        "check",
+        "choose",
+        "click",
+        "confirm",
+        "enable",
+        "focus",
+        "hover",
+        "mark",
+        "pick",
+        "press",
+        "select",
+        "tap",
+        "turn",
+        "use"
+      ]
+    },
+    "method": "Tokenize the English instruction, scan left to right, and assign the first verb found in the fixed keyword dictionary. Unmatched instructions enter Other.",
+    "official": false
+  },
+  "ui_action_matrix": [
+    {
+      "accuracy": 0.40268456375838924,
+      "action_family": "Navigate / reveal",
+      "correct": 60,
+      "count": 149,
+      "ui_type": "icon",
+      "wilson95_lower": 0.3273399386284105,
+      "wilson95_upper": 0.48292096686306785
+    },
+    {
+      "accuracy": 0.5263157894736842,
+      "action_family": "Select / activate",
+      "correct": 40,
+      "count": 76,
+      "ui_type": "icon",
+      "wilson95_lower": 0.41552028690262677,
+      "wilson95_upper": 0.6345789980939448
+    },
+    {
+      "accuracy": 0.43209876543209874,
+      "action_family": "Create / insert",
+      "correct": 35,
+      "count": 81,
+      "ui_type": "icon",
+      "wilson95_lower": 0.3297207714134108,
+      "wilson95_upper": 0.5406256352502503
+    },
+    {
+      "accuracy": 0.45,
+      "action_family": "Edit / format",
+      "correct": 36,
+      "count": 80,
+      "ui_type": "icon",
+      "wilson95_lower": 0.34577689184711224,
+      "wilson95_upper": 0.5588049211064404
+    },
+    {
+      "accuracy": 0.5961538461538461,
+      "action_family": "Remove / close",
+      "correct": 31,
+      "count": 52,
+      "ui_type": "icon",
+      "wilson95_lower": 0.4606757548486152,
+      "wilson95_upper": 0.7184026612814113
+    },
+    {
+      "accuracy": 0.3611111111111111,
+      "action_family": "File / transfer",
+      "correct": 13,
+      "count": 36,
+      "ui_type": "icon",
+      "wilson95_lower": 0.22475592946515371,
+      "wilson95_upper": 0.5242492451444196
+    },
+    {
+      "accuracy": 0.3923076923076923,
+      "action_family": "Other",
+      "correct": 51,
+      "count": 130,
+      "ui_type": "icon",
+      "wilson95_lower": 0.31262137424507824,
+      "wilson95_upper": 0.47817588508910697
+    },
+    {
+      "accuracy": 0.7701863354037267,
+      "action_family": "Navigate / reveal",
+      "correct": 124,
+      "count": 161,
+      "ui_type": "text",
+      "wilson95_lower": 0.6993575249296388,
+      "wilson95_upper": 0.8284223225821091
+    },
+    {
+      "accuracy": 0.8079470198675497,
+      "action_family": "Select / activate",
+      "correct": 122,
+      "count": 151,
+      "ui_type": "text",
+      "wilson95_lower": 0.7377936254451245,
+      "wilson95_upper": 0.8628207107172188
+    },
+    {
+      "accuracy": 0.8026315789473685,
+      "action_family": "Create / insert",
+      "correct": 122,
+      "count": 152,
+      "ui_type": "text",
+      "wilson95_lower": 0.7322390867806693,
+      "wilson95_upper": 0.8581044629794242
+    },
+    {
+      "accuracy": 0.7944444444444444,
+      "action_family": "Edit / format",
+      "correct": 143,
+      "count": 180,
+      "ui_type": "text",
+      "wilson95_lower": 0.729553985058642,
+      "wilson95_upper": 0.847029777276408
+    },
+    {
+      "accuracy": 0.851063829787234,
+      "action_family": "Remove / close",
+      "correct": 40,
+      "count": 47,
+      "ui_type": "text",
+      "wilson95_lower": 0.7231437757640644,
+      "wilson95_upper": 0.9259328000356828
+    },
+    {
+      "accuracy": 0.8604651162790697,
+      "action_family": "File / transfer",
+      "correct": 37,
+      "count": 43,
+      "ui_type": "text",
+      "wilson95_lower": 0.7273641203261714,
+      "wilson95_upper": 0.9344427657203511
+    },
+    {
+      "accuracy": 0.7736625514403292,
+      "action_family": "Other",
+      "correct": 188,
+      "count": 243,
+      "ui_type": "text",
+      "wilson95_lower": 0.7170275448424435,
+      "wilson95_upper": 0.8217798363625564
+    }
+  ],
+  "weakest_labeled_cell_minimum_n_25": {
+    "accuracy": 0.3611111111111111,
+    "action_family": "File / transfer",
+    "correct": 13,
+    "count": 36,
+    "ui_type": "icon",
+    "wilson95_lower": 0.22475592946515371,
+    "wilson95_upper": 0.5242492451444196
+  }
+}

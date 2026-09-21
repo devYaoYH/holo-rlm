@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "selection_note": "One completed ScreenSpot-Pro item per labeled UI-by-action cell, manually selected for clear category membership. UI type is the official benchmark target-element annotation; action family is our instruction-verb taxonomy. Examples illustrate the diagnostic taxonomy rather than outcome frequency.",
+  "source": "data/remote-results/run/screenspot-full-official/summary.json",
+  "examples": [
+    {
+      "ui_type": "icon",
+      "action_family": "Navigate / reveal",
+      "sample_id": "vscode_macos_0",
+      "application": "VS Code",
+      "instruction": "Refresh the file explorer."
+    },
+    {
+      "ui_type": "icon",
+      "action_family": "Select / activate",
+      "sample_id": "illustrator_windows_12",
+      "application": "Illustrator",
+      "instruction": "Select the eraser tool"
+    },
+    {
+      "ui_type": "icon",
+      "action_family": "Create / insert",
+      "sample_id": "android_studio_macos_70",
+      "application": "Android Studio",
+      "instruction": "add new service in android studio using the icon"
+    },
+    {
+      "ui_type": "icon",
+      "action_family": "Edit / format",
+      "sample_id": "powerpoint_windows_45",
+      "application": "PowerPoint",
+      "instruction": "Change the font color to red"
+    },
+    {
+      "ui_type": "icon",
+      "action_family": "Remove / close",
+      "sample_id": "fruitloops_windows_15",
+      "application": "FL Studio",
+      "instruction": "Close the piano window"
+    },
+    {
+      "ui_type": "icon",
+      "action_family": "File / transfer",
+      "sample_id": "matlab_macos_29",
+      "application": "MATLAB",
+      "instruction": "Save a file"
+    },
+    {
+      "ui_type": "text",
+      "action_family": "Navigate / reveal",
+      "sample_id": "powerpoint_windows_60",
+      "application": "PowerPoint",
+      "instruction": "Display the selection pane"
+    },
+    {
+      "ui_type": "text",
+      "action_family": "Select / activate",
+      "sample_id": "origin_windows_52",
+      "application": "Origin",
+      "instruction": "Select Sheet1 in Book2"
+    },
+    {
+      "ui_type": "text",
+      "action_family": "Create / insert",
+      "sample_id": "origin_windows_15",
+      "application": "Origin",
+      "instruction": "Create a new worksheet"
+    },
+    {
+      "ui_type": "text",
+      "action_family": "Edit / format",
+      "sample_id": "blender_windows_34",
+      "application": "Blender",
+      "instruction": "Change the ending frame."
+    },
+    {
+      "ui_type": "text",
+      "action_family": "Remove / close",
+      "sample_id": "solidworks_windows_0",
+      "application": "SolidWorks",
+      "instruction": "Delete"
+    },
+    {
+      "ui_type": "text",
+      "action_family": "File / transfer",
+      "sample_id": "inventor_windows_61",
+      "application": "Inventor",
+      "instruction": "Export the object"
+    }
+  ]
+}

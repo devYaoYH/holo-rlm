@@ -8,7 +8,13 @@ import os
 import sys
 from pathlib import Path
 
-from apps.booking_fixture.generator import SUPPORTED_SPLITS, load_manifest, manifest_item, write_manifest
+from apps.booking_fixture.generator import (
+    SUPPORTED_SPLITS,
+    large_ui_diagnostic,
+    load_manifest,
+    manifest_item,
+    write_manifest,
+)
 from attribution import (
     AttributionError,
     build_prompt_contrast,
@@ -50,6 +56,11 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--task", choices=("target-after-scroll", "cheapest"), default="target-after-scroll")
     run.add_argument("--eval-item", help="item_id from a frozen synthetic evaluation manifest")
     run.add_argument("--eval-manifest", type=Path, default=DEFAULT_EVAL_MANIFEST)
+    run.add_argument(
+        "--large-ui-diagnostic",
+        action="store_true",
+        help="enlarge fixture typography for a non-frozen diagnostic replay of --eval-item",
+    )
     run.add_argument(
         "--stop-on-click",
         action="store_true",
@@ -185,7 +196,11 @@ def main(argv: list[str] | None = None) -> None:
         task = args.task
         if args.eval_item:
             scenario_config = manifest_item(load_manifest(args.eval_manifest), args.eval_item)
+            if args.large_ui_diagnostic:
+                scenario_config = large_ui_diagnostic(scenario_config)
             task = "cheapest"
+        elif args.large_ui_diagnostic:
+            raise SystemExit("--large-ui-diagnostic requires --eval-item")
         backend = ScriptedBackend() if args.backend == "scripted" else OpenAIBackend(
             base_url,
             model_id,

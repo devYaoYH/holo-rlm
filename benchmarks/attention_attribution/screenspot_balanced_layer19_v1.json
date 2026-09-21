@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "name": "screenspot-balanced-layer19-v1",
+  "description": "Frozen four-item pilot for aggregating same-image prompt-differential attention target lift. The cohort is balanced by official ScreenSpot-Pro benchmark outcome and matched by application, platform, and UI type.",
+  "benchmark_protocol": "hcompany_element_localization_v1",
+  "model": {
+    "id": "Hcompany/Holo-3.1-4B",
+    "revision": "624347ebe6ab4df6f9701bcfc3c1bdfcfbc20b56"
+  },
+  "capture": {
+    "repository_commit": "14ec1719b7958b044522886df1fdd8de363c055b",
+    "trace_profile": "attribution",
+    "trace_generation_steps": 16,
+    "max_pixels": 2097152,
+    "attention_backend": "eager",
+    "dtype": "bfloat16",
+    "controls_per_item": 4
+  },
+  "balance": {
+    "total_items": 4,
+    "benchmark_successes": 2,
+    "benchmark_failures": 2,
+    "pairs": [
+      {
+        "application": "powerpoint",
+        "platform": "windows",
+        "ui_type": "text",
+        "success": "powerpoint_windows_63",
+        "failure": "powerpoint_windows_54"
+      },
+      {
+        "application": "windows_common",
+        "platform": "windows",
+        "ui_type": "icon",
+        "success": "windows_common_windows_18",
+        "failure": "windows_common_windows_53"
+      }
+    ]
+  },
+  "items": [
+    {
+      "sample_id": "powerpoint_windows_63",
+      "label": "PowerPoint text success",
+      "benchmark_correct": true,
+      "target_instruction": "Fill color",
+      "controls": [
+        "Cut the selected object",
+        "Copy the selected object",
+        "Send the selected object backward",
+        "Add a new comment"
+      ]
+    },
+    {
+      "sample_id": "powerpoint_windows_54",
+      "label": "PowerPoint text failure",
+      "benchmark_correct": false,
+      "target_instruction": "Choose the language for proofing tools",
+      "controls": [
+        "Check accessibility",
+        "Translate the selected text",
+        "Add a new comment",
+        "Show comments"
+      ]
+    },
+    {
+      "sample_id": "windows_common_windows_18",
+      "label": "Windows icon success",
+      "benchmark_correct": true,
+      "target_instruction": "unpin the first mail entry",
+      "controls": [
+        "Click the Google search box",
+        "Open the Recycle Bin",
+        "Open the annotations folder in File Explorer",
+        "Close the Outlook window"
+      ]
+    },
+    {
+      "sample_id": "windows_common_windows_53",
+      "label": "Windows icon failure",
+      "benchmark_correct": false,
+      "target_instruction": "close the new tab in edge",
+      "controls": [
+        "Open the books folder",
+        "Open the annotations folder",
+        "Click the Microsoft Edge help search box",
+        "Minimize the Microsoft Edge window"
+      ]
+    }
+  ]
+}

@@ -383,8 +383,11 @@ class InstrumentedHolo:
         metadata_path = self.settings.model_path / ".cache" / "huggingface" / "download" / "config.json.metadata"
         if metadata_path.is_file():
             lines = metadata_path.read_text().splitlines()
-            if len(lines) >= 2 and re.fullmatch(r"[0-9a-f]{40}", lines[1]):
-                return lines[1]
+            # Local-folder metadata stores commit hash, ETag, then timestamp.
+            # The ETag can also look like a 40-character Git hash, so reading
+            # line two mislabels a blob identifier as the checkpoint revision.
+            if lines and re.fullmatch(r"[0-9a-f]{40}", lines[0]):
+                return lines[0]
         return None
 
     def processor_metadata(self) -> dict[str, Any]:

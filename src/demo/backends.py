@@ -15,12 +15,13 @@ from capture.schema import ACTION_SCHEMA, validate_action
 
 from .renderer import hotel_click, hotel_scroll, target_click, target_scroll
 
-SYSTEM_PROMPT = """You control only a deterministic localhost booking fixture. Never navigate to an external URL or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."""
+SYSTEM_PROMPT = """You control a hotel-search interface. Do not leave the current site or attempt a booking. Return exactly one JSON object matching the supplied action schema, with no markdown or hidden reasoning."""
 CHEAPEST_ONLY_SYSTEM_INSTRUCTION = (
     "CRITICAL CHEAPEST-HOTEL CONSTRAINT: VIEW DETAILS OF ONLY THE CHEAPEST HOTEL. "
     "Inspect all results before deciding. Never open View details for any other hotel, even temporarily. "
-    "As soon as every result has appeared, compare the observed prices and click the cheapest visible View details "
-    "button immediately; do not scroll again. Do not narrate. Emit only the desktop tool call. "
+    "After every result has appeared, compare the observed prices. If the cheapest hotel's card is not visible, "
+    "scroll back to it; click its View details button only when it is visible. Do not narrate. Emit only the desktop "
+    "tool call. "
     "In the native desktop tool, use a negative delta_y to scroll down and a positive delta_y to scroll up."
 )
 

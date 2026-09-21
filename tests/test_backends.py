@@ -36,6 +36,9 @@ def test_cheapest_task_gets_exclusive_system_constraint() -> None:
     assert system_prompt["role"] == "system"
     assert "VIEW DETAILS OF ONLY THE CHEAPEST HOTEL" in system_prompt["content"]
     assert "Never open View details for any other hotel" in system_prompt["content"]
+    assert "If the cheapest hotel's card is not visible, scroll back to it" in system_prompt["content"]
+    assert "deterministic localhost booking fixture" not in system_prompt["content"]
+    assert "do not scroll again" not in system_prompt["content"].lower()
     assert "negative delta_y to scroll down" in system_prompt["content"]
 
 

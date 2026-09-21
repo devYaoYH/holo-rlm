@@ -79,12 +79,43 @@ The output directory contains `base.json`, `tuned.json`, `delta-lens.json`, and 
 The verified RTX 5090 run is stored at `data/remote-results/delta-lens-qwen35-vs-holo31-20260921-dcd8c5e5/`. Its archive SHA-256 is `d5e0c1d1c48725b200a7776a7b2fb4b16f5894fb19ce1c1fb633171252dc8745`.
 
 - Official Qwen snapshot: `Qwen/Qwen3.5-4B` at Hugging Face revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`.
-- Holo checkpoint: `Hcompany/Holo-3.1-4B`, model revision `624347ebe6ab4df6f9701bcfc3c1bdfcfbc20b56`.
+- Holo checkpoint: `Hcompany/Holo-3.1-4B`, local-folder commit revision `8c88265a5a159bfd1492db9243733dd2e6e04a6e`.
 - Runtime: CUDA 13.0, BF16, non-eager attention, Transformers 5.17.0, and the shared Holo processor at the native 16,777,216-pixel ceiling.
 - ScreenSpot: all five final oracle-minus-distractor margins shift toward the oracle, with a mean Holo-minus-base change of `+1.14` nats per scored token and a `+0.31` to `+2.42` range. Three probes cross from a negative base margin to a positive Holo margin.
 - Hotel trajectory: final margin changes are `−1.13`, `+6.37`, and `+0.37` nats per scored token for the first scroll, second scroll, and final click decisions.
 
 These are eight diagnostic probes, not a population estimate. Four ScreenSpot distractors are exploratory prior Holo clicks. The layerwise projection also uses each checkpoint's own final RMSNorm and unembedding, so a follow-up should separate residual-stream changes from readout-weight changes.
+
+## Paired teacher-forced attention delta
+
+`instrumented_holo.attention_delta` compares attention on the same oracle action tokens without materializing a full sequence-by-sequence eager-attention tensor. The model forward keeps its memory-efficient attention implementation. Inputs to the eight full-attention layers are copied to CPU, then only the query rows that predict the declared oracle fields are reconstructed from each layer's Q/K projections. This makes the native image ceiling practical on an 18 GB Apple-silicon machine.
+
+Run the matched ScreenSpot case and final three-frame hotel decision sequentially:
+
+```bash
+cd instrumented_server
+HOLO_DEVICE=mps HOLO_DTYPE=auto HOLO_EAGER_ATTENTION=0 \
+./.venv/bin/python -m instrumented_holo.attention_delta \
+  ../benchmarks/delta_lens/qwen35_4b_vs_holo31_4b.json \
+  --output ../data/local-results/attention-delta-ppt59-native-v2 \
+  --base-model ../models/Qwen3.5-4B \
+  --case-id powerpoint_windows_59
+
+HOLO_DEVICE=mps HOLO_DTYPE=auto HOLO_EAGER_ATTENTION=0 \
+./.venv/bin/python -m instrumented_holo.attention_delta \
+  ../benchmarks/delta_lens/qwen35_4b_vs_holo31_4b.json \
+  --output ../data/local-results/attention-delta-hotel-step2-native-v1 \
+  --base-model ../models/Qwen3.5-4B \
+  --case-id hotel_test_0035_large_ui_step_2
+```
+
+The runner checkpoints each completed model/case to a partial JSON and resumes completed model outputs. Both checkpoints use the Holo processor and must produce identical input-token hashes, visual grids, scored offsets, and oracle token IDs.
+
+For `powerpoint_windows_59`, direct attention averaged over six scored coordinate-token rows, 16 heads, and eight full-attention layers increases target mass from `15.84%` to `17.16%`; target lift rises from `22.81x` to `24.71x`, and the peak moves inside the annotated template. Value-norm weighting is directionally different: target mass falls from `13.33%` to `12.58%` and target lift falls by `1.07x`. The correct conclusion is that fine-tuning redistributes routing, not that every saliency estimator becomes more target-concentrated.
+
+At the final hotel step, value-norm image attention shifts from `36.8 / 15.0 / 48.2%` across earliest, middle, and current frames under Qwen to `20.2 / 23.0 / 56.8%` under Holo. The ScreenSpot source retains `99.6%` of its native area at a `56x90` merged-token grid; every hotel frame retains `97.8%` at `22x32`. The audit keeps the `0-1000` coordinate contract intact.
+
+Hugging Face local-folder metadata stores the commit hash on line one and the file ETag on line two. Older runs in this repository reported the line-two config ETag as `model_revision`; the loader now records the actual commit hash.
 
 ## Input audit
 

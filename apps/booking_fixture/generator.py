@@ -7,10 +7,12 @@ import json
 import random
 import re
 from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
 GENERATOR_VERSION = "booking-synth-v2"
+LARGE_UI_DIAGNOSTIC_VERSION = "booking-synth-v2-large-ui-diagnostic"
 MANIFEST_SCHEMA_VERSION = 1
 SUPPORTED_SPLITS = ("train", "dev", "test")
 
@@ -240,6 +242,34 @@ def generate_config(item_index: int, split: str = "test") -> dict[str, Any]:
         "initial_scroll_delta": min(500, max_scroll),
         "hotels": hotels,
     }
+
+
+def large_ui_diagnostic(config: dict[str, Any]) -> dict[str, Any]:
+    """Return a non-frozen diagnostic variant with readable text at the vision-token budget.
+
+    The source geometry and price placement remain unchanged. Only typography grows,
+    so a shifted-layout frozen item can be compared without pretending the result is
+    part of the immutable v2 benchmark.
+    """
+
+    result = deepcopy(config)
+    result["fixture_version"] = LARGE_UI_DIAGNOSTIC_VERSION
+    result["generator_version"] = LARGE_UI_DIAGNOSTIC_VERSION
+    result["dataset_split"] = f"{config.get('dataset_split', 'unknown')}-diagnostic"
+    result["item_id"] = f"{config.get('item_id', 'scenario')}-large-ui"
+    result["layout"].update(
+        {
+            "font_size": 15,
+            "bold_font_size": 16,
+            "price_font_size": 19,
+            "button_font_size": 16,
+            "price_y_offset": min(
+                result["layout"]["price_y_offset"],
+                result["layout"]["button_y_offset"] - 28,
+            ),
+        }
+    )
+    return result
 
 
 def canonical_config(config: dict[str, Any]) -> bytes:

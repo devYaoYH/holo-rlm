@@ -68,6 +68,24 @@ uv run holo-capture benchmark \
 
 The same manifest should be used for local and future hosted baselines. Activation tracing is not part of the dataset definition and can be enabled only for the local diagnostic subset.
 
+## Vision-resolution diagnostic
+
+`--large-ui-diagnostic` creates an explicitly non-frozen copy of one manifest item with larger typography, price text, and buttons. It preserves the item's viewport, hotel ordering, prices, price-column coordinate, and other layout geometry. This isolates UI scale more cleanly than uniformly resizing a screenshot, which would shrink the controls along with the frame. The variant has a distinct fixture version and `-large-ui` item suffix so it cannot be mistaken for a frozen v2 score.
+
+For example, `test-0035` places the price column at about 58% of viewport width, substantially left of the legacy hotel trace, and places the cheapest result near the bottom:
+
+```bash
+uv run holo-capture run \
+  --backend local \
+  --eval-item test-0035 \
+  --eval-manifest benchmarks/frozen_eval_v2.json \
+  --large-ui-diagnostic \
+  --stop-on-click \
+  --trace-generation-steps 64
+```
+
+Report this as a resolution/position diagnostic, not as a new test-set result. A clean experiment should cross UI scale with multiple vision-token budgets while holding the task item fixed, then repeat across shifted price columns and cheapest-row strata.
+
 ## Remaining domain gap
 
 This generator measures controlled visual comparison, memory across scrolling, and coordinate grounding. It does not reproduce the full distribution of real booking sites. New generator versions can add typography, locale-specific number formatting, discounts, taxes, crossed-out prices, horizontal layouts, and responsive components, but they must use a new version and a separately frozen test manifest rather than mutating v2.

@@ -1,0 +1,174 @@
+{
+  "by_ui_type": {
+    "icon": {
+      "accuracy": 0.44039735099337746,
+      "count": 604,
+      "median_bbox_area_fraction": 0.00013671875,
+      "median_bbox_area_px": 624.0,
+      "median_bbox_height_fraction": 0.015277777777777777,
+      "median_bbox_height_px": 24.0,
+      "median_bbox_width_fraction": 0.00859375,
+      "median_bbox_width_px": 26.0
+    },
+    "text": {
+      "accuracy": 0.7942681678607983,
+      "count": 977,
+      "median_bbox_area_fraction": 0.000652199074074074,
+      "median_bbox_area_px": 3186.0,
+      "median_bbox_height_fraction": 0.01597222222222222,
+      "median_bbox_height_px": 25.0,
+      "median_bbox_width_fraction": 0.03359375,
+      "median_bbox_width_px": 111.0
+    }
+  },
+  "definition": "UI type is the official target-element label. Target size is the annotated bounding-box area divided by screenshot area.",
+  "median_area_ratio_text_over_icon": 4.77037037037037,
+  "raw_accuracy_gap_text_minus_icon": 0.3538708168674209,
+  "schema_version": 1,
+  "size_standardization": {
+    "accuracy": {
+      "icon": 0.5763076255611292,
+      "text": 0.750010233030523
+    },
+    "caveat": "This adjusts only for annotated target area. Application, platform, action family, visual density, aspect ratio, and annotation noise remain possible confounds.",
+    "gap_text_minus_icon": 0.1737026074693938,
+    "method": "Direct standardization over 10 pooled target-area rank bins",
+    "strata": [
+      {
+        "area_rank_bin": 1,
+        "icon": {
+          "accuracy": 0.3533834586466165,
+          "count": 133
+        },
+        "pooled_count": 159,
+        "pooled_weight": 0.10056925996204934,
+        "text": {
+          "accuracy": 0.6153846153846154,
+          "count": 26
+        }
+      },
+      {
+        "area_rank_bin": 2,
+        "icon": {
+          "accuracy": 0.4462809917355372,
+          "count": 121
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.6486486486486487,
+          "count": 37
+        }
+      },
+      {
+        "area_rank_bin": 3,
+        "icon": {
+          "accuracy": 0.38636363636363635,
+          "count": 132
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.6153846153846154,
+          "count": 26
+        }
+      },
+      {
+        "area_rank_bin": 4,
+        "icon": {
+          "accuracy": 0.44680851063829785,
+          "count": 94
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.75,
+          "count": 64
+        }
+      },
+      {
+        "area_rank_bin": 5,
+        "icon": {
+          "accuracy": 0.5522388059701493,
+          "count": 67
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.7582417582417582,
+          "count": 91
+        }
+      },
+      {
+        "area_rank_bin": 6,
+        "icon": {
+          "accuracy": 0.5,
+          "count": 20
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.8260869565217391,
+          "count": 138
+        }
+      },
+      {
+        "area_rank_bin": 7,
+        "icon": {
+          "accuracy": 0.5294117647058824,
+          "count": 17
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.8085106382978723,
+          "count": 141
+        }
+      },
+      {
+        "area_rank_bin": 8,
+        "icon": {
+          "accuracy": 0.75,
+          "count": 8
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.82,
+          "count": 150
+        }
+      },
+      {
+        "area_rank_bin": 9,
+        "icon": {
+          "accuracy": 1.0,
+          "count": 2
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.8141025641025641,
+          "count": 156
+        }
+      },
+      {
+        "area_rank_bin": 10,
+        "icon": {
+          "accuracy": 0.8,
+          "count": 10
+        },
+        "pooled_count": 158,
+        "pooled_weight": 0.09993674889310562,
+        "text": {
+          "accuracy": 0.8445945945945946,
+          "count": 148
+        }
+      }
+    ]
+  },
+  "source": {
+    "annotations": "https://huggingface.co/datasets/likaixin/ScreenSpot-Pro/tree/210e78d3844251110bff86c95835ebd37a6930fa/annotations",
+    "joined_count": 1581,
+    "summary": "data/remote-results/run/screenspot-full-official/summary.json"
+  }
+}
