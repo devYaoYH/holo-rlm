@@ -100,6 +100,7 @@ def build_multiframe_prompt_request(
         "capture_kv": False,
         "capture_value_norms": True,
         "capture_rollout": True,
+        "capture_logprobs": True,
         "max_generation_steps": trace_generation_steps,
     }
     return request

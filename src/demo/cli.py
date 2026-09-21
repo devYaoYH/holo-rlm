@@ -21,12 +21,15 @@ from attribution import (
 from attribution.contrast import parameter_steps
 from capture.validator import ValidationError, validate_bundle
 
+from .attribution_batch import run_attribution_batch
 from .backends import OpenAIBackend, ScriptedBackend
 from .fixture import FixtureClient, running_fixture
 from .holo_cli import import_runtime_bundle, run_holo
 from .preflight import run_preflight, smoke_backend
+from .result_bundle import package_results
 from .runner import capture_run
-from .screenspot import load_screenspot_sample, run_screenspot_case
+from .screenspot import TRACE_PROFILES, load_screenspot_sample, run_screenspot_case
+from .screenspot_benchmark import run_screenspot_benchmark
 from .trajectory_contrast import run_multiframe_prompt_case
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -90,13 +93,46 @@ def parser() -> argparse.ArgumentParser:
         action="store_true",
         help="for a trajectory bundle, build a multi-frame action viewer and every linked trace viewer",
     )
+    attribution_batch = sub.add_parser("attribution-batch")
+    attribution_batch.add_argument("manifest", type=Path)
+    attribution_batch.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
+    attribution_batch.add_argument(
+        "--output", type=Path, default=PROJECT_ROOT / "data" / "attributions" / "batch"
+    )
+    attribution_batch.add_argument("--no-resume", action="store_true")
+    package = sub.add_parser("package-results")
+    package.add_argument("run", type=Path)
+    package.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
+    package.add_argument("--output", type=Path, required=True)
     screenspot = sub.add_parser("screenspot-case")
     screenspot.add_argument("sample_id")
     screenspot.add_argument("--annotations", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "annotations")
     screenspot.add_argument("--images", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "images")
     screenspot.add_argument("--control-prompt", action="append", default=[])
     screenspot.add_argument("--trace-generation-steps", type=int, choices=range(0, 257), default=0)
+    screenspot.add_argument("--trace-profile", choices=TRACE_PROFILES)
     screenspot.add_argument("--output", type=Path)
+    screenspot_benchmark = sub.add_parser("screenspot-benchmark")
+    screenspot_benchmark.add_argument(
+        "--annotations", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "annotations"
+    )
+    screenspot_benchmark.add_argument(
+        "--images", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "images"
+    )
+    screenspot_benchmark.add_argument(
+        "--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces"
+    )
+    screenspot_benchmark.add_argument(
+        "--output", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "benchmark-runs" / "full-4b"
+    )
+    screenspot_benchmark.add_argument("--trace-profile", choices=TRACE_PROFILES, default="logprobs")
+    screenspot_benchmark.add_argument("--trace-generation-steps", type=int, choices=range(1, 257), default=64)
+    screenspot_benchmark.add_argument("--shard-index", type=int, default=0)
+    screenspot_benchmark.add_argument("--num-shards", type=int, default=1)
+    screenspot_benchmark.add_argument("--offset", type=int, default=0)
+    screenspot_benchmark.add_argument("--count", type=int)
+    screenspot_benchmark.add_argument("--no-resume", action="store_true")
+    screenspot_benchmark.add_argument("--fail-fast", action="store_true")
     contrast = sub.add_parser("screenspot-contrast")
     contrast.add_argument("case", type=Path, help="case.json written by screenspot-case")
     contrast.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
@@ -297,6 +333,17 @@ def main(argv: list[str] | None = None) -> None:
         except AttributionError as exc:
             print(f"attribution failed: {exc}", file=sys.stderr)
             raise SystemExit(1) from exc
+    elif args.command == "attribution-batch":
+        _print(
+            run_attribution_batch(
+                args.manifest,
+                trace_root=args.trace_root,
+                output_root=args.output,
+                resume=not args.no_resume,
+            )
+        )
+    elif args.command == "package-results":
+        _print(package_results(args.run, args.trace_root, args.output))
     elif args.command == "screenspot-case":
         sample = load_screenspot_sample(args.annotations, args.images, args.sample_id)
         output = args.output or PROJECT_ROOT / "data" / "screenspot-pro" / "runs" / args.sample_id
@@ -308,6 +355,26 @@ def main(argv: list[str] | None = None) -> None:
                 model_id=model_id,
                 output_dir=output,
                 trace_generation_steps=args.trace_generation_steps,
+                trace_profile=args.trace_profile,
+            )
+        )
+    elif args.command == "screenspot-benchmark":
+        _print(
+            run_screenspot_benchmark(
+                annotation_root=args.annotations,
+                image_root=args.images,
+                base_url=base_url,
+                model_id=model_id,
+                trace_root=args.trace_root,
+                output_dir=args.output,
+                trace_profile=args.trace_profile,
+                trace_generation_steps=args.trace_generation_steps,
+                shard_index=args.shard_index,
+                num_shards=args.num_shards,
+                offset=args.offset,
+                count=args.count,
+                resume=not args.no_resume,
+                fail_fast=args.fail_fast,
             )
         )
     elif args.command == "screenspot-contrast":

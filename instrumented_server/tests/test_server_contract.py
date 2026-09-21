@@ -6,7 +6,11 @@ from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 from instrumented_holo.app import create_app
-from instrumented_holo.model import InstrumentedHolo, parse_assistant_output
+from instrumented_holo.model import (
+    InstrumentedHolo,
+    generated_parameter_token_spans,
+    parse_assistant_output,
+)
 from instrumented_holo.settings import Settings
 from instrumented_holo.traces import TraceOptions, TraceWriter, append_trace_response
 
@@ -93,6 +97,33 @@ def test_compact_value_norm_capture_defaults_on_without_full_kv_capture() -> Non
 
     disabled = TraceOptions.from_request({"trace": {"capture_value_norms": False}})
     assert disabled.capture_value_norms is False
+
+    logprobs = TraceOptions.from_request({"trace": {"capture_logprobs": True}})
+    assert logprobs.capture_logprobs is True
+
+
+def test_generated_parameter_spans_label_action_and_coordinates() -> None:
+    pieces = (
+        "<parameter=action>",
+        "click",
+        "</parameter><parameter=x>\n",
+        "48",
+        "2\n</parameter><parameter=y>",
+        "351",
+        "</parameter>",
+    )
+    offsets = []
+    cursor = 0
+    for piece in pieces:
+        offsets.append((cursor, cursor + len(piece)))
+        cursor += len(piece)
+    labels, spans = generated_parameter_token_spans("".join(pieces), tuple(offsets))
+    assert labels == (None, "action", None, "x", "x", "y", None)
+    assert spans == (
+        ("action", "click", (1,)),
+        ("x", "482", (3, 4)),
+        ("y", "351", (5,)),
+    )
 
 
 def test_response_is_hashed_into_trace_manifest(tmp_path: Path) -> None:

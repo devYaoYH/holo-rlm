@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "name": "powerpoint_windows_59_target_distractor_swap",
+  "score_reduction": "sum",
+  "clean_request": {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are evaluating one GUI-grounding instruction on one static screenshot. Return exactly one desktop_action tool call that clicks the requested visible target. Coordinates are normalized integers from 0 to 1000, with (0, 0) at the top-left and (1000, 1000) at the bottom-right. Do not scroll, type, wait, navigate, or explain. Each coordinate value must contain digits only: no quotes, commas, units, or prose. Base the click only on the screenshot and instruction."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Instruction: Create a \"Psychedelic vibrant\" presentation"
+          },
+          {
+            "type": "image_path",
+            "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png"
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "desktop_action",
+          "parameters": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["action", "x", "y"],
+            "properties": {
+              "action": {"const": "click"},
+              "x": {"type": "integer", "minimum": 0, "maximum": 1000},
+              "y": {"type": "integer", "minimum": 0, "maximum": 1000}
+            }
+          }
+        }
+      }
+    ],
+    "chat_template_kwargs": {"enable_thinking": false}
+  },
+  "corruption": {
+    "type": "swap_equal_tiles",
+    "image_index": 0,
+    "first_box": [1289, 563, 1489, 735],
+    "second_box": [1069, 563, 1269, 735]
+  },
+  "candidates": [
+    {"label": "original_target_slot", "coordinate": [482, 351]},
+    {"label": "distractor_slot", "coordinate": [406, 351]}
+  ],
+  "regions": {
+    "target": {"image_index": 0, "box": [1289, 563, 1489, 702], "limit": 4},
+    "distractor": {"image_index": 0, "box": [1069, 563, 1269, 702], "limit": 4}
+  },
+  "interventions": [
+    {
+      "name": "layer_19_all_visual_residuals",
+      "representation": {"layer": 19, "component": "residual_output", "unit": "all_image_tokens"}
+    },
+    {
+      "name": "layer_19_target_residuals",
+      "representation": {"layer": 19, "component": "residual_output", "unit": "image_region", "region": "target"}
+    },
+    {
+      "name": "layer_19_distractor_residuals",
+      "representation": {"layer": 19, "component": "residual_output", "unit": "image_region", "region": "distractor"}
+    },
+    {
+      "name": "layer_19_head_10",
+      "representation": {"layer": 19, "component": "attention_head_output", "unit": "scored_token_predictions", "head": 10},
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_mlp",
+      "representation": {"layer": 15, "component": "mlp_output", "unit": "scored_token_predictions"},
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_19_mlp",
+      "representation": {"layer": 19, "component": "mlp_output", "unit": "scored_token_predictions"},
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_23_mlp",
+      "representation": {"layer": 23, "component": "mlp_output", "unit": "scored_token_predictions"},
+      "ablation": "zero"
+    }
+  ]
+}

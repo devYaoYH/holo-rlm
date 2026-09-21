@@ -25,6 +25,7 @@ class TraceOptions:
     capture_kv: bool = False
     capture_value_norms: bool = True
     capture_rollout: bool = True
+    capture_logprobs: bool = False
     max_traced_generation_steps: int = 4
 
     @classmethod
@@ -39,6 +40,7 @@ class TraceOptions:
                 capture_kv=bool(trace.get("capture_kv", False)),
                 capture_value_norms=bool(trace.get("capture_value_norms", True)),
                 capture_rollout=bool(trace.get("capture_rollout", True)),
+                capture_logprobs=bool(trace.get("capture_logprobs", False)),
                 max_traced_generation_steps=max(0, int(trace.get("max_generation_steps", 4))),
             )
         return cls(enabled=bool(trace))

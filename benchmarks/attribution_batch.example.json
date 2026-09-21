@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "one-multiframe-trajectory",
+      "mode": "trajectory",
+      "path": "../data/trajectories/v0/REPLACE_WITH_TRAJECTORY_ID"
+    },
+    {
+      "id": "one-standalone-trace",
+      "mode": "trace",
+      "path": "../data/traces/REPLACE_WITH_TRACE_ID"
+    }
+  ]
+}

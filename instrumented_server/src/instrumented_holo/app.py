@@ -56,6 +56,7 @@ def create_app(settings: Settings | None = None, engine: InstrumentedHolo | None
                         "function_calling": True,
                         "structured_output": "schema-validated-tool-calls",
                         "activation_tracing": True,
+                        "generated_token_logprobs": True,
                     },
                 }
             ],

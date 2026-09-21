@@ -7,6 +7,7 @@ from PIL import Image
 
 from demo.screenspot import (
     build_screenspot_request,
+    list_screenspot_samples,
     load_screenspot_sample,
     parse_screenspot_click,
     point_hits_bbox,
@@ -42,7 +43,20 @@ def test_load_build_parse_and_score_screenspot_sample(tmp_path: Path) -> None:
     request = build_screenspot_request(image, sample.instruction, "test-model", trace_generation_steps=64)
     assert request["temperature"] == 0
     assert request["trace"]["max_generation_steps"] == 64
+    assert request["trace"]["capture_logprobs"] is True
+    assert request["trace"]["capture_attentions"] is True
     assert request["tools"][0]["function"]["parameters"]["required"] == ["action", "x", "y"]
+    assert [value.id for value in list_screenspot_samples(annotations, images)] == ["sample-1"]
+
+    logprob_request = build_screenspot_request(
+        image,
+        sample.instruction,
+        "test-model",
+        trace_generation_steps=64,
+        trace_profile="logprobs",
+    )
+    assert logprob_request["trace"]["capture_logprobs"] is True
+    assert logprob_request["trace"]["capture_attentions"] is False
 
     response = {
         "choices": [

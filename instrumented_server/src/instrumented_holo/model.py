@@ -6,6 +6,7 @@ import base64
 import gc
 import json
 import logging
+import math
 import re
 import time
 from importlib.metadata import version
@@ -23,6 +24,36 @@ _TOOL_CALL_RE = re.compile(
 )
 _PARAMETER_RE = re.compile(r"<parameter=([^>\s]+)>\s*(.*?)\s*</parameter>", re.DOTALL)
 logger = logging.getLogger(__name__)
+
+
+def generated_parameter_token_spans(
+    text: str,
+    token_offsets: tuple[tuple[int, int], ...],
+) -> tuple[tuple[str | None, ...], tuple[tuple[str, str, tuple[int, ...]], ...]]:
+    """Map generated-token character offsets onto native tool parameter values."""
+
+    labels: list[str | None] = [None] * len(token_offsets)
+    spans: list[tuple[str, str, tuple[int, ...]]] = []
+    for match in _PARAMETER_RE.finditer(text):
+        parameter = match.group(1).strip()
+        raw_value = match.group(2)
+        leading = len(raw_value) - len(raw_value.lstrip())
+        trailing = len(raw_value) - len(raw_value.rstrip())
+        start, raw_end = match.span(2)
+        start += leading
+        end = raw_end - trailing
+        value = text[start:end]
+        indices = tuple(
+            index
+            for index, (token_start, token_end) in enumerate(token_offsets)
+            if token_end > start and token_start < end
+        )
+        if not value or not indices:
+            continue
+        for index in indices:
+            labels[index] = parameter
+        spans.append((parameter, value, indices))
+    return tuple(labels), tuple(spans)
 
 
 class UnsupportedImageSource(ValueError):
@@ -402,6 +433,8 @@ class InstrumentedHolo:
             generate_kwargs["output_attentions"] = True
         if trace_options.enabled and trace_options.capture_hidden_states:
             generate_kwargs["output_hidden_states"] = True
+        if trace_options.enabled and trace_options.capture_logprobs:
+            generate_kwargs["output_scores"] = True
         if trace_options.enabled and (trace_options.capture_kv or trace_options.capture_value_norms):
             generate_kwargs["use_cache"] = True
         if tools:
@@ -441,11 +474,84 @@ class InstrumentedHolo:
             )
             self._write_focused_attentions(writer, generated, trace_options)
             self._write_focused_hidden_states(writer, generated, trace_options)
+            self._write_token_logprobs(writer, generated, generated_tokens, trace_options)
             self._write_kv_metadata(writer, generated, trace_options)
             writer.write_json("completion.json", {"text": text})
             writer.write_json("manifest.json", writer.manifest())
 
         return text, prompt_tokens, int(generated_tokens.shape[-1]), trace_id, enable_thinking
+
+    def _write_token_logprobs(
+        self,
+        writer: TraceWriter,
+        generated: Any,
+        generated_tokens: Any,
+        options: TraceOptions,
+    ) -> None:
+        """Persist chosen-token log probabilities and native tool-parameter spans."""
+
+        scores = getattr(generated, "scores", None)
+        if not options.capture_logprobs or scores is None:
+            return
+        assert self.processor is not None and self.torch is not None
+        token_ids = [int(value) for value in generated_tokens[0].detach().cpu().tolist()]
+        if len(scores) != len(token_ids):
+            raise RuntimeError(
+                f"generation returned {len(scores)} score rows for {len(token_ids)} generated tokens"
+            )
+        tokenizer = self.processor.tokenizer
+        prefixes = [
+            tokenizer.decode(
+                token_ids[:index],
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=False,
+            )
+            for index in range(len(token_ids) + 1)
+        ]
+        text = prefixes[-1]
+        offsets = tuple((len(prefixes[index]), len(prefixes[index + 1])) for index in range(len(token_ids)))
+        parameter_by_token, parameter_spans = generated_parameter_token_spans(text, offsets)
+        pieces = tokenizer.convert_ids_to_tokens(token_ids)
+        records: list[dict[str, Any]] = []
+        cumulative = 0.0
+        for index, (token_id, logits) in enumerate(zip(token_ids, scores, strict=True)):
+            selected = self.torch.log_softmax(logits[0].float(), dim=-1)[token_id]
+            logprob = float(selected.item())
+            cumulative += logprob
+            start, end = offsets[index]
+            records.append(
+                {
+                    "index": index,
+                    "token_id": token_id,
+                    "token": pieces[index],
+                    "text": text[start:end],
+                    "char_span": [start, end],
+                    "logprob_nats": logprob,
+                    "probability": math.exp(logprob),
+                    "cumulative_logprob_nats": cumulative,
+                    "parameter": parameter_by_token[index],
+                }
+            )
+        aggregate_parameters: dict[str, dict[str, Any]] = {}
+        for parameter, value, indices in parameter_spans:
+            aggregate_parameters[parameter] = {
+                "value": value,
+                "token_indices": list(indices),
+                "token_count": len(indices),
+                "logprob_nats": sum(records[index]["logprob_nats"] for index in indices),
+            }
+        writer.write_json(
+            "token_logprobs.json",
+            {
+                "schema_version": 1,
+                "units": "nats",
+                "sequence_logprob_nats": cumulative,
+                "generated_token_count": len(records),
+                "all_generated_tokens_captured": True,
+                "parameters": aggregate_parameters,
+                "tokens": records,
+            },
+        )
 
     def _write_input_images(self, writer: TraceWriter, raw_request: dict[str, Any]) -> None:
         image_index = 0

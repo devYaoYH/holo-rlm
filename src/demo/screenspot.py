@@ -31,6 +31,7 @@ SCREENSPOT_CLICK_SCHEMA: dict[str, Any] = {
         "y": {"type": "integer", "minimum": 0, "maximum": 1000},
     },
 }
+TRACE_PROFILES = ("none", "logprobs", "attribution", "full")
 
 
 @dataclass(frozen=True)
@@ -80,12 +81,50 @@ def load_screenspot_sample(annotation_root: Path, image_root: Path, sample_id: s
     raise KeyError(f"unknown ScreenSpot-Pro sample ID: {sample_id}")
 
 
+def list_screenspot_samples(annotation_root: Path, image_root: Path) -> tuple[ScreenSpotSample, ...]:
+    """Load every official positive sample in stable ID order."""
+
+    annotation_root = annotation_root.expanduser().resolve()
+    image_root = image_root.expanduser().resolve()
+    samples: list[ScreenSpotSample] = []
+    seen: set[str] = set()
+    for annotation_path in sorted(annotation_root.glob("*.json")):
+        records = json.loads(annotation_path.read_text())
+        if not isinstance(records, list):
+            raise ValueError(f"ScreenSpot annotation must contain a list: {annotation_path}")
+        for record in records:
+            sample_id = str(record["id"])
+            if sample_id in seen:
+                raise ValueError(f"duplicate ScreenSpot sample ID: {sample_id}")
+            seen.add(sample_id)
+            image_path = image_root / str(record["img_filename"])
+            if not image_path.is_file():
+                image_path = image_root / f"{sample_id}.png"
+            if not image_path.is_file():
+                raise FileNotFoundError(f"ScreenSpot-Pro image is missing for {sample_id}: {image_path}")
+            samples.append(
+                ScreenSpotSample(
+                    id=sample_id,
+                    instruction=str(record["instruction"]),
+                    image_path=image_path,
+                    bbox=tuple(float(value) for value in record["bbox"]),  # type: ignore[arg-type]
+                    image_size=tuple(int(value) for value in record["img_size"]),  # type: ignore[arg-type]
+                    application=str(record["application"]),
+                    platform=str(record["platform"]),
+                    ui_type=str(record["ui_type"]),
+                    annotation_path=annotation_path,
+                )
+            )
+    return tuple(sorted(samples, key=lambda sample: sample.id))
+
+
 def build_screenspot_request(
     image: Image.Image,
     instruction: str,
     model_id: str,
     *,
     trace_generation_steps: int = 0,
+    trace_profile: str | None = None,
 ) -> dict[str, Any]:
     """Build the deterministic, single-click request used for target and controls."""
 
@@ -116,14 +155,19 @@ def build_screenspot_request(
         ],
         "tool_choice": {"type": "function", "function": {"name": "desktop_action"}},
     }
-    if trace_generation_steps:
+    profile = trace_profile or ("attribution" if trace_generation_steps else "none")
+    if profile not in TRACE_PROFILES:
+        raise ValueError(f"unknown trace profile: {profile}")
+    if profile != "none":
+        attribution = profile in {"attribution", "full"}
         request["trace"] = {
-            "capture_attentions": True,
-            "capture_hidden_states": False,
+            "capture_attentions": attribution,
+            "capture_hidden_states": profile == "full",
             "capture_kv": False,
-            "capture_value_norms": True,
-            "capture_rollout": True,
-            "max_generation_steps": trace_generation_steps,
+            "capture_value_norms": attribution,
+            "capture_rollout": attribution,
+            "capture_logprobs": True,
+            "max_generation_steps": trace_generation_steps or 64,
         }
     return request
 
@@ -217,6 +261,7 @@ def run_screenspot_case(
     model_id: str,
     output_dir: Path,
     trace_generation_steps: int,
+    trace_profile: str | None = None,
 ) -> dict[str, Any]:
     """Run one target instruction and a same-image diverse prompt ensemble."""
 
@@ -237,6 +282,7 @@ def run_screenspot_case(
                 instruction,
                 model_id,
                 trace_generation_steps=trace_generation_steps,
+                trace_profile=trace_profile,
             )
             response = client.post(f"{base_url.rstrip('/')}/chat/completions", json=request)
             response.raise_for_status()
@@ -285,6 +331,7 @@ def run_screenspot_case(
         },
         "model": {"id": model_id, "base_url": base_url},
         "trace_generation_steps": trace_generation_steps,
+        "trace_profile": trace_profile or ("attribution" if trace_generation_steps else "none"),
         "runs": runs,
     }
     manifest = output_dir / "case.json"

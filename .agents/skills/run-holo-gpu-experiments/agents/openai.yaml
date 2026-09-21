@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Holo GPU Experiments"
+  short_description: "Run and retrieve Holo activation experiments"
+  default_prompt: "Use $run-holo-gpu-experiments to execute and retrieve a reproducible Holo benchmark or activation experiment on this GPU host."

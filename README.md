@@ -71,6 +71,10 @@ The corrected view computes `A' = A * ||V||₂ / sum(A * ||V||₂)` over all key
 
 The [ScreenSpot-Pro case study](docs/screenspot-case-study.md) adds a same-image diverse-instruction baseline, strict versus visually repaired grounding scores, leave-one-control-out stability, and per-layer/per-head diagnostics for a fixed PowerPoint success/failure pair.
 
+The [matched causal coordinate intervention](docs/causal-intervention.md) swaps one target tile with an equally sized distractor, scores a teacher-forced coordinate sequence log-likelihood ratio in natural-log units, and tests clean-to-corrupted activation patching plus clean-run ablation for visual residuals, layer 19/head 10, selected MLPs, and matched target/distractor patches. The [activation patching library](docs/activation-patching-library.md) exposes the same mechanics for other screenshot and multi-frame trajectory pairs.
+
+For an RTX 5090/A100 host, follow the [remote GPU experiment workflow](docs/remote-gpu-experiments.md). It covers locked setup and CUDA preflight, resumable/sharded ScreenSpot-Pro inference with all generated-token log probabilities, multi-frame attribution batches, manifest-driven activation patching, and checksum-verified result retrieval.
+
 To retain attribution for every generated token in the bounded 128-token action response:
 
 ```bash

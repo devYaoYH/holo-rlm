@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
   "accelerate>=1.0",
   "fastapi>=0.115",
+  "numpy>=2.0",
   "pillow>=10",
   "torchvision>=0.26.0",
   "transformers>=5.0.0",
@@ -14,6 +15,9 @@ dependencies = [
 
 [project.scripts]
 instrumented-holo-server = "instrumented_holo.app:main"
+holo-causal-experiment = "instrumented_holo.causal_experiment:main"
+holo-gpu-doctor = "instrumented_holo.gpu_doctor:main"
+holo-activation-patch = "instrumented_holo.patching_cli:main"
 
 [dependency-groups]
 dev = [

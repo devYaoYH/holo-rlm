@@ -37,12 +37,13 @@ Send screenshots as base64 data URLs. The server deliberately refuses remote URL
     "capture_kv": false,
     "capture_value_norms": true,
     "capture_rollout": true,
+    "capture_logprobs": true,
     "max_generation_steps": 4
   }
 }
 ```
 
-Trace bundles are written to `data/traces/` and must remain uncommitted. They contain the exact request/response and model-input image bytes, input/generated token IDs, image-grid metadata, checkpoint and processor provenance, focused attention rows, and per-layer last-query hidden states. `capture_value_norms` stores one L2 norm per KV head and sequence key. `capture_rollout` stores float16 head-mean square prompt matrices, both direct and value-weighted, for cross-layer rollout; it is on by default and materially increases trace size. `capture_kv: true` writes the much larger full tensors and remains off by default.
+Trace bundles are written to `data/traces/` and must remain uncommitted. They contain the exact request/response and model-input image bytes, input/generated token IDs, image-grid metadata, checkpoint and processor provenance, focused attention rows, and per-layer last-query hidden states. `capture_logprobs` writes every generated token's natural-log probability plus action/x/y aggregates. `capture_value_norms` stores one L2 norm per KV head and sequence key. `capture_rollout` stores float16 head-mean square prompt matrices, both direct and value-weighted, for cross-layer rollout; it is on by default and materially increases trace size. `capture_kv: true` writes the much larger full tensors and remains off by default.
 
 ## HoloDesktop route
 
@@ -53,3 +54,18 @@ holo run --base-url http://127.0.0.1:8000/v1 "<bounded test-fixture task>"
 ```
 
 The endpoint accepts OpenAI `tools`, renders them through the checkpoint's native tool template, parses native Holo/Qwen XML calls back into OpenAI `tool_calls`, strips hidden thinking, and stops generation after `</tool_call>`. Keep HoloDesktop runs bounded and restricted to the local fixture.
+
+## Matched causal intervention
+
+The standalone intervention runner scores fixed click coordinates under teacher forcing, then patches clean activations into a tile-swapped screenshot and ablates the same components in the clean run. Its default case swaps the equally sized `Psychedelic vibrant` and `Woven fibers` PowerPoint tiles without resampling the rest of the screenshot.
+
+```bash
+cd instrumented_server
+HOLO_DEVICE=mps HOLO_DTYPE=auto uv run holo-causal-experiment
+```
+
+It writes the clean/corrupted PNG pair and `results.json` under `artifacts/causal-intervention/`. The primary metric is the summed sequence log-likelihood ratio, in nats, of the original-target-slot x/y tokens over the distractor-slot x/y tokens. One nat is one natural-log unit, so `exp(margin)` is the target-to-distractor probability ratio. A component supports the coordinate contrast only when clean-to-corrupt activation patching restores the margin and clean-run ablation reduces it.
+
+The reusable API lives in `instrumented_holo.activation_patching`. It accepts arbitrary multimodal message histories, including multiple trajectory frames, explicit scored completion spans, named regions on any frame, and summed or mean token scoring. See [`docs/activation-patching-library.md`](../docs/activation-patching-library.md).
+
+For remote CUDA setup, full ScreenSpot-Pro execution, result packaging, and the pyvene-inspired manifest/API, see [`docs/remote-gpu-experiments.md`](../docs/remote-gpu-experiments.md).

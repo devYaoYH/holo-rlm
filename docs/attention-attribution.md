@@ -4,6 +4,8 @@ This document describes the verified happy path used by this project: value-norm
 
 The word *causal* below refers only to information timing: a token baseline may use earlier generated tokens, never future ones. Attention rollout is not proof that a highlighted pixel causally changed the model output.
 
+The separate [matched causal coordinate intervention](causal-intervention.md) performs activation patching and ablation against a teacher-forced coordinate-margin metric. It should not be confused with the observational rollout described here.
+
 ## 1. Captured tensors
 
 For one batch-size-one completion, let:

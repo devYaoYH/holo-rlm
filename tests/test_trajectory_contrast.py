@@ -68,6 +68,7 @@ def test_multiframe_probe_changes_only_instruction_semantics() -> None:
     assert target["messages"][6]["content"] == control["messages"][6]["content"]
     assert target["trace"]["capture_value_norms"] is True
     assert target["trace"]["capture_rollout"] is True
+    assert target["trace"]["capture_logprobs"] is True
     assert target["trace"]["max_generation_steps"] == 72
     assert target["tools"][0]["function"]["parameters"]["required"] == ["action", "x", "y"]
 
