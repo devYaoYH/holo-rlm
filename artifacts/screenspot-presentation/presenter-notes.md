@@ -1,75 +1,86 @@
-# ScreenSpot-Pro attention attribution — presenter notes
+# Holo 3.1 attention attribution: presenter notes
 
 ## Ten-minute run of show
 
 | Time | Slide | Talk track |
 |---|---|---|
-| 0:00–0:45 | 1 | The question is not “where is attention high?” but “what is specific to this instruction after removing generic image saliency?” |
-| 0:45–1:45 | 2 | Introduce ScreenSpot-Pro, the controlled PowerPoint pair, and the separation of format validity, repaired visual grounding, and official end-to-end correctness. |
-| 1:45–3:10 | 3 | Explain value-norm correction, residual cross-layer rollout, x/y token aggregation, and the two baselines. |
-| 3:10–4:25 | 4 | Success: raw rollout peaks on a generic corner; the prompt differential peaks inside the selected template. |
-| 4:25–5:35 | 5 | Miss: the correct semantic neighborhood is selected, but the slide thumbnail wins over the tiny New Slide affordance. |
-| 5:35–6:45 | 6 | Baselines answer different questions. Target lift must be read with peak position and the actual overlay. |
-| 6:45–8:05 | 7 | Success-specific specialization peaks at layer 19; head 10 is the strongest direct value-norm head in this one case. |
-| 8:05–9:00 | 8 | State the three conclusions and the limits. |
-| 9:00–10:00 | live viewer | Raw → target-minus-prompt baseline → head sort → failure viewer. |
+| 0:00-0:35 | 1 | Ask what is specific to the current instruction after removing generic visual awareness. |
+| 0:35-1:25 | 2 | Separate static ScreenSpot grounding from replayable multi-turn visual memory. |
+| 1:25-2:35 | 3 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
+| 2:35-3:45 | 4 | Establish the headline metric: same-image instruction differential. |
+| 3:45-4:45 | 5 | Static miss: coarse task region is salient, but the tiny affordance loses. |
+| 4:45-6:05 | 6 | Multi-turn probe: target evidence is measurable in an earlier frame and stronger in the current frame, yet the click misses the button. |
+| 6:05-7:20 | 7 | Layer patterns are candidate correctness features, not confidence scores yet. |
+| 7:20-8:35 | 8 | Propose calibrated heads, causal tests, visual-memory research, base-model comparison, and the SFT-to-RLVR loop. |
+| 8:35-10:00 | 9 + demo | Recap three defensible claims, then show the static hit, static miss, and four-frame hotel viewer. |
 
 ## Exact claims to make
 
-- **Success case:** prompt-differential target lift is **16.08×**, versus **3.85×** for raw rollout; its peak falls inside the annotated target. Leave-one-control-out cosine is **0.925 mean / 0.828 minimum**.
-- **Failure case:** the prompt-differential peak is outside the target and **9.9% of the frame diagonal** from its center. The repaired click is `(331, 270)`, on the slide thumbnail rather than the New Slide toolbar button. Baseline stability is **0.970 mean / 0.953 minimum**.
-- **Layer result:** the success reaches **38.99× mean head target lift at layer 19**. Layer 19 / head 10 reaches **98.05×** on direct value-norm prompt-differential attribution.
-- **Scope:** these are two case studies. The layer/head pattern is a hypothesis to replicate and intervene on, not a population-level conclusion.
+- **ScreenSpot visual hit:** prompt-differential target lift is **16.08x**, versus **3.85x** for raw rollout. Its peak falls inside the annotated target. Leave-one-control-out cosine is **0.925 mean / 0.828 minimum**.
+- **ScreenSpot miss:** the prompt-differential peak is outside the target and **9.9% of the frame diagonal** from its center. The repaired click is `(331, 270)`, on the slide thumbnail rather than the New Slide button. Stability is **0.970 mean / 0.953 minimum**.
+- **Multi-turn hotel probe:** after replaying the same four screenshots and three-scroll history, the cheapest hotel's button has **2.78x** differential lift when it first appears in frame 2 and **8.59x** in the final frame. The probe clicks `(960,120)` on the correct hotel card, outside the button. Three controls are included; one is excluded for missing a `y` span. Stability is **0.898 mean / 0.769 minimum**.
+- **Layer result:** layer 19 mean-head lift is **38.99x** for the static visual hit, **10.47x** for the hotel miss, and **2.88x** for the static miss. This is an exploratory three-case pattern.
+- **Scope:** the two ScreenSpot cases use different images and prompts. They are not a matched success/failure causal pair. The hotel target is a matched re-probe over captured history, not the exact original final model call.
 
 ## Ninety-second live demo
 
-1. Open the [success viewer](../../data/attributions/screenspot-powerpoint_windows_59/viewer.html).
-2. Start on **Raw value-norm rollout**. Point out the generic top-left peak.
-3. Select **Target minus diverse-instruction baseline**. Point to the red patch inside the green target box and the displayed 16.08× lift.
-4. Under **Per-head ranking**, keep **Prompt difference** selected and show layer 19 / head 10 at the top.
-5. Open the [failure viewer](../../data/attributions/screenspot-powerpoint_windows_48/viewer.html).
-6. Select the same prompt-differential mode. Show the red top-left neighborhood, the green toolbar target, and the white cross on the slide thumbnail.
+1. Open the [ScreenSpot hit viewer](../../data/attributions/screenspot-powerpoint_windows_59/viewer.html).
+2. Start on **Raw value-norm rollout**, then select **Target minus diverse-instruction baseline**. Show the peak entering the template and the 16.08x lift.
+3. Sort heads by **Prompt difference** and point out layer 19 / head 10 as the strongest direct value-norm head in this case.
+4. Open the [ScreenSpot miss viewer](../../data/attributions/screenspot-powerpoint_windows_48/viewer.html). Show the task-region signal and the click on the slide thumbnail.
+5. Open the [multi-frame hotel viewer](../../data/attributions/hotel-cheapest-multiframe-contrast/viewer.html).
+6. Select **Target minus diverse-instruction baseline**. Step from frame 2 to frame 3. The green box marks the target button; the white cross on frame 3 marks the failed click.
+7. End on the layer/head table as a source of intervention hypotheses, not a causal conclusion.
 
 ## Five-minute Q&A crib sheet
 
-### “Is attention a faithful explanation?”
+### Is attention a faithful explanation?
 
-No. This is a routing diagnostic. It identifies where information can flow under the observed forward pass. Faithfulness requires interventions: mask or swap candidate patches, perturb the instruction, or ablate the implicated layer/head and measure click changes.
+No. It is a routing diagnostic for one observed forward pass. Faithfulness requires interventions: patch masking or swapping, activation patching, and targeted layer/head ablation followed by action measurement.
 
-### “Why multiply by the value-vector norm?”
+### Why multiply by the value-vector norm?
 
-An attention probability can be large while the value carried along that edge is nearly zero. We replace each row with `normalize(A ⊙ ||V||₂)` before rollout, so strong-but-empty paths do not dominate the map. This still does not recover value direction or downstream nonlinear effects.
+High attention can carry little signal when the corresponding value vector is near zero. We use `normalize(A * ||V||2)` before rollout, which suppresses strong-but-empty paths. This still omits value direction and downstream nonlinear effects.
 
-### “Why does rollout cover only eight layers?”
+### What is cross-layer rollout here?
 
-Holo 3.1 4B is hybrid. Its conventional full-attention blocks expose square causal attention matrices; its interleaved linear-attention blocks do not expose an equivalent matrix that can be multiplied without inventing an approximation. The viewer and docs state this boundary explicitly.
+At each captured full-attention block, row-normalize the value-weighted attention, mix it 50/50 with identity for residual flow, and multiply the eight matrices in model order. Holo is hybrid: its interleaved linear-attention blocks do not expose an equivalent square matrix, so they are outside this rollout.
 
-### “How were the diverse prompt controls chosen?”
+### What exactly is the prompt baseline?
 
-Four visible click instructions target spatially distinct regions of the exact same screenshot. Every request shares image bytes, model, processor, tool schema, and decoding settings. Each coordinate-token map is L1-normalized before averaging. Leave-one-control-out cosine quantifies whether one control dominates. A larger study should use a stratified control bank and report confidence intervals.
+For each control instruction, run the same model, processor, decoding settings, image bytes, and, for the hotel case, the same action and frame history. L1-normalize each coordinate-token map across all retained image patches, average controls, then subtract from the target map. Leave-one-control-out cosine checks sensitivity to any one control.
 
-### “Is the success actually a benchmark success?”
+### Why include a malformed hotel control?
 
-Not end to end. Holo produced the visually correct coordinates but inserted `>` inside integer fields. The harness records `format_valid=false`, `grounding_correct=true` after a narrow first-integer repair, and `correct=false` for the official result. The repair diagnoses vision; it never upgrades the score.
+One logo control emitted invalid tool JSON but retained complete `x` and `y` parameter spans, so it is usable for a semantic coordinate-token baseline even though it is not executable. A different control omitted `y` entirely and is excluded. The viewer and `analysis.json` disclose the exclusion.
 
-### “Why is lift high in the failure?”
+### Does the hotel trace prove long-term memory?
 
-The New Slide target is only about 0.074% of the frame and lies inside a generally salient top-left region. Dividing even modest target mass by such a tiny area yields high lift. That is why the presentation pairs lift with peak-inside, peak distance, and the overlay.
+No. It shows that the final action's differential attribution allocates positive mass to the target button in an earlier retained frame and more mass in the current frame. That is consistent with cross-frame retrieval. A causal memory claim needs frame removal, shuffling, or patch intervention.
 
-### “What is interesting about layer 19 / head 10?”
+### Why did full-resolution multi-frame tracing take so long?
 
-In the success case it is the strongest direct value-norm head after prompt subtraction, and the layer-mean curve peaks at 19. It is not yet a universal “GUI grounding head.” The next step is replication across the frozen set followed by causal ablation or activation patching.
+The model weights remain streamed to Metal at about 9.64 GiB. The expensive part is the first full-attention prompt matrix over four high-resolution frames, whose memory grows quadratically with prompt length and causes swap pressure. This motivates frame retrieval or patch compression for research instrumentation.
 
-### “What should we train next?”
+### Can layer statistics become confidence?
 
-Separate failures into formatting, coarse semantic localization, and fine target binding. SFT can fix tool syntax and reinforce exact point targets; RLVR can optimize point-in-box success. Keep the frozen ScreenSpot-Pro subset untouched and use the synthetic benchmark for cheap engineering/debugging.
+Potentially, but not from three cases. Freeze the backbone, train a small outcome or ambiguity readout on training cases, and evaluate held-out Brier score, log loss, expected calibration error, and selective risk. Safety refusal and clarification thresholds should be chosen from calibrated risk, not raw saliency.
+
+### Is base Qwen versus Holo interesting?
+
+Yes if action tokens are teacher-forced. The base model may not emit the tool syntax reliably, so free-running heatmaps confound format and vision. Feed the same image, prompt, and action-token sequence to base Qwen and Holo, then compare where instruction-specific routing changes by layer and head.
+
+### What should we train next?
+
+Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, measure mid-training lift, then run GRPO with LoRA and a KL penalty using verifiable environment rewards. Use attribution for audit and diagnosis, not as the reward target.
 
 ## Sources and reproducibility
 
-- ScreenSpot-Pro paper: https://arxiv.org/abs/2504.07981
-- Official repository: https://github.com/likaixin2000/ScreenSpot-Pro-GUI-Grounding
-- Official dataset: https://huggingface.co/datasets/likaixin/ScreenSpot-Pro
+- ScreenSpot-Pro paper: <https://arxiv.org/abs/2504.07981>
+- Official repository: <https://github.com/likaixin2000/ScreenSpot-Pro-GUI-Grounding>
 - Frozen case/control manifest: `benchmarks/screenspot_presentation_cases.json`
 - Method: `docs/attention-attribution.md`
 - Case study: `docs/screenspot-case-study.md`
-- Local measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
+- Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
+- Hotel measurement: `data/attributions/hotel-cheapest-multiframe-contrast/analysis.json`
+- Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)

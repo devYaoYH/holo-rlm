@@ -1,6 +1,6 @@
 # Attention attribution to image patches
 
-This document describes the verified happy path used by this project: value-norm-corrected cross-layer attention rollout, projected independently onto every image in the prompt, optionally followed by a strictly previous-token baseline. The output is a routing diagnostic for a generated token or structured action parameter.
+This document describes the verified happy path used by this project: value-norm-corrected cross-layer attention rollout, projected independently onto every image in the prompt, followed by either a strictly previous-token baseline or a matched same-image instruction-ensemble baseline. The output is a routing diagnostic for a generated token or structured action parameter.
 
 The word *causal* below refers only to information timing: a token baseline may use earlier generated tokens, never future ones. Attention rollout is not proof that a highlighted pixel causally changed the model output.
 
@@ -132,7 +132,7 @@ This is analogous to condition-minus-baseline analysis, but it is not a separate
 
 ## 7. Subtract a same-image diverse-instruction baseline
 
-The ScreenSpot-Pro comparison viewer adds that separately measured control. It sends the exact same image bytes through the same model, processor, tool schema, decoding settings, and click-only task format while changing only the instruction. Controls name visible targets distributed across the interface rather than paraphrasing the target instruction.
+The prompt-comparison viewer adds that separately measured control. For a static case, it sends the exact same image bytes through the same model, processor, tool schema, decoding settings, and click-only task format while changing only the instruction. For a trajectory decision, every probe also retains the same ordered frame history and assistant action history. Controls name visible targets distributed across the interface rather than paraphrasing the target instruction.
 
 For the target and each control request, coordinate attribution averages the captured `x` and `y` value-token maps. Each request is then L1-normalized over every image patch before requests are combined:
 
@@ -145,7 +145,7 @@ prompt_difference[f] = normalized[target,f] - prompt_baseline[f]
 
 Normalizing each request first prevents a completion with more total image allocation from dominating the control mean. The result is signed: positive patches carry more routing mass for the target instruction than for the matched instruction ensemble, while negative patches carry less. The viewer uses a diverging color map and preserves both signs.
 
-Before subtraction, the implementation requires identical image SHA-256 values, frame order, pixel dimensions, patch grids, model metadata, processor metadata, full-attention layer identities, and head counts. A mismatch fails closed rather than resampling incompatible maps.
+Before subtraction, the implementation requires identical image SHA-256 values for every retained frame, frame order, pixel dimensions, patch grids, model metadata, processor metadata, full-attention layer identities, and head counts. A mismatch fails closed rather than resampling incompatible maps. Multi-frame requests are normalized jointly across every patch in every frame, so a historical frame's mass remains comparable with the current frame instead of being forced to sum to one independently.
 
 Control-set sensitivity is reported with leave-one-control-out cosine similarity. A high minimum similarity means the differential direction does not depend on one convenient control prompt. This does not make the attribution causal: all requests remain observational forward passes, and prompt wording may change generation dynamics beyond visual grounding.
 
@@ -162,14 +162,14 @@ The final rollout averages query heads at each layer before matrix composition, 
 
 ## 9. Display transform
 
-Float32 maps are independently quantized for the self-contained viewer. Each map stores its maximum scale and uint8 codes:
+Unsigned single-trace maps and signed prompt-difference maps use separate portable encodings. A signed comparison map stores its maximum absolute scale and int8 codes:
 
 ```text
-code = round(clamp(value / scale, 0, 1) * 255)
-decoded = code / 255 * scale
+code = round(clamp(value / scale, -1, 1) * 127)
+decoded = code / 127 * scale
 ```
 
-The maximum absolute round-trip error is one half of a quantization step, `scale / (2*255)`, apart from floating-point tolerance. For coloring, negative and non-finite values become zero, the 99th percentile is the visual ceiling, and a power of `0.62` improves low-signal contrast. This per-view color scaling changes appearance, not the raw allocation or differential metric.
+The maximum absolute round-trip error is one half of a signed quantization step, `scale / (2*127)`, apart from floating-point tolerance. The comparison viewer renders positive values in warm colors and negative values in blue, using a power of `0.62` to improve low-signal contrast. This display transform changes appearance, not the raw allocation or differential metric.
 
 ## 10. Computational verification
 
@@ -185,13 +185,15 @@ The maximum absolute round-trip error is one half of a quantization step, `scale
 - an explicit failure when no previous token exists;
 - exact-image validation and rejection of mismatched prompt-control traces;
 - per-request L1 normalization, control averaging, and signed target-minus-control subtraction;
+- joint L1 normalization across two input frames, per-frame boxes, metrics, and previews;
+- multi-frame request cloning that keeps image bytes and assistant actions fixed while changing only instruction semantics;
 - fractional target-box overlap and target-lift calculations;
-- viewer quantization round-trip error bounded by `scale / (2*255)`.
+- viewer quantization round-trip error bounded by `scale / (2*255)` for unsigned maps and `scale / (2*127)` for signed comparisons.
 
 Run the focused proof suite with:
 
 ```bash
-uv run pytest -q tests/test_attribution.py tests/test_contrast.py
+uv run pytest -q tests/test_attribution.py tests/test_contrast.py tests/test_trajectory_contrast.py
 ```
 
 ## 11. Generate viewers
@@ -224,6 +226,23 @@ uv run holo-capture screenspot-contrast data/screenspot-pro/runs/<sample-id>/cas
 ```
 
 The contrast viewer compares raw value-norm rollout, the strictly previous-token differential, the diverse-instruction mean, and the signed target-minus-instruction differential on the same screen. It also displays the benchmark box, predicted click, control prompts, stability score, and ranked layer/head statistics.
+
+For a captured final trajectory decision, replay the exact frame and action history under one target instruction and several visible control targets, then build the same comparison viewer:
+
+```bash
+uv run holo-capture trajectory-prompt-case data/traces/<final-trace-id> \
+  --target-instruction "<target click instruction>" \
+  --control-prompt "<matched visible control 1>" \
+  --control-prompt "<matched visible control 2>" \
+  --target-bbox X1,Y1,X2,Y2 \
+  --frame-bbox none \
+  --frame-bbox X1,Y1,X2,Y2 \
+  --trace-generation-steps 64
+
+uv run holo-capture trajectory-prompt-contrast data/trajectory-prompt-cases/<case>/case.json
+```
+
+Supply exactly one `--frame-bbox` per retained frame. Use `none` when the target is not visible. `--max-frame-width` is available for a uniformly resampled, lower-memory probe; the manifest records the scale and all target boxes are scaled with the frames.
 
 To collect a bounded local trajectory with every normal tool-call token retained:
 

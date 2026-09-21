@@ -52,6 +52,49 @@ def _coordinate_trace(tmp_path: Path, name: str, allocation: tuple[float, float]
     return trace
 
 
+def _multiframe_coordinate_trace(
+    tmp_path: Path,
+    name: str,
+    allocations: tuple[tuple[float, float], tuple[float, float]],
+) -> Path:
+    trace = tmp_path / name
+    trace.mkdir()
+    Image.new("RGB", (100, 50), "white").save(trace / "model-input-000.png")
+    Image.new("RGB", (100, 50), "gray").save(trace / "model-input-001.png")
+    np.save(trace / "input_ids.npy", np.asarray([[1, 9, 9, 8, 9, 9, 2]], dtype=np.int64))
+    tokens = [
+        "<parameter=x>\n",
+        "5",
+        "0",
+        "0\n</parameter>\n",
+        "<parameter=y>\n",
+        "4",
+        "0",
+        "0\n</parameter>",
+    ]
+    np.save(trace / "generated_ids.npy", np.asarray([range(40, 48)], dtype=np.int64))
+    (trace / "generated_tokens.json").write_text(
+        json.dumps({"token_ids": list(range(40, 48)), "tokens": tokens})
+    )
+    (trace / "positions.json").write_text(json.dumps({"image_token_id": 9, "prompt_token_count": 7}))
+    (trace / "processor.json").write_text(
+        json.dumps({"files": {"preprocessor_config.json": {"merge_size": 2}}})
+    )
+    (trace / "vision_inputs.json").write_text(
+        json.dumps({"image_grid_thw": {"shape": [2, 3], "values": [[1, 2, 4], [1, 2, 4]]}})
+    )
+    (trace / "model.json").write_text(json.dumps({"attention_layer_indices": [3], "model": "fixture"}))
+    arrays = {}
+    for step in range(8):
+        row = np.zeros((1, 7 + step), dtype=np.float32)
+        row[0, 1:3] = allocations[0]
+        row[0, 4:6] = allocations[1]
+        arrays[f"step_{step:03d}_layer_000"] = row
+    np.savez_compressed(trace / "attention_last_query_rows.npz", **arrays)
+    np.savez_compressed(trace / "value_norms.npz", layer_003=np.ones((1, 14), dtype=np.float32))
+    return trace
+
+
 def test_prompt_ensemble_difference_is_normalized_and_signed(tmp_path: Path) -> None:
     target = load_attribution(_coordinate_trace(tmp_path, "target", (0.9, 0.1)))
     control_a = load_attribution(_coordinate_trace(tmp_path, "control-a", (0.1, 0.9)))
@@ -100,3 +143,43 @@ def test_prompt_ensemble_rejects_a_different_image(tmp_path: Path) -> None:
     mismatch = load_attribution(_coordinate_trace(tmp_path, "mismatch", (0.1, 0.9), color="black"))
     with pytest.raises(AttributionError, match="exact same input image"):
         build_prompt_contrast(target, (mismatch,), method="value_norm")
+
+
+def test_multiframe_prompt_difference_is_one_joint_allocation(tmp_path: Path) -> None:
+    target = load_attribution(
+        _multiframe_coordinate_trace(tmp_path, "target", ((0.4, 0.1), (0.4, 0.1)))
+    )
+    control = load_attribution(
+        _multiframe_coordinate_trace(tmp_path, "control", ((0.1, 0.4), (0.1, 0.4)))
+    )
+    contrast = build_prompt_contrast(
+        target,
+        (control,),
+        method="value_norm",
+        control_instructions=("control",),
+    )
+
+    assert sum(float(values.sum()) for values in contrast.raw_maps) == pytest.approx(1.0)
+    np.testing.assert_allclose(contrast.raw_maps[0], [[0.4, 0.1]])
+    np.testing.assert_allclose(contrast.raw_maps[1], [[0.4, 0.1]])
+    np.testing.assert_allclose(contrast.prompt_difference_maps[0], [[0.3, -0.3]])
+    np.testing.assert_allclose(contrast.prompt_difference_maps[1], [[0.3, -0.3]])
+
+    output = tmp_path / "multiframe-viewer"
+    result = write_prompt_contrast_viewer(
+        contrast,
+        output,
+        sample_id="trajectory-fixture",
+        target_instruction="Click the cheapest hotel",
+        bbox=(0, 0, 50, 50),
+        frame_bboxes=((0, 0, 50, 50), (0, 0, 50, 50)),
+        predicted_click=(25, 25),
+        correct=True,
+        source_label="Synthetic hotel trajectory",
+    )
+    assert Path(result["previews"]["frame-000-target-minus-prompt-baseline"]).is_file()
+    assert Path(result["previews"]["frame-001-target-minus-prompt-baseline"]).is_file()
+    analysis = json.loads((output / "analysis.json").read_text())
+    assert analysis["source_label"] == "Synthetic hotel trajectory"
+    assert len(analysis["metrics"]["prompt_difference"]) == 2
+    assert analysis["metrics"]["prompt_difference"][0]["target_lift"] == pytest.approx(2.0)

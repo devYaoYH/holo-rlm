@@ -18,6 +18,7 @@ from attribution import (
     write_prompt_contrast_viewer,
     write_trajectory_viewer,
 )
+from attribution.contrast import parameter_steps
 from capture.validator import ValidationError, validate_bundle
 
 from .backends import OpenAIBackend, ScriptedBackend
@@ -26,6 +27,7 @@ from .holo_cli import import_runtime_bundle, run_holo
 from .preflight import run_preflight, smoke_backend
 from .runner import capture_run
 from .screenspot import load_screenspot_sample, run_screenspot_case
+from .trajectory_contrast import run_multiframe_prompt_case
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_EVAL_MANIFEST = PROJECT_ROOT / "benchmarks" / "frozen_eval_v2.json"
@@ -99,6 +101,30 @@ def parser() -> argparse.ArgumentParser:
     contrast.add_argument("case", type=Path, help="case.json written by screenspot-case")
     contrast.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
     contrast.add_argument("--output", type=Path)
+    trajectory_case = sub.add_parser("trajectory-prompt-case")
+    trajectory_case.add_argument("source_trace", type=Path)
+    trajectory_case.add_argument("--target-instruction", required=True)
+    trajectory_case.add_argument("--control-prompt", action="append", default=[])
+    trajectory_case.add_argument("--target-bbox", required=True, metavar="X1,Y1,X2,Y2")
+    trajectory_case.add_argument(
+        "--frame-bbox",
+        action="append",
+        default=[],
+        metavar="X1,Y1,X2,Y2|none",
+        help="one target box or 'none' per retained frame",
+    )
+    trajectory_case.add_argument("--trace-generation-steps", type=int, choices=range(1, 257), default=64)
+    trajectory_case.add_argument(
+        "--max-frame-width",
+        type=int,
+        default=None,
+        help="uniformly downsample every retained frame before matched tracing",
+    )
+    trajectory_case.add_argument("--output", type=Path)
+    trajectory_contrast = sub.add_parser("trajectory-prompt-contrast")
+    trajectory_contrast.add_argument("case", type=Path, help="case.json written by trajectory-prompt-case")
+    trajectory_contrast.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
+    trajectory_contrast.add_argument("--output", type=Path)
     return result
 
 
@@ -318,6 +344,81 @@ def main(argv: list[str] | None = None) -> None:
                 format_valid=bool(target_run.get("format_valid", True)),
             )
         )
+    elif args.command == "trajectory-prompt-case":
+        if not args.control_prompt:
+            raise SystemExit("trajectory prompt case requires at least one --control-prompt")
+        frame_bboxes = tuple(_optional_rectangle(value) for value in args.frame_bbox)
+        output = args.output or PROJECT_ROOT / "data" / "trajectory-prompt-cases" / args.source_trace.name
+        _print(
+            run_multiframe_prompt_case(
+                source_trace=args.source_trace,
+                target_instruction=args.target_instruction,
+                controls=args.control_prompt,
+                target_bbox=_rectangle(args.target_bbox),
+                frame_bboxes=frame_bboxes,
+                base_url=base_url,
+                output_dir=output,
+                trace_generation_steps=args.trace_generation_steps,
+                max_frame_width=args.max_frame_width,
+            )
+        )
+    elif args.command == "trajectory-prompt-contrast":
+        case = json.loads(args.case.read_text())
+        target_run = next(run for run in case["runs"] if run["role"] == "target")
+        control_runs = tuple(run for run in case["runs"] if run["role"].startswith("control-"))
+        if not control_runs:
+            raise SystemExit("trajectory contrast requires at least one traced control prompt")
+        trace_ids = [target_run.get("trace_id"), *[run.get("trace_id") for run in control_runs]]
+        if not all(isinstance(trace_id, str) for trace_id in trace_ids):
+            raise SystemExit("trajectory contrast requires target and control activation trace IDs")
+        target = load_attribution(args.trace_root / trace_ids[0])
+        compatible_controls = []
+        compatible_runs = []
+        excluded_controls = []
+        for run, trace_id in zip(control_runs, trace_ids[1:], strict=True):
+            control = load_attribution(args.trace_root / trace_id)
+            try:
+                parameter_steps(control, ("x", "y"))
+            except AttributionError as exc:
+                excluded_controls.append(
+                    {"instruction": run["instruction"], "trace_id": trace_id, "reason": str(exc)}
+                )
+            else:
+                compatible_controls.append(control)
+                compatible_runs.append(run)
+        controls = tuple(compatible_controls)
+        control_runs = tuple(compatible_runs)
+        if not controls:
+            raise SystemExit("trajectory contrast has no controls with both x and y token spans")
+        comparison = build_prompt_contrast(
+            target,
+            controls,
+            control_instructions=tuple(run["instruction"] for run in control_runs),
+        )
+        click_record = target_run.get("click")
+        if not isinstance(click_record, dict):
+            raise SystemExit("trajectory contrast requires a schema-valid target click")
+        click = click_record["pixel"]
+        output = args.output or PROJECT_ROOT / "data" / "attributions" / f"trajectory-contrast-{args.case.parent.name}"
+        frame_bboxes = tuple(
+            tuple(float(value) for value in bbox) if bbox is not None else None
+            for bbox in case["frame_bboxes"]
+        )
+        _print(
+            write_prompt_contrast_viewer(
+                comparison,
+                output,
+                sample_id=output.name,
+                target_instruction=case["target_instruction"],
+                bbox=tuple(float(value) for value in case["target_bbox"]),
+                predicted_click=(float(click["x"]), float(click["y"])),
+                correct=bool(target_run.get("grounding_correct", target_run.get("correct", False))),
+                format_valid=bool(target_run.get("format_valid", True)),
+                source_label="Synthetic hotel trajectory",
+                frame_bboxes=frame_bboxes,
+                excluded_controls=tuple(excluded_controls),
+            )
+        )
 
 
 def _rectangle(value: str) -> tuple[int, int, int, int]:
@@ -325,6 +426,12 @@ def _rectangle(value: str) -> tuple[int, int, int, int]:
     if len(parts) != 4:
         raise argparse.ArgumentTypeError("redaction must be X1,Y1,X2,Y2")
     return parts
+
+
+def _optional_rectangle(value: str) -> tuple[int, int, int, int] | None:
+    if value.strip().lower() == "none":
+        return None
+    return _rectangle(value)
 
 
 def _print(value: object) -> None:

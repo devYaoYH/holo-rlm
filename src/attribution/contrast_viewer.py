@@ -24,6 +24,9 @@ def write_prompt_contrast_viewer(
     predicted_click: tuple[float, float],
     correct: bool,
     format_valid: bool = True,
+    source_label: str = "ScreenSpot-Pro",
+    frame_bboxes: tuple[tuple[float, float, float, float] | None, ...] | None = None,
+    excluded_controls: tuple[dict[str, str], ...] = (),
 ) -> dict[str, Any]:
     """Write one portable live-demo viewer and its machine-readable analysis."""
 
@@ -31,14 +34,21 @@ def write_prompt_contrast_viewer(
     if output_dir == contrast.target.trace_path or contrast.target.trace_path in output_dir.parents:
         raise AttributionError("contrast viewer output must stay outside immutable trace directories")
     output_dir.mkdir(parents=True, exist_ok=True)
+    if frame_bboxes is None:
+        frame_bboxes = tuple(
+            bbox if index == contrast.target.frame_count - 1 else None
+            for index in range(contrast.target.frame_count)
+        )
+    if len(frame_bboxes) != contrast.target.frame_count:
+        raise AttributionError("frame bbox count must match the target trace frame count")
     frame_payloads = []
-    mode_metrics: dict[str, list[dict[str, Any]]] = {
+    mode_metrics: dict[str, list[dict[str, Any] | None]] = {
         "raw": [],
         "causal": [],
         "prompt_baseline": [],
         "prompt_difference": [],
     }
-    for frame in contrast.target.frames:
+    for frame, frame_bbox in zip(contrast.target.frames, frame_bboxes, strict=True):
         maps = {
             "raw": contrast.raw_maps[frame.index],
             "causal": contrast.causal_maps[frame.index],
@@ -46,7 +56,9 @@ def write_prompt_contrast_viewer(
             "prompt_difference": contrast.prompt_difference_maps[frame.index],
         }
         for name, values in maps.items():
-            mode_metrics[name].append(spatial_metrics(values, bbox, frame.image_size))
+            mode_metrics[name].append(
+                spatial_metrics(values, frame_bbox, frame.image_size) if frame_bbox is not None else None
+            )
         suffix = frame.image_path.suffix.lower()
         mime = "image/png" if suffix == ".png" else "image/jpeg"
         frame_payloads.append(
@@ -58,22 +70,31 @@ def write_prompt_contrast_viewer(
                 "height": frame.image_size[1],
                 "rows": frame.layout.rows,
                 "columns": frame.layout.columns,
+                "bbox": list(frame_bbox) if frame_bbox is not None else None,
+                "isCurrent": frame.index == contrast.target.frame_count - 1,
                 "maps": {name: encode_signed_map(values) for name, values in maps.items()},
             }
         )
-    head_stats = layer_head_statistics(contrast, bbox)
+    head_stats = layer_head_statistics(
+        contrast,
+        bbox,
+        frame_index=contrast.target.frame_count - 1,
+    )
     summary = {
         "schema_version": 1,
         "sample_id": sample_id,
+        "source_label": source_label,
         "target_instruction": target_instruction,
         "correct": correct,
         "format_valid": format_valid,
         "bbox": list(bbox),
+        "frame_bboxes": [list(value) if value is not None else None for value in frame_bboxes],
         "predicted_click": list(predicted_click),
         "method": contrast.method,
         "parameters": list(contrast.parameters),
         "target_steps": list(contrast.target_steps),
         "controls": list(contrast.control_instructions),
+        "excluded_controls": list(excluded_controls),
         "trace_ids": {
             "target": contrast.target.trace_path.name,
             "controls": [control.trace_path.name for control in contrast.controls],
@@ -84,30 +105,45 @@ def write_prompt_contrast_viewer(
         "interpretation": {
             "raw": "L1-normalized value-norm cross-layer rollout for x and y value tokens.",
             "causal": "Target coordinate map minus the mean of generated-token maps strictly before x begins.",
-            "prompt_baseline": "Mean of separately L1-normalized coordinate maps from matched click instructions on the exact same image.",
-            "prompt_difference": "Target normalized coordinate map minus the same-image diverse-instruction mean. Red is above baseline; blue is below baseline.",
+            "prompt_baseline": "Mean of separately L1-normalized coordinate maps from matched click instructions over the exact same image history.",
+            "prompt_difference": "Target normalized coordinate map minus the same-image-history diverse-instruction mean. Red is above baseline; blue is below baseline.",
         },
         "caveat": "Attention rollout is a routing diagnostic, not proof that changing a highlighted patch would change the click.",
     }
     (output_dir / "analysis.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
-    preview_paths = {}
-    for name, values in {
-        "raw": contrast.raw_maps[0],
-        "causal": contrast.causal_maps[0],
-        "prompt-baseline": contrast.prompt_baseline_maps[0],
-        "target-minus-prompt-baseline": contrast.prompt_difference_maps[0],
-    }.items():
-        preview = output_dir / f"preview-{name}.png"
-        _write_preview(
-            contrast.target.frames[0].image_path,
-            values,
-            bbox=bbox,
-            predicted_click=predicted_click,
-            output_path=preview,
-        )
-        preview_paths[name] = str(preview)
+    preview_paths: dict[str, str] = {}
+    preview_maps = {
+        "raw": contrast.raw_maps,
+        "causal": contrast.causal_maps,
+        "prompt-baseline": contrast.prompt_baseline_maps,
+        "target-minus-prompt-baseline": contrast.prompt_difference_maps,
+    }
+    last_index = contrast.target.frame_count - 1
+    for frame, frame_bbox in zip(contrast.target.frames, frame_bboxes, strict=True):
+        frame_click = predicted_click if frame.index == last_index else None
+        for name, maps in preview_maps.items():
+            preview = output_dir / f"preview-frame-{frame.index:03d}-{name}.png"
+            _write_preview(
+                frame.image_path,
+                maps[frame.index],
+                bbox=frame_bbox,
+                predicted_click=frame_click,
+                output_path=preview,
+            )
+            preview_paths[f"frame-{frame.index:03d}-{name}"] = str(preview)
+            if frame.index == last_index:
+                legacy_preview = output_dir / f"preview-{name}.png"
+                _write_preview(
+                    frame.image_path,
+                    maps[frame.index],
+                    bbox=frame_bbox,
+                    predicted_click=frame_click,
+                    output_path=legacy_preview,
+                )
+                preview_paths[name] = str(legacy_preview)
     payload = {
         "sampleId": sample_id,
+        "sourceLabel": source_label,
         "instruction": target_instruction,
         "correct": correct,
         "formatValid": format_valid,
@@ -117,6 +153,7 @@ def write_prompt_contrast_viewer(
         "parameters": list(contrast.parameters),
         "frames": frame_payloads,
         "controls": list(contrast.control_instructions),
+        "excludedControls": list(excluded_controls),
         "stability": contrast.stability,
         "metrics": mode_metrics,
         "layerStats": head_stats["layers"],
@@ -142,8 +179,8 @@ def _write_preview(
     image_path: Path,
     values: np.ndarray,
     *,
-    bbox: tuple[float, float, float, float],
-    predicted_click: tuple[float, float],
+    bbox: tuple[float, float, float, float] | None,
+    predicted_click: tuple[float, float] | None,
     output_path: Path,
 ) -> None:
     """Render a deterministic static counterpart of the live canvas overlay."""
@@ -169,11 +206,13 @@ def _write_preview(
     result = Image.alpha_composite(base, overlay)
     draw = ImageDraw.Draw(result)
     line_width = max(3, round(result.width / 900))
-    draw.rectangle(bbox, outline=(50, 230, 161, 255), width=line_width)
-    x, y = predicted_click
-    arm = max(12, round(result.width / 160))
-    draw.line((x - arm, y, x + arm, y), fill=(255, 255, 255, 255), width=line_width)
-    draw.line((x, y - arm, x, y + arm), fill=(255, 255, 255, 255), width=line_width)
+    if bbox is not None:
+        draw.rectangle(bbox, outline=(50, 230, 161, 255), width=line_width)
+    if predicted_click is not None:
+        x, y = predicted_click
+        arm = max(12, round(result.width / 160))
+        draw.line((x - arm, y, x + arm, y), fill=(255, 255, 255, 255), width=line_width)
+        draw.line((x, y - arm, x, y + arm), fill=(255, 255, 255, 255), width=line_width)
     result.convert("RGB").save(output_path, optimize=True)
 
 
@@ -181,7 +220,7 @@ _HTML = r'''<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ScreenSpot-Pro attribution comparison</title>
+<title>Instruction-specific attribution comparison</title>
 <style>
 :root{color-scheme:light dark;--bg:#f4f5f7;--panel:#fff;--fg:#17181b;--muted:#666b75;--line:#d9dce2;--accent:#6d43dc;--good:#16845b;--bad:#c2463b;--soft:#eee9ff}
 @media(prefers-color-scheme:dark){:root{--bg:#101216;--panel:#1a1d22;--fg:#f3f4f6;--muted:#a7abb3;--line:#343943;--accent:#b8a2ff;--good:#62d5a5;--bad:#ff8d84;--soft:#30294b}}
@@ -189,19 +228,19 @@ _HTML = r'''<!doctype html>
 </style>
 </head>
 <body><main>
-<header><div class="eyebrow">ScreenSpot-Pro · local Holo 3.1 4B</div><h1>Instruction-specific visual attribution</h1><div class="subtitle"><span id="sample"></span> · <span id="instruction"></span> · <span id="outcome" class="outcome"></span></div></header>
-<section class="stage"><div class="frame-wrap"><img id="frame" alt="ScreenSpot-Pro screenshot"><canvas id="overlay" role="img"></canvas></div><div class="stage-footer"><span id="mode-label"></span><span id="coordinates"></span></div></section>
+<header><div class="eyebrow"><span id="source-label"></span> · local Holo 3.1 4B</div><h1>Instruction-specific visual attribution</h1><div class="subtitle"><span id="sample"></span> · <span id="instruction"></span> · <span id="outcome" class="outcome"></span></div></header>
+<section class="stage"><div class="frame-wrap"><img id="frame" alt="GUI screenshot"><canvas id="overlay" role="img"></canvas></div><div class="stage-footer"><span id="mode-label"></span><span id="coordinates"></span></div></section>
 <section class="controls"><div class="control-grid"><div class="control"><label for="frame-select">Input frame</label><select id="frame-select"></select></div><div class="control"><label for="mode">Attribution comparison</label><select id="mode"><option value="raw">Raw value-norm rollout</option><option value="causal">Causal previous-token difference</option><option value="prompt_baseline">Diverse-instruction baseline</option><option value="prompt_difference">Target minus diverse-instruction baseline</option></select></div><div class="control"><label for="opacity">Overlay opacity · <output id="opacity-output">72%</output></label><input id="opacity" type="range" min="0" max="100" value="72"></div><div class="control"><label for="head-sort">Per-head ranking</label><select id="head-sort"><option value="prompt_difference">Prompt difference</option><option value="causal">Causal difference</option><option value="raw">Raw attention</option></select></div></div><div class="checks"><label><input id="grid" type="checkbox"> Show patch boundaries</label><label><input id="bbox" type="checkbox" checked> Show ground-truth box</label><label><input id="click" type="checkbox" checked> Show predicted click</label></div><p id="explainer" class="explainer"></p></section>
 <section class="metrics"><div class="metric"><div class="metric-label">Target lift</div><div id="lift" class="metric-value"></div></div><div class="metric"><div class="metric-label">Positive mass in target</div><div id="target-mass" class="metric-value"></div></div><div class="metric"><div class="metric-label">Peak distance</div><div id="distance" class="metric-value"></div></div><div class="metric"><div class="metric-label">Map entropy</div><div id="entropy" class="metric-value"></div></div></section>
-<section class="analysis"><div class="panel"><h2>Layer and head target alignment</h2><div class="table-wrap"><table><thead><tr><th>Layer</th><th>Head</th><th>Target lift</th><th>Target mass</th><th>Peak distance</th></tr></thead><tbody id="head-table"></tbody></table></div></div><div class="panel"><h2>Same-image control instructions</h2><ol id="controls" class="controls-list"></ol><div id="stability" class="stability"></div><h2 style="margin-top:18px">Layer summary</h2><div class="table-wrap"><table><thead><tr><th>Layer</th><th>Mean lift</th><th>Best head</th><th>Best lift</th></tr></thead><tbody id="layer-table"></tbody></table></div></div></section>
+<section class="analysis"><div class="panel"><h2>Layer and head target alignment</h2><div class="table-wrap"><table><thead><tr><th>Layer</th><th>Head</th><th>Target lift</th><th>Target mass</th><th>Peak distance</th></tr></thead><tbody id="head-table"></tbody></table></div></div><div class="panel"><h2>Same-image control instructions</h2><ol id="controls" class="controls-list"></ol><div id="excluded-controls" class="stability"></div><div id="stability" class="stability"></div><h2 style="margin-top:18px">Layer summary</h2><div class="table-wrap"><table><thead><tr><th>Layer</th><th>Mean lift</th><th>Best head</th><th>Best lift</th></tr></thead><tbody id="layer-table"></tbody></table></div></div></section>
 </main><script>
 const data=__PROMPT_CONTRAST_PAYLOAD__,$=id=>document.getElementById(id),image=$('frame'),canvas=$('overlay'),ctx=canvas.getContext('2d');
 const state={frame:0,mode:'raw',opacity:.72,grid:false,bbox:true,click:true,headSort:'prompt_difference'};
-const descriptions={raw:'Coordinate-token attribution after value-norm correction and full cross-layer rollout, normalized across all image patches.',causal:'The raw coordinate map minus only generated-token maps that occurred before the x value began. Future output tokens never enter the baseline.',prompt_baseline:'The mean coordinate map from matched click instructions on this exact image. Each control run is normalized before averaging.',prompt_difference:'Instruction-specific differential: target map minus the same-image control mean. Red is above baseline; blue is below baseline.'};
+const descriptions={raw:'Coordinate-token attribution after value-norm correction and full cross-layer rollout, normalized jointly across every retained image patch.',causal:'The raw coordinate map minus only generated-token maps that occurred before the x value began. Future output tokens never enter the baseline.',prompt_baseline:'The mean coordinate map from matched click instructions over this exact image and action history. Each control run is normalized before averaging.',prompt_difference:'Instruction-specific differential: target map minus the same-image-history control mean. Red is above baseline; blue is below baseline.'};
 function decode(encoded){const raw=atob(encoded),bytes=new Uint8Array(raw.length),result=new Int8Array(raw.length);for(let i=0;i<raw.length;i++)result[i]=bytes[i];return result}
 function colorSigned(value){const magnitude=Math.pow(Math.min(1,Math.abs(value)),.62);if(value>=0)return[255,80+Math.round(145*(1-magnitude)),38,Math.round(235*magnitude)];return[35,145,255,Math.round(220*magnitude)]}
-function render(){const frame=data.frames[state.frame],encoded=frame.maps[state.mode],codes=decode(encoded.valuesI8),small=document.createElement('canvas');small.width=frame.columns;small.height=frame.rows;const sctx=small.getContext('2d'),pixels=sctx.createImageData(frame.columns,frame.rows);for(let i=0;i<codes.length;i++){const rgba=colorSigned(codes[i]/127),o=i*4;pixels.data[o]=rgba[0];pixels.data[o+1]=rgba[1];pixels.data[o+2]=rgba[2];pixels.data[o+3]=rgba[3]}sctx.putImageData(pixels,0,0);canvas.width=frame.width;canvas.height=frame.height;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=state.opacity;ctx.drawImage(small,0,0,canvas.width,canvas.height);ctx.globalAlpha=1;if(state.grid){ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=Math.max(1,canvas.width/1600);for(let c=1;c<frame.columns;c++){const x=c*canvas.width/frame.columns;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke()}for(let r=1;r<frame.rows;r++){const y=r*canvas.height/frame.rows;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}}const annotated=state.frame===data.frames.length-1;if(state.bbox&&annotated){const [x1,y1,x2,y2]=data.bbox;ctx.strokeStyle='#32e6a1';ctx.lineWidth=Math.max(3,canvas.width/900);ctx.strokeRect(x1,y1,x2-x1,y2-y1)}if(state.click&&annotated){const[x,y]=data.predictedClick;ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(3,canvas.width/900);ctx.beginPath();ctx.moveTo(x-18,y);ctx.lineTo(x+18,y);ctx.moveTo(x,y-18);ctx.lineTo(x,y+18);ctx.stroke()}const m=data.metrics[state.mode][state.frame];$('lift').textContent=annotated?`${m.target_lift.toFixed(1)}x`:'—';$('target-mass').textContent=annotated?`${(m.target_mass*100).toFixed(2)}%`:'—';$('distance').textContent=annotated?`${(m.peak_distance_diagonal*100).toFixed(1)}% diag`:'—';$('entropy').textContent=m.normalized_entropy.toFixed(2);$('mode-label').textContent=`${$('mode').selectedOptions[0].textContent} · ${frame.label}`;$('coordinates').textContent=annotated?`white cross: predicted click (${Math.round(data.predictedClick[0])}, ${Math.round(data.predictedClick[1])}) · green box: ground truth · ${frame.columns} x ${frame.rows} patches`:`historical input frame · target box and predicted click belong to the final annotated frame · ${frame.columns} x ${frame.rows} patches`;$('explainer').textContent=descriptions[state.mode];renderTables()}
+function render(){const frame=data.frames[state.frame],encoded=frame.maps[state.mode],codes=decode(encoded.valuesI8),small=document.createElement('canvas');small.width=frame.columns;small.height=frame.rows;const sctx=small.getContext('2d'),pixels=sctx.createImageData(frame.columns,frame.rows);for(let i=0;i<codes.length;i++){const rgba=colorSigned(codes[i]/127),o=i*4;pixels.data[o]=rgba[0];pixels.data[o+1]=rgba[1];pixels.data[o+2]=rgba[2];pixels.data[o+3]=rgba[3]}sctx.putImageData(pixels,0,0);canvas.width=frame.width;canvas.height=frame.height;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=state.opacity;ctx.drawImage(small,0,0,canvas.width,canvas.height);ctx.globalAlpha=1;if(state.grid){ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=Math.max(1,canvas.width/1600);for(let c=1;c<frame.columns;c++){const x=c*canvas.width/frame.columns;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke()}for(let r=1;r<frame.rows;r++){const y=r*canvas.height/frame.rows;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}}const annotated=Array.isArray(frame.bbox);if(state.bbox&&annotated){const [x1,y1,x2,y2]=frame.bbox;ctx.strokeStyle='#32e6a1';ctx.lineWidth=Math.max(3,canvas.width/900);ctx.strokeRect(x1,y1,x2-x1,y2-y1)}if(state.click&&frame.isCurrent){const[x,y]=data.predictedClick;ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(3,canvas.width/900);ctx.beginPath();ctx.moveTo(x-18,y);ctx.lineTo(x+18,y);ctx.moveTo(x,y-18);ctx.lineTo(x,y+18);ctx.stroke()}const m=data.metrics[state.mode][state.frame];$('lift').textContent=m?`${m.target_lift.toFixed(1)}x`:'—';$('target-mass').textContent=m?`${(m.target_mass*100).toFixed(2)}%`:'—';$('distance').textContent=m?`${(m.peak_distance_diagonal*100).toFixed(1)}% diag`:'—';$('entropy').textContent=m?m.normalized_entropy.toFixed(2):'—';$('mode-label').textContent=`${$('mode').selectedOptions[0].textContent} · ${frame.label}`;const patchText=`${frame.columns} x ${frame.rows} patches`;$('coordinates').textContent=frame.isCurrent?`white cross: predicted click (${Math.round(data.predictedClick[0])}, ${Math.round(data.predictedClick[1])})${annotated?' · green box: target':' '} · ${patchText}`:annotated?`historical frame with the target visible · green box: target · ${patchText}`:`historical input frame before the target was visible · ${patchText}`;$('explainer').textContent=descriptions[state.mode];renderTables()}
 function renderTables(){const key=state.headSort,rows=[...data.headStats].sort((a,b)=>b[key].target_lift-a[key].target_lift).slice(0,24);$('head-table').innerHTML=rows.map(row=>`<tr><td>${row.transformer_layer}</td><td>${row.head}</td><td>${row[key].target_lift.toFixed(1)}x</td><td>${(row[key].target_mass*100).toFixed(2)}%</td><td>${(row[key].peak_distance_diagonal*100).toFixed(1)}%</td></tr>`).join('');const metric=key==='prompt_difference'?'prompt':key;$('layer-table').innerHTML=data.layerStats.map(row=>`<tr><td>${row.transformer_layer}</td><td>${row[metric+'_mean_target_lift'].toFixed(1)}x</td><td>${key==='prompt_difference'?row.best_prompt_head:'—'}</td><td>${key==='prompt_difference'?row.best_prompt_target_lift.toFixed(1)+'x':'—'}</td></tr>`).join('')}
-$('sample').textContent=data.sampleId;$('instruction').textContent=`“${data.instruction}”`;$('outcome').textContent=data.correct?(data.formatValid?'OFFICIAL HIT':'VISUAL HIT · MALFORMED TOOL SYNTAX'):'GROUNDING MISS';if(!data.correct)$('outcome').classList.add('miss');data.controls.forEach(value=>{const li=document.createElement('li');li.textContent=value;$('controls').append(li)});const mean=data.stability.mean_leave_one_out_cosine,min=data.stability.minimum_leave_one_out_cosine;$('stability').textContent=mean==null?'One control only; leave-one-out stability is unavailable.':`Leave-one-control-out cosine: mean ${mean.toFixed(3)}, minimum ${min.toFixed(3)}.`;data.frames.forEach((frame,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=frame.label;$('frame-select').append(option)});$('frame-select').disabled=data.frames.length===1;
+$('source-label').textContent=data.sourceLabel;$('sample').textContent=data.sampleId;$('instruction').textContent=`“${data.instruction}”`;$('outcome').textContent=data.correct?(data.formatValid?'OFFICIAL HIT':'VISUAL HIT · MALFORMED TOOL SYNTAX'):'GROUNDING MISS';if(!data.correct)$('outcome').classList.add('miss');data.controls.forEach(value=>{const li=document.createElement('li');li.textContent=value;$('controls').append(li)});if(data.excludedControls.length)$('excluded-controls').textContent=`Excluded ${data.excludedControls.length} control(s) missing a complete x/y token pair; see analysis.json.`;const mean=data.stability.mean_leave_one_out_cosine,min=data.stability.minimum_leave_one_out_cosine;$('stability').textContent=mean==null?'One control only; leave-one-out stability is unavailable.':`Leave-one-control-out cosine: mean ${mean.toFixed(3)}, minimum ${min.toFixed(3)}.`;data.frames.forEach((frame,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=frame.label;$('frame-select').append(option)});$('frame-select').disabled=data.frames.length===1;
 $('frame-select').addEventListener('change',event=>{state.frame=Number(event.target.value);image.src=data.frames[state.frame].imageDataUrl});$('mode').addEventListener('change',event=>{state.mode=event.target.value;render()});$('opacity').addEventListener('input',event=>{state.opacity=Number(event.target.value)/100;$('opacity-output').textContent=`${event.target.value}%`;render()});$('head-sort').addEventListener('change',event=>{state.headSort=event.target.value;renderTables()});$('grid').addEventListener('change',event=>{state.grid=event.target.checked;render()});$('bbox').addEventListener('change',event=>{state.bbox=event.target.checked;render()});$('click').addEventListener('change',event=>{state.click=event.target.checked;render()});image.addEventListener('load',render);image.src=data.frames[0].imageDataUrl;
 </script></body></html>'''
