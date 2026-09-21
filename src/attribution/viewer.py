@@ -545,7 +545,7 @@ def _colorize(normalized: np.ndarray) -> np.ndarray:
     upper = np.minimum(lower + 1, _COLOR_STOPS.shape[0] - 1)
     fraction = (position - lower)[..., None]
     rgb = _COLOR_STOPS[lower] * (1 - fraction) + _COLOR_STOPS[upper] * fraction
-    alpha = np.clip(normalized * 210, 0, 210)[..., None]
+    alpha = np.clip(normalized * 140, 0, 140)[..., None]
     return np.concatenate([rgb, alpha], axis=-1).astype(np.uint8)
 
 
@@ -581,7 +581,7 @@ _HTML = r'''<!doctype html>
         <div class="control"><div class="control-head"><label for="step">Generation step</label><output id="step-output"></output></div><input id="step" type="range" min="0" value="0" step="1"></div>
         <div class="control"><div class="control-head"><label for="layer">Transformer layer</label></div><select id="layer"><option value="all">All captured layers</option></select></div>
         <div class="control"><div class="control-head"><label for="head">Attention head</label></div><select id="head"><option value="all">All heads</option></select></div>
-        <div class="control"><div class="control-head"><label for="opacity">Overlay opacity</label><output id="opacity-output">72%</output></div><input id="opacity" type="range" min="0" max="100" value="72"></div>
+        <div class="control"><div class="control-head"><label for="opacity">Overlay opacity</label><output id="opacity-output">48%</output></div><input id="opacity" type="range" min="0" max="100" value="48"></div>
       </div>
       <div class="token-strip" id="token-strip" aria-label="Captured generated tokens"></div>
       <div class="checks">
@@ -603,7 +603,7 @@ const data=__ATTRIBUTION_PAYLOAD__;
 function decodeBase64(value){const binary=atob(value),result=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)result[i]=binary.charCodeAt(i);return result}
 const frameMethodData=data.frames.map(item=>{const methods={};item.methods.forEach(method=>{const scaleBytes=decodeBase64(method.mapScalesF32);methods[method.id]={...method,maps:decodeBase64(method.mapsU8),scales:new Float32Array(scaleBytes.buffer)}});return methods});
 const $=id=>document.getElementById(id);
-const state={frameIndex:data.frames.length-1,stepAxis:0,focus:data.spans.length?data.spans[0].id:'token',layer:'all',head:'all',method:data.defaultMethod,opacity:.72,grid:false,baseline:false,baselineCount:null,current:null};
+const state={frameIndex:data.frames.length-1,stepAxis:0,focus:data.spans.length?data.spans[0].id:'token',layer:'all',head:'all',method:data.defaultMethod,opacity:.48,grid:false,baseline:false,baselineCount:null,current:null};
 const frame=$('frame'),canvas=$('heatmap'),ctx=canvas.getContext('2d'),tip=$('hover-tip');
 $('trace-id').textContent=data.traceId;
 $('step').max=String(data.steps.length-1);
@@ -677,7 +677,7 @@ _TRAJECTORY_HTML = r'''<!doctype html>
     <div class="control-grid">
       <div class="control"><label for="frame-select">Pre-action frame</label><select id="frame-select"></select></div>
       <div class="control"><label for="target-select">Generated parameter target</label><select id="target-select"></select></div>
-      <div class="control"><label for="opacity">Overlay opacity · <output id="opacity-output">72%</output></label><input id="opacity" type="range" min="0" max="100" value="72"></div>
+      <div class="control"><label for="opacity">Overlay opacity · <output id="opacity-output">48%</output></label><input id="opacity" type="range" min="0" max="100" value="48"></div>
     </div>
     <p class="method-note" id="method-note"></p>
   </section>
@@ -688,7 +688,7 @@ _TRAJECTORY_HTML = r'''<!doctype html>
 <script>
 const data=__TRAJECTORY_PAYLOAD__;
 const $=id=>document.getElementById(id),frame=$('frame'),canvas=$('heatmap'),ctx=canvas.getContext('2d');
-const state={frame:0,target:0,opacity:.72};
+const state={frame:0,target:0,opacity:.48};
 function decode(value){const raw=atob(value),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes}
 function actionText(action){if(action.action==='scroll')return`scroll · delta_y ${action.delta_y}`;if(action.action==='click')return`click · (${action.x}, ${action.y})`;return Object.entries(action).map(([key,value])=>`${key} ${value}`).join(' · ')}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}

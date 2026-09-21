@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.909.61513/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v4.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v5.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -106,6 +106,26 @@ function pill(slide, label, left, top, width, fill, color = C.ink) {
     alignment: "center",
     verticalAlignment: "middle",
   });
+}
+
+function clickMarker(slide, x, y, size = 18) {
+  const halo = 8;
+  slide.shapes.add({
+    geometry: "ellipse",
+    position: { left: x - size, top: y - size, width: size * 2, height: size * 2 },
+    fill: "none",
+    line: { fill: C.ink, width: halo },
+  });
+  slide.shapes.add({
+    geometry: "ellipse",
+    position: { left: x - size, top: y - size, width: size * 2, height: size * 2 },
+    fill: "none",
+    line: { fill: C.white, width: 3 },
+  });
+  rect(slide, x - size - 6, y - 4, size * 2 + 12, 8, C.ink, true);
+  rect(slide, x - 4, y - size - 6, 8, size * 2 + 12, C.ink, true);
+  rect(slide, x - size - 6, y - 1.5, size * 2 + 12, 3, C.white, true);
+  rect(slide, x - 1.5, y - size - 6, 3, size * 2 + 12, C.white, true);
 }
 
 function slideTitle(slide, kicker, title, index, dark = false) {
@@ -232,6 +252,7 @@ function metricCard(slide, left, top, width, label, value, accent = C.orange, ca
   slide.background.fill = C.paper;
   slideTitle(slide, "Visual grounding hit", "Subtracting image saliency reveals the selected template", 4);
   textBox(slide, "“Create a Psychedelic vibrant presentation”", 64, 122, 780, 30, { fontSize: 19, bold: true, color: C.muted });
+  pill(slide, "WHITE RING = ISSUED CLICK", 940, 119, 276, C.deep, C.white);
   await image(slide, successRaw, 64, 174, 548, 342, { alt: "Raw value-norm rollout on success case", crop: { left: 0, top: 0.02, right: 0.30, bottom: 0.31 } });
   await image(slide, successDiff, 668, 174, 548, 342, { alt: "Target minus diverse-instruction baseline on success case", crop: { left: 0, top: 0.02, right: 0.30, bottom: 0.31 } });
   pill(slide, "RAW ROLLOUT", 84, 192, 122, C.deep, C.white);
@@ -250,6 +271,7 @@ function metricCard(slide, left, top, width, label, value, accent = C.orange, ca
   slide.background.fill = C.paper;
   slideTitle(slide, "Grounding miss", "The right region wins, but the wrong affordance receives the click", 5);
   textBox(slide, "Instruction: Create new slide", 80, 126, 500, 28, { fontSize: 19, bold: true, color: C.muted });
+  pill(slide, "WHITE RING = ISSUED CLICK", 558, 121, 276, C.deep, C.white);
   await image(slide, failureDiff, 64, 164, 770, 438, { alt: "Prompt differential saliency for the Create new slide failure", crop: { left: 0, top: 0, right: 0.34, bottom: 0.43 } });
   rect(slide, 872, 164, 344, 438, C.deep, true);
   pill(slide, "GROUNDING MISS", 900, 190, 150, C.orange, C.white);
@@ -271,12 +293,14 @@ function metricCard(slide, left, top, width, label, value, accent = C.orange, ca
   slide.background.fill = C.paper;
   slideTitle(slide, "Multi-turn prompt baseline", "The right hotel is retrieved, then its button is missed", 6);
   textBox(slide, "Target minus same-history instruction ensemble for the final x/y coordinate tokens", 64, 122, 930, 25, { fontSize: 15, color: C.muted });
+  pill(slide, "WHITE RING = CLICK", 1000, 119, 216, C.deep, C.white);
   const labels = ["FRAME 0 · START", "FRAME 1 · SCROLL 500", "FRAME 2 · TARGET APPEARS", "FRAME 3 · CLICK"];
   for (let i = 0; i < hotelDiffMaps.length; i += 1) {
     const x = 64 + i * 286;
     await image(slide, hotelDiffMaps[i], x, 166, 270, 169, { alt: `Hotel trajectory prompt-differential frame ${i}` });
     pill(slide, labels[i], x + 10, 346, 220, i === 3 ? C.orange : C.deep, C.white);
   }
+  clickMarker(slide, 922 + (960 / 1280) * 270, 166 + (120 / 800) * 169, 16);
   metricCard(slide, 64, 398, 350, "Earlier-frame target lift", "2.78×", C.blue, "frame 2: target button at viewport edge");
   metricCard(slide, 432, 398, 350, "Current-frame target lift", "8.59×", C.orange, "frame 3: prompt differential");
   metricCard(slide, 800, 398, 416, "Issued click", "MISS", C.orange, "(960,120): correct card, wrong affordance");
@@ -292,7 +316,7 @@ function metricCard(slide, left, top, width, label, value, accent = C.orange, ca
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Layer lens", "Mid-late routing may be an early correctness feature", 7);
+  slideTitle(slide, "Layer lens", "Mid-late routing is a candidate feature—not a result yet", 7);
   const categories = ["L3", "L7", "L11", "L15", "L19", "L23", "L27", "L31"];
   const chart = slide.charts.add("line", {
     position: { left: 64, top: 154, width: 724, height: 438 },
@@ -322,11 +346,15 @@ function metricCard(slide, left, top, width, label, value, accent = C.orange, ca
   textBox(slide, "2.88×", 850, 340, 148, 36, { fontSize: 27, bold: true, color: C.white });
   textBox(slide, "static miss", 1000, 349, 150, 24, { fontSize: 15, color: "#9FC8F0" });
   rect(slide, 850, 397, 336, 1, "#465563");
-  textBox(slide, "Prospective test", 850, 420, 230, 22, { fontSize: 14, bold: true, color: C.gold });
-  textBox(slide, "Fit a tiny outcome or ambiguity readout on frozen layer features.", 850, 451, 318, 54, { fontSize: 19, bold: true, color: C.white });
-  textBox(slide, "Evaluate held-out Brier score, ECE, and selective risk. N=3 examples cannot establish confidence.", 850, 520, 318, 53, { fontSize: 14, color: "#C4CED7" });
-  footer(slide, "Per-head rows use direct value-norm attention; multiplied rollout has no unique head identity");
-  slide.speakerNotes.textFrame.setText("6:05–7:20 — Add the hotel miss to the layer view. The visual hit separates sharply at layers 15 to 27, while the two misses remain lower, although the hotel miss has a moderate layer-19 signal. This suggests a candidate feature family, not a calibrated confidence score. A proper experiment freezes the backbone, fits a tiny readout on training cases, and evaluates Brier score, expected calibration error, and selective risk on a held-out split. Head-level examples remain direct value-norm attention because cross-layer rollout destroys unique head identity. Sources: layer_head_statistics in the three local analysis files.");
+  textBox(slide, "TRAJECTORY EVIDENCE AUDIT", 850, 417, 280, 20, { fontSize: 13, bold: true, color: C.gold });
+  textBox(slide, "39", 850, 449, 74, 35, { fontSize: 28, bold: true, color: C.white });
+  textBox(slide, "hotel outcomes", 925, 458, 118, 20, { fontSize: 13, color: "#C4CED7" });
+  textBox(slide, "20", 1053, 449, 58, 35, { fontSize: 28, bold: true, color: C.white });
+  textBox(slide, "successes", 1110, 458, 76, 20, { fontSize: 13, color: "#C4CED7" });
+  textBox(slide, "11 traced · 0 successful", 850, 497, 336, 26, { fontSize: 19, bold: true, color: "#F2BDAF" });
+  textBox(slide, "No balanced activation set exists yet. Capture matched successes before fitting or claiming an outcome signal.", 850, 532, 326, 48, { fontSize: 13, color: "#C4CED7" });
+  footer(slide, "Plot: 3 prompt-baselined cases · inventory: 39 hotel trajectories, but successful runs have no activation traces");
+  slide.speakerNotes.textFrame.setText("6:05–7:20 — The visual hit separates sharply at layers 15 to 27, while the two misses remain lower, although the hotel miss has a moderate layer-19 signal. This is hypothesis-generating only. I audited the larger hotel corpus: 39 outcome-labeled trajectories include 20 successes, but only 11 trajectories carry activation trace IDs and all 11 are failures. Therefore there are no additional positive activation cases to add honestly to this curve, and the three plotted prompt-baselined examples cannot establish a correctness feature. The next experiment is balanced capture, then a frozen tiny readout evaluated with Brier score, expected calibration error, and selective risk. Head-level rows remain direct value-norm attention because cross-layer rollout destroys unique head identity. Sources: layer_head_statistics in the three local analysis files and data/trajectories/v0/*/annotations.json.");
 }
 
 // 8 - research directions
@@ -402,7 +430,7 @@ const requirements = {
 const fontPolicy = { basis: "design", families: [family] };
 const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v4.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v5.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({

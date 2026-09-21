@@ -10,7 +10,7 @@
 | 2:35-3:45 | 4 | Establish the headline metric: same-image instruction differential. |
 | 3:45-4:45 | 5 | Static miss: coarse task region is salient, but the tiny affordance loses. |
 | 4:45-6:05 | 6 | Multi-turn probe: target evidence is measurable in an earlier frame and stronger in the current frame, yet the click misses the button. |
-| 6:05-7:20 | 7 | Layer patterns are candidate correctness features, not confidence scores yet. |
+| 6:05-7:20 | 7 | Layer patterns are candidate features; explain why the current trace inventory cannot validate correctness. |
 | 7:20-8:35 | 8 | Propose calibrated heads, causal tests, visual-memory research, base-model comparison, and the SFT-to-RLVR loop. |
 | 8:35-10:00 | 9 + demo | Recap three defensible claims, then show the static hit, static miss, and four-frame hotel viewer. |
 
@@ -20,6 +20,7 @@
 - **ScreenSpot miss:** the prompt-differential peak is outside the target and **9.9% of the frame diagonal** from its center. The repaired click is `(331, 270)`, on the slide thumbnail rather than the New Slide button. Stability is **0.970 mean / 0.953 minimum**.
 - **Multi-turn hotel probe:** after replaying the same four screenshots and three-scroll history, the cheapest hotel's button has **2.78x** differential lift when it first appears in frame 2 and **8.59x** in the final frame. The probe clicks `(960,120)` on the correct hotel card, outside the button. Three controls are included; one is excluded for missing a `y` span. Stability is **0.898 mean / 0.769 minimum**.
 - **Layer result:** layer 19 mean-head lift is **38.99x** for the static visual hit, **10.47x** for the hotel miss, and **2.88x** for the static miss. This is an exploratory three-case pattern.
+- **Evidence audit:** the hotel corpus has **39 outcome-labeled trajectories**, including **20 successes**. Only **11 trajectories have activation trace IDs**, and all 11 are failures. We therefore do not have a balanced activation set for testing an early correctness feature.
 - **Scope:** the two ScreenSpot cases use different images and prompts. They are not a matched success/failure causal pair. The hotel target is a matched re-probe over captured history, not the exact original final model call.
 
 ## Ninety-second live demo
@@ -29,7 +30,7 @@
 3. Sort heads by **Prompt difference** and point out layer 19 / head 10 as the strongest direct value-norm head in this case.
 4. Open the [ScreenSpot miss viewer](../../data/attributions/screenspot-powerpoint_windows_48/viewer.html). Show the task-region signal and the click on the slide thumbnail.
 5. Open the [multi-frame hotel viewer](live/hotel-cheapest-multiframe/viewer.html).
-6. Select **Target minus diverse-instruction baseline**. Step from frame 2 to frame 3. The green box marks the target button; the white cross on frame 3 marks the failed click.
+6. Select **Target minus diverse-instruction baseline**. Step from frame 2 to frame 3. The green box marks the target button; the high-contrast white ring/cross on frame 3 marks the failed click.
 7. End on the layer/head table as a source of intervention hypotheses, not a causal conclusion.
 
 ## Five-minute Q&A crib sheet
@@ -64,7 +65,7 @@ The model weights remain streamed to Metal at about 9.64 GiB. The expensive part
 
 ### Can layer statistics become confidence?
 
-Potentially, but not from three cases. Freeze the backbone, train a small outcome or ambiguity readout on training cases, and evaluate held-out Brier score, log loss, expected calibration error, and selective risk. Safety refusal and clarification thresholds should be chosen from calibrated risk, not raw saliency.
+Potentially, but not from three prompt-baselined cases, and not from the current trajectory archive. Although 20 of 39 hotel trajectories succeeded, none of the 11 instrumented trajectories succeeded. First capture a balanced set of successful and failed activation traces, then freeze the backbone, train a small outcome or ambiguity readout, and evaluate held-out Brier score, log loss, expected calibration error, and selective risk. Safety refusal and clarification thresholds should be chosen from calibrated risk, not raw saliency.
 
 ### Is base Qwen versus Holo interesting?
 
@@ -84,3 +85,4 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
 - Tracked hotel viewer and measurement: `artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/`
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)
+- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v5.pptx`
