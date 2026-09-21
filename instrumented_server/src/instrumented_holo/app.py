@@ -54,9 +54,16 @@ def create_app(settings: Settings | None = None, engine: InstrumentedHolo | None
                     "capabilities": {
                         "vision": True,
                         "function_calling": True,
-                        "structured_output": "schema-validated-tool-calls",
+                        "structured_output": "prompted-json-with-native-turn-stop",
                         "activation_tracing": True,
                         "generated_token_logprobs": True,
+                    },
+                    "inference_configuration": {
+                        "device": settings.device,
+                        "dtype": settings.dtype,
+                        "eager_attention": settings.eager_attention,
+                        "image_min_pixels": settings.image_min_pixels,
+                        "image_max_pixels": settings.image_max_pixels,
                     },
                 }
             ],

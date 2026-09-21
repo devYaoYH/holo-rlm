@@ -7,7 +7,7 @@ This is a local OpenAI-compatible endpoint for the native Holo-3.1-4B checkpoint
 ```bash
 cd instrumented_server
 uv sync
-HOLO_DEVICE=mps HOLO_DTYPE=auto uv run instrumented-holo-server
+HOLO_DEVICE=mps HOLO_DTYPE=auto HOLO_IMAGE_MAX_PIXELS=262144 uv run instrumented-holo-server
 ```
 
 The server listens on `http://127.0.0.1:8000/v1` and does not load model weights until the first completion.
@@ -20,7 +20,7 @@ On this approximately 18 GiB usable-memory Mac, that still leaves a tight practi
 
 The validated native-BF16 load used 6.02 GiB after shard one and 9.64 GiB after both shards. The server logs these MPS figures at every shard boundary and asserts that no parameter remains on `meta` or silently changes dtype.
 
-Historical-frame requests bound each image to 262,144 pixels before visual tokenization (`HOLO_IMAGE_MAX_PIXELS`, with a 65,536-pixel minimum). This keeps exact source PNGs in the trace while preventing full prompt-attention matrices from growing beyond Metal memory as frames accumulate. The effective runtime limits and resulting `image_grid_thw` are stored with every trace.
+The checkpoint-native default admits up to 16,777,216 pixels per image. Preserve that limit for comparable ScreenSpot-Pro inference. Multi-frame attribution on memory-constrained hardware should explicitly set `HOLO_IMAGE_MAX_PIXELS=262144`; this keeps exact source PNGs in the trace while preventing full prompt-attention matrices from growing beyond Metal memory as frames accumulate. The effective runtime limits and resulting `image_grid_thw` are stored with every trace, so runs at different limits cannot be silently conflated.
 
 ## Trace request
 

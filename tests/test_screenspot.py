@@ -13,6 +13,7 @@ from demo.screenspot import (
     point_hits_bbox,
     repair_screenspot_click,
 )
+from demo.screenspot_benchmark import _validate_benchmark_server_profile
 
 
 def test_load_build_parse_and_score_screenspot_sample(tmp_path: Path) -> None:
@@ -91,3 +92,17 @@ def test_repair_screenspot_click_is_narrow_and_explicit() -> None:
     assert click["pixel"] == {"x": 484.0, "y": 175.5}
     assert click["source"] == {"x": "484>", "y": "351>"}
     assert click["repair"] == "first_unsigned_integer_per_coordinate_field"
+
+
+def test_benchmark_rejects_known_downsampled_server_profile() -> None:
+    metadata = {"inference_configuration": {"image_max_pixels": 262_144}}
+    try:
+        _validate_benchmark_server_profile(metadata)
+    except ValueError as exc:
+        assert "HOLO_IMAGE_MAX_PIXELS=16777216" in str(exc)
+    else:
+        raise AssertionError("downsampled ScreenSpot server profile was accepted")
+
+    _validate_benchmark_server_profile(
+        {"inference_configuration": {"image_max_pixels": 16_777_216}}
+    )

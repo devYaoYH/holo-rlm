@@ -7,6 +7,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+import httpx
+
 from .screenspot import (
     SCREENSPOT_PROTOCOL,
     ScreenSpotSample,
@@ -14,12 +16,43 @@ from .screenspot import (
     run_screenspot_case,
 )
 
+CHECKPOINT_NATIVE_IMAGE_MAX_PIXELS = 16_777_216
+
 
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     temporary.replace(path)
+
+
+def _server_model_metadata(base_url: str, model_id: str) -> dict[str, Any] | None:
+    """Read local server provenance without making benchmark execution depend on it."""
+
+    try:
+        with httpx.Client(timeout=10, trust_env=False) as client:
+            response = client.get(f"{base_url.rstrip('/')}/models")
+            response.raise_for_status()
+        models = response.json().get("data", [])
+        return next((item for item in models if item.get("id") == model_id), None)
+    except (httpx.HTTPError, KeyError, TypeError, ValueError):
+        return None
+
+
+def _validate_benchmark_server_profile(metadata: dict[str, Any] | None) -> None:
+    """Reject a known downsampled server profile before publishing a benchmark score."""
+
+    if not metadata:
+        return
+    configuration = metadata.get("inference_configuration")
+    if not isinstance(configuration, dict):
+        return
+    maximum = configuration.get("image_max_pixels")
+    if isinstance(maximum, int) and maximum < CHECKPOINT_NATIVE_IMAGE_MAX_PIXELS:
+        raise ValueError(
+            "ScreenSpot-Pro requires the checkpoint-native image limit: restart the server with "
+            f"HOLO_IMAGE_MAX_PIXELS={CHECKPOINT_NATIVE_IMAGE_MAX_PIXELS}; got {maximum}"
+        )
 
 
 def _item_summary(case: dict[str, Any], trace_root: Path) -> dict[str, Any]:
@@ -88,6 +121,8 @@ def run_screenspot_benchmark(
 
     output_dir = output_dir.expanduser().resolve()
     trace_root = trace_root.expanduser().resolve()
+    server_model = _server_model_metadata(base_url, model_id)
+    _validate_benchmark_server_profile(server_model)
     items_dir = output_dir / "items"
     items_dir.mkdir(parents=True, exist_ok=True)
     selected = select_samples(
@@ -103,6 +138,7 @@ def run_screenspot_benchmark(
         "inference_protocol": SCREENSPOT_PROTOCOL,
         "base_url": base_url,
         "model_id": model_id,
+        "server_model": server_model,
         "trace_profile": trace_profile,
         "trace_generation_steps": trace_generation_steps,
         "shard_index": shard_index,

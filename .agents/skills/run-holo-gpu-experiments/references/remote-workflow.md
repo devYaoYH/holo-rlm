@@ -15,10 +15,11 @@ Follow the detailed repository guide at `docs/remote-gpu-experiments.md`. Use th
 3. Verify the checkpoint and benchmark data paths without listing secrets.
 4. Run both test suites before inference.
 5. Start the server on `127.0.0.1`; retain its log.
-6. Run a one-item or one-case smoke experiment.
-7. Inspect its response, trace ID, token logprob artifact, and free disk space.
-8. Launch the requested resumable run. Use distinct outputs for distinct shards.
-9. Monitor item counts, errors, GPU memory, and disk space. Resume rather than replacing partial results.
+6. Select and record the server profile: native-resolution/non-eager for ScreenSpot-Pro, or eager attention with an explicit per-frame pixel budget for attribution.
+7. Run a one-item or one-case smoke experiment.
+8. Inspect its response, trace ID, token logprob artifact, processor pixel limit, and free disk space.
+9. Launch the requested resumable run. Use distinct outputs for distinct shards.
+10. Monitor item counts, errors, GPU memory, and disk space. Resume rather than replacing partial results.
 
 ## Retrieval
 

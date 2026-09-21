@@ -29,13 +29,13 @@ Stop before inference when CUDA, BF16, checkpoint shards, required metadata, tes
 
 ## Start and smoke-test the server
 
-Start `uv run instrumented-holo-server` from `instrumented_server/` in a persistent remote shell. Keep it bound to localhost. From the repository root, set `HOLO_BASE_URL=http://127.0.0.1:8000/v1` and run `uv run holo-capture smoke --backend local`.
+Start `uv run instrumented-holo-server` from `instrumented_server/` in a persistent remote shell. Keep it bound to localhost. Use the checkpoint-native single-frame benchmark profile (`HOLO_EAGER_ATTENTION=0`, `HOLO_IMAGE_MAX_PIXELS=16777216`) for ScreenSpot-Pro. Restart with eager attention and an explicit, measured frame budget for attention capture; `HOLO_IMAGE_MAX_PIXELS=262144` is the conservative multi-frame starting point. From the repository root, set `HOLO_BASE_URL=http://127.0.0.1:8000/v1` and run `uv run holo-capture smoke --backend local`.
 
 Expect the first request to load model weights. Capture the server log and doctor report with the run metadata.
 
 ## Choose the experiment
 
-- Full or sharded ScreenSpot-Pro: use `holo-capture screenspot-benchmark`; default to `--trace-profile logprobs`, run `--count 1` first, then rely on resume.
+- Full or sharded ScreenSpot-Pro: use `holo-capture screenspot-benchmark`; require H Company's official localization protocol and the checkpoint-native image limit, default to `--trace-profile logprobs`, run `--count 1` first, then rely on resume.
 - Multi-frame attribution: use `holo-capture trajectory-prompt-case` to capture a target plus controls, then `trajectory-prompt-contrast` or `attribution-batch` to render outputs.
 - Activation intervention: use `holo-activation-patch MANIFEST --output DIR`; use `--save-activations` only when downstream analysis needs raw selected tensors.
 

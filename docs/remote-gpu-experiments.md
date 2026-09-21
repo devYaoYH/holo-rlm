@@ -20,11 +20,14 @@ For a Vast.ai image, choose a recent PyTorch/CUDA base image, expose only SSH, a
 
 ## 2. Start and verify the server
 
-Use a persistent shell such as `tmux`:
+Use a persistent shell such as `tmux`. For benchmark-compatible single-frame localization, preserve the checkpoint's native image limit and use memory-efficient attention:
 
 ```bash
 cd instrumented_server
-HOLO_SERVER_HOST=127.0.0.1 uv run instrumented-holo-server
+HOLO_SERVER_HOST=127.0.0.1 \
+HOLO_EAGER_ATTENTION=0 \
+HOLO_IMAGE_MAX_PIXELS=16777216 \
+uv run instrumented-holo-server
 ```
 
 In a second shell:
@@ -35,6 +38,8 @@ uv run holo-capture smoke --backend local
 ```
 
 The first request loads the checkpoint. Keep the server process and all experiment commands in the same environment so `HOLO_TRACE_DIR` resolves consistently.
+
+Do not run ScreenSpot-Pro with the 262,144-pixel multi-frame safety cap. In a 10-item RTX 5090 calibration, that cap produced 0/10 grounding hits; the checkpoint-native limit produced 6/10 with the same model, prompt, items, and decoding. This small slice is a preflight diagnostic, not an estimate of the full benchmark score.
 
 ## 3. ScreenSpot-Pro with generated-token log probabilities
 
@@ -61,11 +66,22 @@ uv run holo-capture screenspot-benchmark \
   --trace-profile logprobs
 ```
 
-The benchmark uses H Company's official single-turn element-localization protocol: image first, their localization prompt and `VisualLocalizerOutput` schema, `structured_outputs`, thinking disabled, and temperature zero. It does **not** use the repository's older custom `desktop_action` prompt. Each run records `inference_protocol = hcompany_element_localization_v1`; results without that marker are not comparable to H's reported ScreenSpot-Pro number.
+The benchmark uses H Company's official single-turn element-localization protocol: image first, their localization prompt and `VisualLocalizerOutput` schema, `structured_outputs`, thinking disabled, and temperature zero. It does **not** use the repository's older custom `desktop_action` prompt. Each run records `inference_protocol = hcompany_element_localization_v1`; results without that marker are not comparable to H's reported ScreenSpot-Pro number. The native Transformers server stops at Qwen's assistant-turn delimiter and applies a strict JSON parser, but it does not perform token-level JSON-schema constrained decoding. Report format validity separately and record this remaining backend deviation when comparing with H's hosted/vLLM numbers.
 
 `token_logprobs.json` stores every generated token's natural-log probability, probability, cumulative log probability, character span, and x/y coordinate assignment. The localization protocol has no action token; action-token logprobs are retained for traced multi-step function-calling trajectories instead. The benchmark summary retains coordinate aggregates while the referenced trace keeps the full token sequence. To distribute work, give each process a distinct output and `--shard-index K --num-shards N`; avoid serving concurrent jobs from one model process until memory behavior has been measured.
 
 ## 4. Multi-frame attention attribution
+
+Restart the server with eager attention and an explicit per-frame pixel budget before collecting attention matrices. A conservative starting profile is:
+
+```bash
+HOLO_SERVER_HOST=127.0.0.1 \
+HOLO_EAGER_ATTENTION=1 \
+HOLO_IMAGE_MAX_PIXELS=262144 \
+uv run instrumented-holo-server
+```
+
+Record the chosen limit with the run. Raise it only after measuring memory on a one-case smoke test; changing it changes the visual evidence available to the model.
 
 Capture a target plus controls over an existing trace containing several historical frames:
 
