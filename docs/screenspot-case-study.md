@@ -2,6 +2,8 @@
 
 This case study transfers the attribution pipeline from the deterministic hotel fixture to two official ScreenSpot-Pro examples. The synthetic fixture remains the computational test bed; ScreenSpot-Pro supplies the presentation evidence.
 
+New captures use H Company's official single-turn element-localization protocol: image first, the published localization prompt and JSON schema, `structured_outputs`, thinking disabled, and temperature zero. The trace records `inference_protocol = hcompany_element_localization_v1`. Earlier captures made with the repository's custom `desktop_action` tool prompt remain readable, but must not be compared with H's reported ScreenSpot-Pro accuracy.
+
 ## Fixed cases
 
 The selected pair holds the application and operating system constant:
@@ -13,9 +15,9 @@ The exact prompts and control ensemble are frozen in `benchmarks/screenspot_pres
 
 ## Score separation
 
-Holo 3.1 4B sometimes emits punctuation inside an integer coordinate field, for example `"484>"`. The harness therefore reports three separate facts:
+Malformed legacy captures sometimes contain punctuation inside an integer coordinate field, for example `"484>"`. The harness therefore reports three separate facts for both old and new artifacts:
 
-1. `format_valid`: whether the response strictly satisfies the supplied tool schema;
+1. `format_valid`: whether the response strictly satisfies the official two-integer JSON schema;
 2. `grounding_correct`: whether the point is inside the official bounding box after the narrow, logged repair `first_unsigned_integer_per_coordinate_field`;
 3. `correct`: the strict end-to-end result, which remains false when tool syntax is invalid.
 
@@ -23,7 +25,7 @@ The repair is for diagnosis only. It is never counted as an official ScreenSpot-
 
 ## Same-image diverse-instruction baseline
 
-Each target screenshot is rerun with four unrelated, visually grounded click instructions whose targets cover different regions of the same frame. Model, processor, image bytes, tool schema, decoding settings, layer set, and head count must match the target trace exactly.
+Each target screenshot is rerun with four unrelated, visually grounded click instructions whose targets cover different regions of the same frame. Model, processor, image bytes, localization schema, decoding settings, layer set, and head count must match the target trace exactly.
 
 For target instruction \(t\), control instructions \(c_1,\ldots,c_K\), image patches \(p\), and the value-norm cross-layer rollout \(R\), the coordinate map for request \(q\) is
 
@@ -65,7 +67,9 @@ uv run holo-capture screenspot-contrast \
 
 Repeat with the failure case and its controls from the frozen manifest.
 
-## Observed results
+## Observed legacy-protocol results
+
+The values below were captured before adoption of H's official localization protocol. They remain useful for checking the attribution implementation, but should be regenerated before they are used as evidence about official Holo3.1 benchmark behavior.
 
 | Case | Raw lift | Causal-token lift | Prompt-differential lift | Prompt-differential peak | LOO cosine, mean / min |
 |---|---:|---:|---:|---|---:|
@@ -83,4 +87,4 @@ For the miss, the prompt differential concentrates in the correct top-left task 
 - Per-head tables use direct value-norm-corrected attention because a multiplied cross-layer rollout no longer has a unique head identity.
 - Results from two presentation cases are illustrative, not population-level evidence about all ScreenSpot-Pro tasks.
 
-Sources: [ScreenSpot-Pro paper](https://arxiv.org/abs/2504.07981), [official repository](https://github.com/likaixin2000/ScreenSpot-Pro-GUI-Grounding), and [official dataset](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro).
+Sources: [H Company element-localization guide](https://hub.hcompany.ai/models-api/element-localization), [ScreenSpot-Pro paper](https://arxiv.org/abs/2504.07981), [official repository](https://github.com/likaixin2000/ScreenSpot-Pro-GUI-Grounding), and [official dataset](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro).

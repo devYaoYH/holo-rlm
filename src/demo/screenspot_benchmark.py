@@ -7,7 +7,12 @@ import time
 from pathlib import Path
 from typing import Any
 
-from .screenspot import ScreenSpotSample, list_screenspot_samples, run_screenspot_case
+from .screenspot import (
+    SCREENSPOT_PROTOCOL,
+    ScreenSpotSample,
+    list_screenspot_samples,
+    run_screenspot_case,
+)
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -95,6 +100,7 @@ def run_screenspot_benchmark(
     run_config = {
         "schema_version": 1,
         "dataset": "likaixin/ScreenSpot-Pro",
+        "inference_protocol": SCREENSPOT_PROTOCOL,
         "base_url": base_url,
         "model_id": model_id,
         "trace_profile": trace_profile,

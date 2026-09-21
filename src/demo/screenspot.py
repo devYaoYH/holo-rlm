@@ -15,12 +15,29 @@ from PIL import Image
 
 from .backends import png_data_url
 
-SCREENSPOT_SYSTEM_PROMPT = """You are evaluating one GUI-grounding instruction on one static screenshot.
-Return exactly one desktop_action tool call that clicks the requested visible target. Coordinates are normalized
-integers from 0 to 1000, with (0, 0) at the top-left and (1000, 1000) at the bottom-right. Do not scroll, type,
-wait, navigate, or explain. Each coordinate value must contain digits only: no quotes, commas, units, or prose.
-Base the click only on the screenshot and instruction."""
-
+SCREENSPOT_LOCALIZATION_SCHEMA: dict[str, Any] = {
+    "properties": {
+        "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "X",
+            "type": "integer",
+        },
+        "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "Y",
+            "type": "integer",
+        },
+    },
+    "required": ["x", "y"],
+    "title": "VisualLocalizerOutput",
+    "type": "object",
+}
+# Kept only for replaying the older multi-frame diagnostic protocol. New
+# ScreenSpot benchmark requests use SCREENSPOT_LOCALIZATION_SCHEMA above.
 SCREENSPOT_CLICK_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
@@ -32,6 +49,7 @@ SCREENSPOT_CLICK_SCHEMA: dict[str, Any] = {
     },
 }
 TRACE_PROFILES = ("none", "logprobs", "attribution", "full")
+SCREENSPOT_PROTOCOL = "hcompany_element_localization_v1"
 
 
 @dataclass(frozen=True)
@@ -126,34 +144,32 @@ def build_screenspot_request(
     trace_generation_steps: int = 0,
     trace_profile: str | None = None,
 ) -> dict[str, Any]:
-    """Build the deterministic, single-click request used for target and controls."""
+    """Build H Company's official deterministic element-localization request."""
 
     image_url, _ = png_data_url(image)
+    prompt = (
+        "Localize an element on the GUI image according to the provided target "
+        "and output a click position.\n"
+        f" * You must output a valid JSON following the format: {SCREENSPOT_LOCALIZATION_SCHEMA}\n"
+        f" Your target is:\n{instruction}"
+    )
     request: dict[str, Any] = {
         "model": model_id,
         "messages": [
-            {"role": "system", "content": SCREENSPOT_SYSTEM_PROMPT},
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": f"Instruction: {instruction}"},
                     {"type": "image_url", "image_url": {"url": image_url}},
+                    {"type": "text", "text": prompt},
                 ],
             },
         ],
         "temperature": 0,
-        # A complete native Holo click call is about 50 tokens. Keeping the
-        # deterministic probe bounded at 64 avoids paying for a long malformed
-        # completion while retaining every coordinate token.
+        # The official output is a two-field JSON object. Keep enough headroom
+        # to retain a malformed completion for diagnosis without an unbounded run.
         "max_tokens": max(64, trace_generation_steps),
         "chat_template_kwargs": {"enable_thinking": False},
-        "tools": [
-            {
-                "type": "function",
-                "function": {"name": "desktop_action", "parameters": SCREENSPOT_CLICK_SCHEMA},
-            }
-        ],
-        "tool_choice": {"type": "function", "function": {"name": "desktop_action"}},
+        "structured_outputs": {"json": SCREENSPOT_LOCALIZATION_SCHEMA},
     }
     profile = trace_profile or ("attribution" if trace_generation_steps else "none")
     if profile not in TRACE_PROFILES:
@@ -172,24 +188,43 @@ def build_screenspot_request(
     return request
 
 
-def parse_screenspot_click(response: dict[str, Any], image_size: tuple[int, int]) -> dict[str, Any]:
-    """Extract the normalized and pixel-space click from one completion."""
+def _screenspot_coordinates(response: dict[str, Any]) -> dict[str, Any]:
+    """Read the official JSON localization response, with legacy tool-call compatibility."""
 
     message = response["choices"][0]["message"]
+    content = message.get("content")
+    if isinstance(content, str) and content.strip():
+        coordinates = json.loads(content)
+        if not isinstance(coordinates, dict):
+            raise ValueError("ScreenSpot completion content must be a JSON object")
+        return coordinates
+
+    # Older captured runs used a custom desktop_action tool. Retaining this
+    # reader keeps their artifacts inspectable without using that protocol for
+    # new benchmark requests.
     tool_calls = message.get("tool_calls")
     if not isinstance(tool_calls, list) or len(tool_calls) != 1:
-        raise ValueError("ScreenSpot completion must contain exactly one tool call")
+        raise ValueError("ScreenSpot completion must contain one localization result")
     call = tool_calls[0]
     if call.get("function", {}).get("name") != "desktop_action":
         raise ValueError("ScreenSpot completion called the wrong tool")
     arguments = call["function"]["arguments"]
     action = json.loads(arguments) if isinstance(arguments, str) else arguments
-    if not isinstance(action, dict) or set(action) != {"action", "x", "y"} or action.get("action") != "click":
+    if not isinstance(action, dict) or action.get("action") != "click":
         raise ValueError("ScreenSpot completion did not return one click")
-    if type(action["x"]) is not int or type(action["y"]) is not int:
+    return {"x": action.get("x"), "y": action.get("y")}
+
+
+def parse_screenspot_click(response: dict[str, Any], image_size: tuple[int, int]) -> dict[str, Any]:
+    """Extract the normalized and pixel-space click from one completion."""
+
+    coordinates = _screenspot_coordinates(response)
+    if set(coordinates) != {"x", "y"}:
+        raise ValueError("ScreenSpot completion must contain exactly x and y")
+    if type(coordinates["x"]) is not int or type(coordinates["y"]) is not int:
         raise ValueError("ScreenSpot click coordinates must be integers")
-    x = action["x"]
-    y = action["y"]
+    x = coordinates["x"]
+    y = coordinates["y"]
     if not 0 <= x <= 1000 or not 0 <= y <= 1000:
         raise ValueError("ScreenSpot click is outside normalized coordinate bounds")
     width, height = image_size
@@ -207,22 +242,12 @@ def repair_screenspot_click(response: dict[str, Any], image_size: tuple[int, int
     Holo's occasional punctuation inside an otherwise unambiguous x/y value.
     """
 
-    message = response["choices"][0]["message"]
-    tool_calls = message.get("tool_calls")
-    if not isinstance(tool_calls, list) or len(tool_calls) != 1:
-        raise ValueError("ScreenSpot completion must contain exactly one tool call")
-    call = tool_calls[0]
-    if call.get("function", {}).get("name") != "desktop_action":
-        raise ValueError("ScreenSpot completion called the wrong tool")
-    arguments = call["function"]["arguments"]
-    action = json.loads(arguments) if isinstance(arguments, str) else arguments
-    if not isinstance(action, dict) or action.get("action") != "click":
-        raise ValueError("ScreenSpot completion did not return one click")
+    coordinates = _screenspot_coordinates(response)
 
     repaired: dict[str, int] = {}
     source: dict[str, Any] = {}
     for key in ("x", "y"):
-        raw = action.get(key)
+        raw = coordinates.get(key)
         source[key] = raw
         if type(raw) is int:
             value = raw
@@ -317,6 +342,7 @@ def run_screenspot_case(
         "schema_version": 2,
         "dataset": "likaixin/ScreenSpot-Pro",
         "dataset_url": "https://huggingface.co/datasets/likaixin/ScreenSpot-Pro",
+        "inference_protocol": SCREENSPOT_PROTOCOL,
         "sample": {
             "id": sample.id,
             "instruction": sample.instruction,

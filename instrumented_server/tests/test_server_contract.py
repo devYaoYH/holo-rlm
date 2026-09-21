@@ -126,6 +126,18 @@ def test_generated_parameter_spans_label_action_and_coordinates() -> None:
     )
 
 
+def test_generated_parameter_spans_label_official_localizer_json_coordinates() -> None:
+    pieces = ('{"x":', "482", ',"y":', "351", "}")
+    offsets = []
+    cursor = 0
+    for piece in pieces:
+        offsets.append((cursor, cursor + len(piece)))
+        cursor += len(piece)
+    labels, spans = generated_parameter_token_spans("".join(pieces), tuple(offsets))
+    assert labels == (None, "x", None, "y", None)
+    assert spans == (("x", "482", (1,)), ("y", "351", (3,)))
+
+
 def test_response_is_hashed_into_trace_manifest(tmp_path: Path) -> None:
     trace_id, writer = TraceWriter.create(tmp_path)
     writer.write_json("request.json", {"messages": []})

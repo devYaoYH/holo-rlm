@@ -45,7 +45,10 @@ def test_load_build_parse_and_score_screenspot_sample(tmp_path: Path) -> None:
     assert request["trace"]["max_generation_steps"] == 64
     assert request["trace"]["capture_logprobs"] is True
     assert request["trace"]["capture_attentions"] is True
-    assert request["tools"][0]["function"]["parameters"]["required"] == ["action", "x", "y"]
+    assert "tools" not in request
+    assert request["structured_outputs"]["json"]["required"] == ["x", "y"]
+    assert request["messages"][0]["content"][0]["type"] == "image_url"
+    assert "Localize an element on the GUI image" in request["messages"][0]["content"][1]["text"]
     assert [value.id for value in list_screenspot_samples(annotations, images)] == ["sample-1"]
 
     logprob_request = build_screenspot_request(
@@ -62,14 +65,7 @@ def test_load_build_parse_and_score_screenspot_sample(tmp_path: Path) -> None:
         "choices": [
             {
                 "message": {
-                    "tool_calls": [
-                        {
-                            "function": {
-                                "name": "desktop_action",
-                                "arguments": '{"action":"click","x":500,"y":500}',
-                            }
-                        }
-                    ]
+                    "content": '{"x":500,"y":500}',
                 }
             }
         ]
@@ -85,14 +81,7 @@ def test_repair_screenspot_click_is_narrow_and_explicit() -> None:
         "choices": [
             {
                 "message": {
-                    "tool_calls": [
-                        {
-                            "function": {
-                                "name": "desktop_action",
-                                "arguments": '{"action":"click","x":"484>","y":"351>"}',
-                            }
-                        }
-                    ]
+                    "content": '{"x":"484>","y":"351>"}',
                 }
             }
         ]

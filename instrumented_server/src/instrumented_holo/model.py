@@ -23,6 +23,7 @@ _TOOL_CALL_RE = re.compile(
     r"<tool_call>\s*<function=([^>\s]+)>\s*(.*?)</function>\s*</tool_call>", re.DOTALL
 )
 _PARAMETER_RE = re.compile(r"<parameter=([^>\s]+)>\s*(.*?)\s*</parameter>", re.DOTALL)
+_JSON_COORDINATE_RE = re.compile(r'"(?P<parameter>x|y)"\s*:\s*(?P<value>-?\d+)')
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +35,7 @@ def generated_parameter_token_spans(
 
     labels: list[str | None] = [None] * len(token_offsets)
     spans: list[tuple[str, str, tuple[int, ...]]] = []
+    value_matches: list[tuple[str, str, tuple[int, int]]] = []
     for match in _PARAMETER_RE.finditer(text):
         parameter = match.group(1).strip()
         raw_value = match.group(2)
@@ -43,6 +45,14 @@ def generated_parameter_token_spans(
         start += leading
         end = raw_end - trailing
         value = text[start:end]
+        value_matches.append((parameter, value, (start, end)))
+    if not value_matches:
+        value_matches.extend(
+            (match.group("parameter"), match.group("value"), match.span("value"))
+            for match in _JSON_COORDINATE_RE.finditer(text)
+        )
+
+    for parameter, value, (start, end) in value_matches:
         indices = tuple(
             index
             for index, (token_start, token_end) in enumerate(token_offsets)

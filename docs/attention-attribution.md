@@ -100,7 +100,7 @@ This is full cross-layer rollout over every captured conventional attention bloc
 
 ## 5. Aggregate a structured action parameter
 
-The generated native tool call is parsed into parameter-value token spans such as `action = scroll`, `delta_y = 400`, or click coordinates. If a value occupies generated steps `S`, its target map is the arithmetic mean:
+Generated output is parsed into parameter-value token spans: native function calls provide values such as `action = scroll` or `delta_y = 400`, while the official element-localization JSON provides `x` and `y`. If a value occupies generated steps `S`, its target map is the arithmetic mean:
 
 ```text
 target[f] = mean_t_in_S rollout[t,f]

@@ -61,7 +61,9 @@ uv run holo-capture screenspot-benchmark \
   --trace-profile logprobs
 ```
 
-`token_logprobs.json` stores every generated token's natural-log probability, probability, cumulative log probability, character span, and action/x/y parameter assignment. The benchmark summary retains action/coordinate aggregates while the referenced trace keeps the full token sequence. To distribute work, give each process a distinct output and `--shard-index K --num-shards N`; avoid serving concurrent jobs from one model process until memory behavior has been measured.
+The benchmark uses H Company's official single-turn element-localization protocol: image first, their localization prompt and `VisualLocalizerOutput` schema, `structured_outputs`, thinking disabled, and temperature zero. It does **not** use the repository's older custom `desktop_action` prompt. Each run records `inference_protocol = hcompany_element_localization_v1`; results without that marker are not comparable to H's reported ScreenSpot-Pro number.
+
+`token_logprobs.json` stores every generated token's natural-log probability, probability, cumulative log probability, character span, and x/y coordinate assignment. The localization protocol has no action token; action-token logprobs are retained for traced multi-step function-calling trajectories instead. The benchmark summary retains coordinate aggregates while the referenced trace keeps the full token sequence. To distribute work, give each process a distinct output and `--shard-index K --num-shards N`; avoid serving concurrent jobs from one model process until memory behavior has been measured.
 
 ## 4. Multi-frame attention attribution
 
