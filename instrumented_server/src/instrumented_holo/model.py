@@ -66,6 +66,19 @@ def generated_parameter_token_spans(
     return tuple(labels), tuple(spans)
 
 
+def generation_stop_strings(
+    tools: list[dict[str, Any]] | None,
+    raw_request: dict[str, Any],
+) -> tuple[str, ...]:
+    """Return the native delimiter that closes the requested output protocol."""
+
+    if tools:
+        return ("</tool_call>",)
+    if isinstance(raw_request.get("structured_outputs"), dict):
+        return ("<|im_end|>",)
+    return ()
+
+
 class UnsupportedImageSource(ValueError):
     """Raised when an image would require an unexpected network fetch."""
 
@@ -447,8 +460,12 @@ class InstrumentedHolo:
             generate_kwargs["output_scores"] = True
         if trace_options.enabled and (trace_options.capture_kv or trace_options.capture_value_norms):
             generate_kwargs["use_cache"] = True
-        if tools:
-            generate_kwargs["stop_strings"] = ["</tool_call>"]
+        stop_strings = generation_stop_strings(tools, raw_request)
+        if stop_strings:
+            # Qwen's chat template terminates a structured assistant turn with
+            # im_end. Tool calls use their own closing tag. Without an explicit
+            # stop, bare Transformers generation can invent the next user turn.
+            generate_kwargs["stop_strings"] = list(stop_strings)
             generate_kwargs["tokenizer"] = self.processor.tokenizer
 
         with self.torch.inference_mode():

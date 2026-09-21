@@ -9,6 +9,7 @@ from instrumented_holo.app import create_app
 from instrumented_holo.model import (
     InstrumentedHolo,
     generated_parameter_token_spans,
+    generation_stop_strings,
     parse_assistant_output,
 )
 from instrumented_holo.settings import Settings
@@ -136,6 +137,14 @@ def test_generated_parameter_spans_label_official_localizer_json_coordinates() -
     labels, spans = generated_parameter_token_spans("".join(pieces), tuple(offsets))
     assert labels == (None, "x", None, "y", None)
     assert spans == (("x", "482", (1,)), ("y", "351", (3,)))
+
+
+def test_generation_stops_at_the_native_protocol_delimiter() -> None:
+    assert generation_stop_strings([{"type": "function"}], {}) == ("</tool_call>",)
+    assert generation_stop_strings(None, {"structured_outputs": {"json": {}}}) == (
+        "<|im_end|>",
+    )
+    assert generation_stop_strings(None, {}) == ()
 
 
 def test_response_is_hashed_into_trace_manifest(tmp_path: Path) -> None:
