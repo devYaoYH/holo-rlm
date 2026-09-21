@@ -270,3 +270,27 @@ def test_checkpoint_revision_reads_commit_hash_instead_of_etag(tmp_path: Path) -
     engine = InstrumentedHolo(Settings(model_path=model_path))
 
     assert engine.checkpoint_revision() == commit
+
+
+def test_processor_metadata_uses_explicit_processor_checkpoint(tmp_path: Path) -> None:
+    model_path = tmp_path / "model"
+    processor_path = tmp_path / "processor"
+    model_path.mkdir()
+    processor_path.mkdir()
+    model_commit = "1" * 40
+    processor_commit = "2" * 40
+    for path, commit in ((model_path, model_commit), (processor_path, processor_commit)):
+        metadata = path / ".cache" / "huggingface" / "download"
+        metadata.mkdir(parents=True)
+        (metadata / "config.json.metadata").write_text(f"{commit}\n{'3' * 40}\n123.0\n")
+    (model_path / "preprocessor_config.json").write_text('{"source":"model"}')
+    (processor_path / "preprocessor_config.json").write_text('{"source":"processor"}')
+
+    engine = InstrumentedHolo(
+        Settings(model_path=model_path, processor_path=processor_path)
+    )
+    metadata = engine.processor_metadata()
+
+    assert metadata["path"] == str(processor_path)
+    assert metadata["revision"] == processor_commit
+    assert metadata["files"]["preprocessor_config.json"] == {"source": "processor"}

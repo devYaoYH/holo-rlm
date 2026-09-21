@@ -170,5 +170,101 @@
     "annotations": "https://huggingface.co/datasets/likaixin/ScreenSpot-Pro/tree/210e78d3844251110bff86c95835ebd37a6930fa/annotations",
     "joined_count": 1581,
     "summary": "data/remote-results/run/screenspot-full-official/summary.json"
+  },
+  "target_area_distribution": {
+    "buckets": [
+      {
+        "icon": {
+          "count": 214,
+          "share": 0.3543046357615894
+        },
+        "label": "<0.01%",
+        "lower_area_fraction_inclusive": 0.0,
+        "text": {
+          "count": 45,
+          "share": 0.04605936540429888
+        },
+        "upper_area_fraction_exclusive": 0.0001
+      },
+      {
+        "icon": {
+          "count": 235,
+          "share": 0.3890728476821192
+        },
+        "label": "0.01\u20130.02%",
+        "lower_area_fraction_inclusive": 0.0001,
+        "text": {
+          "count": 83,
+          "share": 0.0849539406345957
+        },
+        "upper_area_fraction_exclusive": 0.0002
+      },
+      {
+        "icon": {
+          "count": 118,
+          "share": 0.19536423841059603
+        },
+        "label": "0.02\u20130.05%",
+        "lower_area_fraction_inclusive": 0.0002,
+        "text": {
+          "count": 234,
+          "share": 0.23950870010235414
+        },
+        "upper_area_fraction_exclusive": 0.0005
+      },
+      {
+        "icon": {
+          "count": 25,
+          "share": 0.041390728476821195
+        },
+        "label": "0.05\u20130.10%",
+        "lower_area_fraction_inclusive": 0.0005,
+        "text": {
+          "count": 367,
+          "share": 0.37563971340839303
+        },
+        "upper_area_fraction_exclusive": 0.001
+      },
+      {
+        "icon": {
+          "count": 5,
+          "share": 0.008278145695364239
+        },
+        "label": "0.10\u20130.20%",
+        "lower_area_fraction_inclusive": 0.001,
+        "text": {
+          "count": 200,
+          "share": 0.2047082906857728
+        },
+        "upper_area_fraction_exclusive": 0.002
+      },
+      {
+        "icon": {
+          "count": 4,
+          "share": 0.006622516556291391
+        },
+        "label": "0.20\u20130.50%",
+        "lower_area_fraction_inclusive": 0.002,
+        "text": {
+          "count": 38,
+          "share": 0.038894575230296824
+        },
+        "upper_area_fraction_exclusive": 0.005
+      },
+      {
+        "icon": {
+          "count": 3,
+          "share": 0.004966887417218543
+        },
+        "label": "\u22650.50%",
+        "lower_area_fraction_inclusive": 0.005,
+        "text": {
+          "count": 10,
+          "share": 0.01023541453428864
+        },
+        "upper_area_fraction_exclusive": null
+      }
+    ],
+    "unit": "share within each official UI type"
   }
 }

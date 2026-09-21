@@ -1,28 +1,29 @@
 # Holo 3.1 attention attribution: presenter notes
 
-## Twelve-minute run of show
+## Thirteen-minute run of show
 
 | Time | Slide | Talk track |
 |---|---|---|
 | 0:00-0:35 | 1 | Ask what is specific to the current instruction after removing generic visual awareness. |
 | 0:35-1:15 | 2 | Separate static ScreenSpot grounding from replayable multi-turn visual memory. |
-| 1:15-2:10 | 3 | Establish the full-benchmark replication, then separate the raw icon gap from the target-size confound. |
-| 2:10-3:20 | 4 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
-| 3:20-4:20 | 5 | Establish the headline attribution metric: same-image instruction differential. |
-| 4:20-5:15 | 6 | Static miss: coarse task region is salient, but the tiny affordance loses. |
-| 5:15-6:25 | 7 | Multi-turn probe: target evidence is measurable in an earlier frame and stronger in the current frame, yet the click misses the button. |
-| 6:25-7:30 | 8 | Present the balanced four-item aggregate: Layer 19 ranks first narrowly, with a strong multi-head cluster rather than a unique H10 feature. |
-| 7:30-8:20 | 9 | Define the lossless tile swap and teacher-forced coordinate margin. |
-| 8:20-9:15 | 10 | Show activation restoration and ablation together. Contrast target residuals with the head-level null. |
-| 9:15-10:20 | 11 | Compare Qwen and Holo action margins, ScreenSpot attention, and three-frame hotel allocation. |
-| 10:20-11:10 | 12 | Scale the protocol into a frozen causal evaluation set. |
-| 11:10-12:00 | 13 + demo | Recap the routing-versus-mechanism distinction, then show the matched pair and intervention chart. |
-| Optional | 14 | Use one real instruction per UI × action cell to make the diagnostic taxonomy concrete. |
+| 1:15-2:10 | 3 | Establish the full-benchmark replication and show the raw UI-by-action breakdown. |
+| 2:10-2:55 | 4 | Show the observed target-area distributions before interpreting the raw icon gap. |
+| 2:55-4:05 | 5 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
+| 4:05-5:05 | 6 | Establish the headline attribution metric: same-image instruction differential. |
+| 5:05-6:00 | 7 | Static miss: coarse task region is salient, but the tiny affordance loses. |
+| 6:00-7:10 | 8 | Multi-turn probe: target evidence is measurable in an earlier frame and stronger in the current frame, yet the click misses the button. |
+| 7:10-8:15 | 9 | Present the balanced four-item aggregate: Layer 19 ranks first narrowly, with a strong multi-head cluster rather than a unique H10 feature. |
+| 8:15-9:05 | 10 | Define the lossless tile swap and teacher-forced coordinate margin. |
+| 9:05-10:00 | 11 | Show activation restoration and ablation together. Contrast target residuals with the head-level null. |
+| 10:00-11:05 | 12 | Compare Qwen and Holo action margins, ScreenSpot attention, and three-frame hotel allocation. |
+| 11:05-11:55 | 13 | Scale the protocol into a frozen causal evaluation set. |
+| 11:55-12:45 | 14 + demo | Recap the routing-versus-mechanism distinction, then show the matched pair and intervention chart. |
+| Optional | 15 | Use one real instruction per UI × action cell to make the diagnostic taxonomy concrete. |
 
 ## Exact claims to make
 
 - **Full ScreenSpot-Pro replication:** the official element-localization harness completes all **1,581 items** with **1,042 strict hits**, for **65.9% accuracy**, **100% valid JSON**, and zero failed requests. This is **0.6 percentage point** below the project owner's reported 4B reference of about **66.5%**.
-- **UI label and target size:** ScreenSpot-Pro labels the clicked target, not the instruction semantics. An icon target has no text hint; a target with a text label is classified as text even when an icon is also present. Raw text accuracy is **79.4%**, versus **44.0%** for icons. The median normalized text-target area is **4.77×** the icon median, driven mostly by median width (**111 px versus 26 px**) rather than height (**25 px versus 24 px**). Direct standardization over ten pooled target-area bins shrinks the text-minus-icon gap from **35.4 to 17.4 percentage points**. This does not control application, platform, action family, aspect ratio, visual density, or annotation noise.
+- **UI label and target size:** ScreenSpot-Pro labels the clicked target, not the instruction semantics. An icon target has no text hint; a target with a text label is classified as text even when an icon is also present. Raw text accuracy is **79.4%**, versus **44.0%** for icons. The median normalized text-target area is **4.77×** the icon median, driven mostly by median width (**111 px versus 26 px**) rather than height (**25 px versus 24 px**). The distribution slide reports the observed bucketed geometry rather than an adjusted accuracy estimate. Target size is an important confound, but the histogram does not estimate how much of the accuracy gap it causes.
 - **UI × action breakdown:** the weakest labeled raw cell is **icon + file/transfer at 36.1% (13/36)**, and the larger **icon + navigation/reveal** cell reaches **40.3% (60/149)**. Treat the matrix as a diagnostic breakdown rather than a causal effect of UI type. Action families come from a deterministic first-verb keyword mapping and are not an official ScreenSpot-Pro taxonomy.
 - **ScreenSpot visual hit:** prompt-differential target lift is **16.08x**, versus **3.85x** for raw rollout. Its peak falls inside the annotated target. Leave-one-control-out cosine is **0.925 mean / 0.828 minimum**.
 - **ScreenSpot miss:** the prompt-differential peak is outside the target and **9.9% of the frame diagonal** from its center. The repaired click is `(331, 270)`, on the slide thumbnail rather than the New Slide button. Stability is **0.970 mean / 0.953 minimum**.
@@ -35,7 +36,7 @@
 - **Causal residual result:** all layer-19 visual residuals recover **1.853 nats / 42.7%** of the gap. Four target patches recover **1.444 nats / 33.2%**, and their clean-run ablation removes **1.481 nats**.
 - **Head-level null:** layer 19/head 10 restores only **0.024 nats / 0.5%** and its ablation removes **0.090 nats**. Its observational saliency does not establish a sufficient head-level mechanism.
 - **Fine-tuning delta lens:** teacher-forcing identical candidates through official Qwen3.5-4B and Holo3.1-4B shifts the final oracle margin toward the oracle on **5/5 ScreenSpot probes**, by **+1.14 nats per scored token on average** with a **+0.31 to +2.42** range. Three probes cross from a negative base margin to a positive Holo margin. The three hotel decisions shift by **−1.13, +6.37, and +0.37 nats per token**, so the multi-turn effect is selective rather than uniformly positive.
-- **Paired attention delta:** on `powerpoint_windows_59`, the native-resolution teacher-forced direct-attention map raises target mass from **15.84% to 17.16%**, raises target lift from **22.81× to 24.71×**, and moves the peak from outside to inside the annotated template. Value-norm weighting is directionally different: target mass falls from **13.33% to 12.58%** and target lift falls by **1.07×**. Conclude that fine-tuning redistributes routing, not that every saliency estimator concentrates more strongly.
+- **Paired instruction-control delta:** on `powerpoint_windows_59`, every checkpoint sees the target plus four visible alternate instructions on the same native-resolution image. Each task uses an independently curated oracle coordinate. The value-norm target-minus-control mass is **13.15% for Qwen** and **12.37% for Holo**, a **−0.78 percentage-point Holo-minus-Qwen change**. Minimum leave-one-control-out cosine is **0.949 / 0.950**. Raw attention moves the opposite way at **+1.36 points**. The primary estimator therefore does not support stronger target grounding in this case.
 - **Hotel frame redistribution:** at the final three-frame hotel step, Holo value-norm image attention shifts from **36.8 / 15.0 / 48.2%** across earliest, middle, and current frames to **20.2 / 23.0 / 56.8%**. This moves **16.6 percentage points** away from the earliest frame and **8.0 / 8.6 points** toward the middle/current frames.
 - **Resolution and coordinate audit:** the paired attention run keeps the native **16,777,216-pixel ceiling**. The 2880×1800 ScreenSpot image becomes a 56×90 merged-token grid and retains **99.6%** of source area; each 1024×720 hotel frame becomes 22×32 and retains **97.8%** after patch alignment. All click coordinates remain normalized to **0–1000**.
 - **Scope:** the two ScreenSpot cases use different images and prompts. They are not a matched success/failure causal pair. The hotel target is a matched re-probe over captured history, not the exact original final model call.
@@ -62,7 +63,7 @@ Not by itself. The matched experiment shows why: the strongest direct attention 
 
 It describes the annotated click target. ScreenSpot-Pro defines an icon target as one with no text hint. If a text label appears in the target, the benchmark calls it text even when an icon is also present. The released annotations contain some apparent edge cases or label noise, so the appendix uses unambiguous examples.
 
-The raw accuracy table does not control target geometry. That matters because strict accuracy is point-in-box and larger boxes have a wider hit tolerance. In our audit, the median normalized text box is 4.77 times the icon median. A ten-bin target-area standardization reduces the raw 35.4-point gap to 17.4 points, so size explains a large portion but not all of it. The adjustment remains descriptive because other factors are uncontrolled.
+The raw accuracy table does not control target geometry. That matters because strict accuracy is point-in-box and larger boxes have a wider hit tolerance. In our audit, the median normalized text box is 4.77 times the icon median. The dedicated histogram shows the full observed size distributions instead of reporting a model-adjusted gap. It establishes substantial imbalance in click-box geometry, but it does not determine how much of the performance difference size causes.
 
 ### What exactly is the causal metric?
 
@@ -132,7 +133,7 @@ Potentially, but not from a four-item pilot. The new balanced set is enough to a
 
 Yes. The completed delta lens teacher-forces the same image, prompt, and candidate action tokens through both checkpoints. Holo increases the final oracle margin on all five ScreenSpot probes, but the hotel trajectory is mixed. The mean ScreenSpot delta becomes most negative at layer 22 and flips positive at layers 30–31, which points to a late transformation or readout effect. Because each checkpoint uses its own final RMSNorm and unembedding, the next analysis should separate residual changes from readout changes before assigning the effect to a specific internal representation.
 
-The paired attention diagnostic adds a different view. Direct attention becomes more target-concentrated on the matched PowerPoint case, while value-norm weighting slightly reduces target concentration. In the hotel trace, value-norm attention moves away from the earliest frame and toward the two more recent frames. These are descriptive routing changes, not evidence that attention itself caused the improved action margin.
+The paired attention diagnostic adds a different view. After subtracting four same-image alternate-instruction maps, value-norm target mass is 0.78 percentage point lower for Holo than Qwen, despite stable leave-one-control-out maps. Raw attention moves 1.36 points in the opposite direction. In the hotel trace, value-norm attention moves away from the earliest frame and toward the two more recent frames. These are descriptive routing changes, not evidence that attention itself caused the improved action margin.
 
 ### What should we train next?
 
@@ -160,10 +161,10 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Causal method and results: `docs/causal-intervention.md`
 - Causal measurements: `artifacts/causal-intervention/powerpoint_windows_59_swap/results.json`
 - Qwen-to-Holo layerwise delta: `data/remote-results/delta-lens-qwen35-vs-holo31-20260921-dcd8c5e5/`
-- Paired ScreenSpot attention delta: `data/local-results/attention-delta-ppt59-native-v2/`
+- Paired ScreenSpot instruction-control delta: `data/local-results/attention-delta-ppt59-controls-v1/`
 - Paired hotel attention delta: `data/local-results/attention-delta-hotel-step2-native-v1/`
-- Slide-ready paired attention assets: `artifacts/screenspot-presentation/delta-lens-v22/`
+- Slide-ready paired attention assets: `artifacts/screenspot-presentation/delta-lens-paired-controls-v1/`
 - Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
 - Tracked hotel viewer and measurement: `artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/`
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)
-- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v22.pptx`
+- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v27.pptx`

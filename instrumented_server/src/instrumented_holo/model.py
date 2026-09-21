@@ -379,8 +379,9 @@ class InstrumentedHolo:
             "transformers_version": version("transformers"),
         }
 
-    def checkpoint_revision(self) -> str | None:
-        metadata_path = self.settings.model_path / ".cache" / "huggingface" / "download" / "config.json.metadata"
+    def checkpoint_revision(self, checkpoint_path: Path | None = None) -> str | None:
+        path = checkpoint_path or self.settings.model_path
+        metadata_path = path / ".cache" / "huggingface" / "download" / "config.json.metadata"
         if metadata_path.is_file():
             lines = metadata_path.read_text().splitlines()
             # Local-folder metadata stores commit hash, ETag, then timestamp.
@@ -391,9 +392,14 @@ class InstrumentedHolo:
         return None
 
     def processor_metadata(self) -> dict[str, Any]:
-        result: dict[str, Any] = {"revision": self.checkpoint_revision(), "files": {}}
+        processor_path = self.settings.processor_path or self.settings.model_path
+        result: dict[str, Any] = {
+            "path": str(processor_path),
+            "revision": self.checkpoint_revision(processor_path),
+            "files": {},
+        }
         for name in ("preprocessor_config.json", "video_preprocessor_config.json", "tokenizer_config.json"):
-            path = self.settings.model_path / name
+            path = processor_path / name
             if path.is_file():
                 result["files"][name] = json.loads(path.read_text())
         if self.processor is not None:

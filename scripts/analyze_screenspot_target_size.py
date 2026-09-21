@@ -97,6 +97,32 @@ def main(argv: list[str] | None = None) -> None:
             "median_bbox_height_fraction": statistics.median(row["bbox_height_fraction"] for row in rows),
         }
 
+    area_buckets = [
+        ("<0.01%", 0.0, 0.0001),
+        ("0.01–0.02%", 0.0001, 0.0002),
+        ("0.02–0.05%", 0.0002, 0.0005),
+        ("0.05–0.10%", 0.0005, 0.001),
+        ("0.10–0.20%", 0.001, 0.002),
+        ("0.20–0.50%", 0.002, 0.005),
+        ("≥0.50%", 0.005, None),
+    ]
+    distribution_buckets: list[dict[str, Any]] = []
+    for label, lower, upper in area_buckets:
+        bucket: dict[str, Any] = {
+            "label": label,
+            "lower_area_fraction_inclusive": lower,
+            "upper_area_fraction_exclusive": upper,
+        }
+        for ui_type, rows in sorted(by_ui.items()):
+            count = sum(
+                1
+                for row in rows
+                if row["bbox_area_fraction"] >= lower
+                and (upper is None or row["bbox_area_fraction"] < upper)
+            )
+            bucket[ui_type] = {"count": count, "share": count / len(rows)}
+        distribution_buckets.append(bucket)
+
     strata: list[dict[str, Any]] = []
     standardized: dict[str, float] = {ui_type: 0.0 for ui_type in by_ui}
     for size_bin in range(args.bins):
@@ -128,6 +154,10 @@ def main(argv: list[str] | None = None) -> None:
         "by_ui_type": ui_summary,
         "median_area_ratio_text_over_icon": text["median_bbox_area_fraction"] / icon["median_bbox_area_fraction"],
         "raw_accuracy_gap_text_minus_icon": text["accuracy"] - icon["accuracy"],
+        "target_area_distribution": {
+            "unit": "share within each official UI type",
+            "buckets": distribution_buckets,
+        },
         "size_standardization": {
             "method": f"Direct standardization over {args.bins} pooled target-area rank bins",
             "accuracy": standardized,

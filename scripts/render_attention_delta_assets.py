@@ -54,11 +54,19 @@ def _composite(source: Image.Image, heatmap: Image.Image, bbox: list[float]) -> 
     return result.convert("RGB")
 
 
-def render(screen_result: Path, hotel_result: Path, source_image: Path, output_dir: Path) -> dict:
+def render(
+    screen_result: Path,
+    hotel_result: Path,
+    source_image: Path,
+    output_dir: Path,
+    method_name: str,
+) -> dict:
     screen = json.loads(screen_result.read_text())["comparison"]["cases"][0]
     if screen["id"] != "powerpoint_windows_59":
         raise ValueError("the ScreenSpot result is not powerpoint_windows_59")
-    method = screen["methods"]["direct_attention"]
+    if method_name not in screen["methods"]:
+        raise ValueError(f"unknown attribution method: {method_name}")
+    method = screen["methods"][method_name]
     grid = screen["image_grids"][0]
     base = _reshape(method["base"][0], grid)
     tuned = _reshape(method["tuned"][0], grid)
@@ -70,10 +78,11 @@ def render(screen_result: Path, hotel_result: Path, source_image: Path, output_d
     with Image.open(source_image) as opened:
         source = opened.convert("RGB")
     output_dir.mkdir(parents=True, exist_ok=True)
+    method_slug = method_name.replace("_attention", "").replace("_", "-")
     files = {
-        "base": output_dir / "attention-qwen-direct.png",
-        "tuned": output_dir / "attention-holo-direct.png",
-        "delta": output_dir / "attention-holo-minus-qwen-direct.png",
+        "base": output_dir / f"attention-qwen-{method_slug}.png",
+        "tuned": output_dir / f"attention-holo-{method_slug}.png",
+        "delta": output_dir / f"attention-holo-minus-qwen-{method_slug}.png",
     }
     _composite(source, _positive_overlay(base, shared_ceiling), bbox).save(files["base"], quality=94)
     _composite(source, _positive_overlay(tuned, shared_ceiling), bbox).save(files["tuned"], quality=94)
@@ -95,7 +104,7 @@ def render(screen_result: Path, hotel_result: Path, source_image: Path, output_d
         "hotel_case": hotel["id"],
         "hotel_frame_allocation": hotel_methods,
         "rendering": {
-            "method": "direct_attention",
+            "method": method_name,
             "base_and_tuned_shared_percentile": 99.5,
             "delta_symmetric_absolute_percentile": 99.5,
             "target_box": bbox,
@@ -114,8 +123,19 @@ def main() -> None:
     parser.add_argument("--hotel-result", type=Path, required=True)
     parser.add_argument("--source-image", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument(
+        "--method",
+        choices=("direct_attention", "value_norm_attention"),
+        default="value_norm_attention",
+    )
     args = parser.parse_args()
-    summary = render(args.screen_result, args.hotel_result, args.source_image, args.output_dir)
+    summary = render(
+        args.screen_result,
+        args.hotel_result,
+        args.source_image,
+        args.output_dir,
+        args.method,
+    )
     print(json.dumps(summary, indent=2))
 
 

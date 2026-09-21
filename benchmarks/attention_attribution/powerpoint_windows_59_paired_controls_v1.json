@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "name": "powerpoint_windows_59_paired_controls_v1",
+  "processor_path": "../../models/Holo-3.1-4B",
+  "models": [
+    {
+      "label": "Qwen3.5-4B",
+      "role": "base",
+      "path": "../../models/Qwen3.5-4B"
+    },
+    {
+      "label": "Holo3.1-4B",
+      "role": "tuned",
+      "path": "../../models/Holo-3.1-4B"
+    }
+  ],
+  "image_min_pixels": 65536,
+  "image_max_pixels": 16777216,
+  "score_reduction": "mean",
+  "experiment_design": {
+    "primary_method": "value_norm_attention",
+    "construction": "For each checkpoint, subtract the mean of four separately L1-normalized control maps from the separately normalized target map, then subtract the Qwen prompt difference from the Holo prompt difference.",
+    "teacher_forcing": "Every instruction uses an independently image-derived oracle coordinate; no model rollout selects a target or control coordinate.",
+    "control_policy": "Same screenshot, visible alternate click instructions, one control per distinct GUI region.",
+    "stability": "Cosine similarity between the four-control prompt difference and each leave-one-control-out prompt difference."
+  },
+  "cases": [
+    {
+      "id": "powerpoint_windows_59_target_psychedelic",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate a \"Psychedelic vibrant\" presentation"
+              }
+            ]
+          }
+        ],
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "candidates": [
+        {
+          "label": "oracle_bbox_center",
+          "json_coordinate": [482, 351]
+        },
+        {
+          "label": "diagnostic_distractor",
+          "json_coordinate": [406, 351]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_role": "target",
+        "instruction": "Create a \"Psychedelic vibrant\" presentation",
+        "bbox": [1289, 563, 1489, 702],
+        "bbox_source": "ScreenSpot-Pro annotation",
+        "image_size": [2880, 1800]
+      }
+    },
+    {
+      "id": "powerpoint_windows_59_control_blank",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate a blank presentation"
+              }
+            ]
+          }
+        ],
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [99, 108]
+        },
+        {
+          "label": "target_region_center",
+          "json_coordinate": [482, 351]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_role": "control",
+        "instruction": "Create a blank presentation",
+        "bbox": [179, 111, 394, 278],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [2880, 1800]
+      }
+    },
+    {
+      "id": "powerpoint_windows_59_control_scientific",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nSelect the Scientific discovery theme"
+              }
+            ]
+          }
+        ],
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [176, 351]
+        },
+        {
+          "label": "target_region_center",
+          "json_coordinate": [482, 351]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_role": "control",
+        "instruction": "Select the Scientific discovery theme",
+        "bbox": [407, 563, 607, 702],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [2880, 1800]
+      }
+    },
+    {
+      "id": "powerpoint_windows_59_control_animal",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nSelect the Animal magnetism theme"
+              }
+            ]
+          }
+        ],
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [635, 261]
+        },
+        {
+          "label": "target_region_center",
+          "json_coordinate": [482, 351]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_role": "control",
+        "instruction": "Select the Animal magnetism theme",
+        "bbox": [1728, 400, 1928, 539],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [2880, 1800]
+      }
+    },
+    {
+      "id": "powerpoint_windows_59_control_search",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_59.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the template search box"
+              }
+            ]
+          }
+        ],
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_oracle_center",
+          "json_coordinate": [165, 189]
+        },
+        {
+          "label": "target_region_center",
+          "json_coordinate": [482, 351]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_role": "control",
+        "instruction": "Click the template search box",
+        "bbox": [179, 324, 773, 356],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [2880, 1800]
+      }
+    }
+  ]
+}

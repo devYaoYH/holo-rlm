@@ -357,6 +357,21 @@ def run_manifest(
             expected_cases = [case.id for case in plan.cases]
             if payload.get("role") != model_spec.role or [case["id"] for case in payload.get("cases", [])] != expected_cases:
                 raise ValueError(f"existing {final_path.name} does not match the selected run")
+            metadata_engine = InstrumentedHolo(
+                replace(
+                    Settings.from_environment(),
+                    model_path=model_spec.path,
+                    processor_path=plan.processor_path,
+                    eager_attention=False,
+                )
+            )
+            processor_metadata = metadata_engine.processor_metadata()
+            runtime_size = payload.get("processor", {}).get("runtime_image_processor_size")
+            if isinstance(runtime_size, dict):
+                processor_metadata["runtime_image_processor_size"] = runtime_size
+            if payload.get("processor") != processor_metadata:
+                payload["processor"] = processor_metadata
+                final_path.write_text(json.dumps(payload, indent=2) + "\n")
             model_outputs[model_spec.role] = payload
             print(json.dumps({"model": model_spec.label, "resumed": True, "complete": True}), flush=True)
             continue
