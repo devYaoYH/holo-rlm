@@ -1,0 +1,5910 @@
+{
+  "bbox": [
+    1030.0,
+    220.0,
+    1135.0,
+    285.0
+  ],
+  "caveat": "Attention rollout is a routing diagnostic, not proof that changing a highlighted patch would change the click.",
+  "controls": [
+    "Click the StayLocal logo in the upper-left corner.",
+    "Click the Anchor Yard Hotel name.",
+    "Click View details for Anchor Yard Hotel."
+  ],
+  "correct": false,
+  "excluded_controls": [
+    {
+      "instruction": "Click the image for Signal Quay Rooms.",
+      "reason": "generated output has no parameter span(s): y",
+      "trace_id": "trace-20260920T170740Z-140b4cf2c614"
+    }
+  ],
+  "format_valid": true,
+  "frame_bboxes": [
+    null,
+    null,
+    [
+      1030.0,
+      720.0,
+      1135.0,
+      785.0
+    ],
+    [
+      1030.0,
+      220.0,
+      1135.0,
+      285.0
+    ]
+  ],
+  "interpretation": {
+    "causal": "Target coordinate map minus the mean of generated-token maps strictly before x begins.",
+    "prompt_baseline": "Mean of separately L1-normalized coordinate maps from matched click instructions over the exact same image history.",
+    "prompt_difference": "Target normalized coordinate map minus the same-image-history diverse-instruction mean. Red is above baseline; blue is below baseline.",
+    "raw": "L1-normalized value-norm cross-layer rollout for x and y value tokens."
+  },
+  "layer_head_statistics": {
+    "heads": [
+      {
+        "causal": {
+          "normalized_entropy": 0.6229756194390651,
+          "peak_distance_diagonal": 0.14730770556954004,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            0
+          ],
+          "positive_mass": 0.00946120869537026,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.12730149067651686,
+          "target_mass": 0.0008484694080734645
+        },
+        "head": 0,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.6850853685640148,
+          "peak_distance_diagonal": 0.14730770556954004,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            0
+          ],
+          "positive_mass": 0.129185681556919,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.5350787150775236,
+          "target_mass": 0.0035663205375040027
+        },
+        "raw": {
+          "normalized_entropy": 0.8353095937169854,
+          "peak_distance_diagonal": 0.546014784039613,
+          "peak_inside_target": false,
+          "peak_patch": [
+            4,
+            0
+          ],
+          "positive_mass": 0.05802778705270839,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.33306031253996676,
+          "target_mass": 0.002219859993247337
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7387076041759423,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.09587607002814025,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.12028586660688448,
+          "target_mass": 0.0008017099996015494
+        },
+        "head": 1,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.7220568605257892,
+          "peak_distance_diagonal": 0.6194495463874865,
+          "peak_inside_target": false,
+          "peak_patch": [
+            2,
+            1
+          ],
+          "positive_mass": 0.12184712454973123,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.021616762212132826,
+          "target_mass": 0.0001440765645486392
+        },
+        "raw": {
+          "normalized_entropy": 0.7887399732510111,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.13059787679731016,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.17777125439450311,
+          "target_mass": 0.001184852354728988
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.769952424223945,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.02287810487086972,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3575945329775192,
+          "target_mass": 0.00238338153083161
+        },
+        "head": 2,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.7556022942854338,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.059426325831736904,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.21424038331136006,
+          "target_mass": 0.001427920523535188
+        },
+        "raw": {
+          "normalized_entropy": 0.886696331956988,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.053306716994484304,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.48130815406433947,
+          "target_mass": 0.003207937647938591
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5758429013656391,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.012302120758818091,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 3,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.5393269548471676,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.14009248778165784,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.734878255955702,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.02088461519044671,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.09844117868221879,
+          "target_mass": 0.0006561143012755305
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6829922442631485,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.016361598047751613,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8263274082793111,
+          "target_mass": 0.005507504454595994
+        },
+        "head": 4,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.5728159800830024,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.12505372420582717,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.002784750333124755,
+          "target_mass": 1.8560469749586382e-05
+        },
+        "raw": {
+          "normalized_entropy": 0.7708571224046895,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.032367567247263196,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6214010289313313,
+          "target_mass": 0.004141662131305016
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7783518410615057,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.06269979433005801,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6575115847176438,
+          "target_mass": 0.004382340396189374
+        },
+        "head": 5,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.7373880307032809,
+          "peak_distance_diagonal": 0.7032499108772616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            1
+          ],
+          "positive_mass": 0.12144816596719465,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.6747715437517239,
+          "target_mass": 0.011162417759868667
+        },
+        "raw": {
+          "normalized_entropy": 0.7987454690127328,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.08982306794274564,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6604848938660053,
+          "target_mass": 0.004402157617808092
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7912036290077492,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.04707416479908488,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.2673825152749815,
+          "target_mass": 0.001782114908937255
+        },
+        "head": 6,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.7465512679166364,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.14177113226014626,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.10896879972426025,
+          "target_mass": 0.0007262813067559339
+        },
+        "raw": {
+          "normalized_entropy": 0.8208647546015603,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.07613813912882961,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3981551236055592,
+          "target_mass": 0.0026537194517655682
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7146981553284302,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.03092559644844073,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.47543664500910865,
+          "target_mass": 0.003168803810729655
+        },
+        "head": 7,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.5781959961985197,
+          "peak_distance_diagonal": 0.571590715361921,
+          "peak_inside_target": false,
+          "peak_patch": [
+            3,
+            2
+          ],
+          "positive_mass": 0.10807253592793131,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8010972764838936,
+          "target_mass": 0.005339344640627514
+        },
+        "raw": {
+          "normalized_entropy": 0.7807727557097737,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.06778583952120698,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.569355099902654,
+          "target_mass": 0.0037947739812847787
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7012153511351675,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.07961637656899256,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.17708387121004562,
+          "target_mass": 0.0011802709189536733
+        },
+        "head": 8,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.5704818726500529,
+          "peak_distance_diagonal": 0.7032499108772616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            1
+          ],
+          "positive_mass": 0.09347142202750547,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.005588637423102181,
+          "target_mass": 3.724848673112538e-05
+        },
+        "raw": {
+          "normalized_entropy": 0.7513055169955881,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.10712647637387818,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.21768765980120827,
+          "target_mass": 0.0014508967559992642
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7829628618782116,
+          "peak_distance_diagonal": 0.6194495463874865,
+          "peak_inside_target": false,
+          "peak_patch": [
+            2,
+            1
+          ],
+          "positive_mass": 0.026947520502005773,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.4736085042668473,
+          "target_mass": 0.0031566191812707352
+        },
+        "head": 9,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.6625797939972577,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.09740320726268692,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.1949772400142835,
+          "target_mass": 0.007964569983493638
+        },
+        "raw": {
+          "normalized_entropy": 0.8130983876655056,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.037133356455456124,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.45469029282332324,
+          "target_mass": 0.0030305285630070128
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6503882732714065,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.034103747505810134,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.18913833805667182,
+          "target_mass": 0.001260614411364048
+        },
+        "head": 10,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.4903900297735156,
+          "peak_distance_diagonal": 0.6194495463874865,
+          "peak_inside_target": false,
+          "peak_patch": [
+            2,
+            1
+          ],
+          "positive_mass": 0.13986761127853242,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.055437194298773335,
+          "target_mass": 0.0003694910655167266
+        },
+        "raw": {
+          "normalized_entropy": 0.716509969302516,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.04868409130895657,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.21172192287739564,
+          "target_mass": 0.0014111348863654544
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6652030578797985,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.1318718320210337,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.08753737803446097,
+          "target_mass": 0.0005834400440285119
+        },
+        "head": 11,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.5872365768708275,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.07631491740539786,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.15194794593804828,
+          "target_mass": 0.00101273899514373
+        },
+        "raw": {
+          "normalized_entropy": 0.7261928514386348,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.17780917578318167,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.1425023911448499,
+          "target_mass": 0.0009497840034800786
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7869302272269459,
+          "peak_distance_diagonal": 0.12726921614667572,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            5
+          ],
+          "positive_mass": 0.02677738045076694,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.397900769672812,
+          "target_mass": 0.009317063235368107
+        },
+        "head": 12,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.694377080103009,
+          "peak_distance_diagonal": 0.34720847741210026,
+          "peak_inside_target": false,
+          "peak_patch": [
+            18,
+            11
+          ],
+          "positive_mass": 0.15344861259654863,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.1504179512231607,
+          "target_mass": 0.020997658708103585
+        },
+        "raw": {
+          "normalized_entropy": 0.8965096842273306,
+          "peak_distance_diagonal": 0.12726921614667572,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            5
+          ],
+          "positive_mass": 0.060763724298340094,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.7121195290884161,
+          "target_mass": 0.011411343541043398
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7024430310690121,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.05599494172406594,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6625308968562827,
+          "target_mass": 0.004415794307660283
+        },
+        "head": 13,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.3844848533352101,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.36646852374542505,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.03337193912016083,
+          "target_mass": 0.00022242527782724382
+        },
+        "raw": {
+          "normalized_entropy": 0.7276910230584415,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.05970057218792135,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.7263527570587739,
+          "target_mass": 0.004841169498951301
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.803854073228498,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.030436925123467518,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.8915682008272703,
+          "target_mass": 0.0192724150103966
+        },
+        "head": 14,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.6791827979676246,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.1280670948617626,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.50425305421034,
+          "target_mass": 0.003360866303696846
+        },
+        "raw": {
+          "normalized_entropy": 0.8883981349267176,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.049392664988772594,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.6433340443195474,
+          "target_mass": 0.01761792466062589
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6463258804084099,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.02553637974372691,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.7676699313248585,
+          "target_mass": 0.011781589141886874
+        },
+        "head": 15,
+        "layer_ordinal": 0,
+        "prompt_difference": {
+          "normalized_entropy": 0.3494099318989952,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.2313531844483805,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.6695562194191533,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.02690426604993945,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.7554178145785935,
+          "target_mass": 0.011699928305174708
+        },
+        "transformer_layer": 3
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7090894535942207,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.10528497562609118,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 0,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.6219460716738906,
+          "peak_distance_diagonal": 0.5294179460674616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            4,
+            2
+          ],
+          "positive_mass": 0.08171583624789491,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.839757742373023,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.23881112919798397,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.17883073123205795,
+          "target_mass": 0.001191913809237105
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4365580400368377,
+          "peak_distance_diagonal": 0.5398168906916192,
+          "peak_inside_target": false,
+          "peak_patch": [
+            4,
+            6
+          ],
+          "positive_mass": 0.0006289308889790846,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 1,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.7127704875794405,
+          "peak_distance_diagonal": 0.40039399705691575,
+          "peak_inside_target": false,
+          "peak_patch": [
+            7,
+            4
+          ],
+          "positive_mass": 0.052033559477422386,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.7529684301677333,
+          "target_mass": 0.011683603062397246
+        },
+        "raw": {
+          "normalized_entropy": 0.9149487729055028,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.010408720303189511,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.7609725235099191,
+          "target_mass": 0.00507191159468281
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7629291270779209,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.016395403963656463,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.5050361653647548,
+          "target_mass": 0.0033660857701313007
+        },
+        "head": 2,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.6471135391695814,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.1477890543610556,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.21853687395021476,
+          "target_mass": 0.00145655680147482
+        },
+        "raw": {
+          "normalized_entropy": 0.8344298767252457,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.02873548333946019,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.5278347044887202,
+          "target_mass": 0.0035180389239604644
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5242593796049556,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.1035222513030476,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 3,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.5401530839998626,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.14663467516220408,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.713297162135953,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.17418015832640776,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.20019490611428045,
+          "target_mass": 0.0013343068693651994
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.371295766331874,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.004603179183504835,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 4,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.5544198695102657,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.34632977165892953,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0069254609736827755,
+          "target_mass": 4.6158467915414986e-05
+        },
+        "raw": {
+          "normalized_entropy": 0.7714218286487342,
+          "peak_distance_diagonal": 0.3415395034323357,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            11
+          ],
+          "positive_mass": 0.017015239161878526,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.12141377318732831,
+          "target_mass": 0.0008092275410190584
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5112056506400946,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.007693953166835854,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 5,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.6234803193657971,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.23261504141555633,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.05157246872228856,
+          "target_mass": 0.0003437325185836127
+        },
+        "raw": {
+          "normalized_entropy": 0.7991890424279886,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.021674184367611815,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.28649874336601916,
+          "target_mass": 0.0019095253158916805
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5762916644614582,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.01527347079172614,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 6,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.6569501587262359,
+          "peak_distance_diagonal": 0.1438194446328256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            1
+          ],
+          "positive_mass": 0.1271604708454106,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.1055953710596083,
+          "target_mass": 0.0007037972729314713
+        },
+        "raw": {
+          "normalized_entropy": 0.8519413024367999,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.05329697498268615,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.36897645657988515,
+          "target_mass": 0.00245924249624777
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6425508070343336,
+          "peak_distance_diagonal": 0.1438194446328256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            1
+          ],
+          "positive_mass": 0.09094648274185602,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 7,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.6075769580770182,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.16230789161636494,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.033173369650457155,
+          "target_mass": 0.0002211018045550489
+        },
+        "raw": {
+          "normalized_entropy": 0.8582708362001006,
+          "peak_distance_diagonal": 0.1438194446328256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            1
+          ],
+          "positive_mass": 0.19694819155120058,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.36770119025802916,
+          "target_mass": 0.002450742796397509
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.8055753346143348,
+          "peak_distance_diagonal": 0.3993573726081589,
+          "peak_inside_target": false,
+          "peak_patch": [
+            7,
+            3
+          ],
+          "positive_mass": 0.2036015910362039,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.4771117644394314,
+          "target_mass": 0.0031799685471671085
+        },
+        "head": 8,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.7585586283577048,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.11936342656554189,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8741146104929969,
+          "target_mass": 0.005826008024037797
+        },
+        "raw": {
+          "normalized_entropy": 0.8717836212937177,
+          "peak_distance_diagonal": 0.546014784039613,
+          "peak_inside_target": false,
+          "peak_patch": [
+            4,
+            0
+          ],
+          "positive_mass": 0.3650985119820689,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.898065755120199,
+          "target_mass": 0.005985643338569686
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6131594082504093,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.021629832110193092,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3807465323003571,
+          "target_mass": 0.002537690510693298
+        },
+        "head": 9,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.6834680250654346,
+          "peak_distance_diagonal": 0.12235068943943314,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            6
+          ],
+          "positive_mass": 0.053737015230581164,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.0109724711980281,
+          "target_mass": 0.0067381710116470135
+        },
+        "raw": {
+          "normalized_entropy": 0.9134058540272475,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.10200024955065601,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.3766808928103798,
+          "target_mass": 0.009175631927178556
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5142927118624968,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.011467055772413914,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.38388572301648927,
+          "target_mass": 0.002558613339440956
+        },
+        "head": 10,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.5420109909065276,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.1829931313477573,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.34891646085164835,
+          "target_mass": 0.0023255418411254883
+        },
+        "raw": {
+          "normalized_entropy": 0.8222650746696518,
+          "peak_distance_diagonal": 0.11748195683841953,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            1
+          ],
+          "positive_mass": 0.032405889473352545,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6141996770864642,
+          "target_mass": 0.00409366483995617
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4419987264870454,
+          "peak_distance_diagonal": 0.74027646938924,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            9
+          ],
+          "positive_mass": 0.0006153685405934084,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.02231404854015388,
+          "target_mass": 0.0001487240051626467
+        },
+        "head": 11,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.7123330499293082,
+          "peak_distance_diagonal": 0.546014784039613,
+          "peak_inside_target": false,
+          "peak_patch": [
+            4,
+            0
+          ],
+          "positive_mass": 0.10376076304964954,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.840558070074264,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.004840749062452687,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3326698391917015,
+          "target_mass": 0.002217257473128284
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5770138580826398,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.13293896547838813,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.10245544742701179,
+          "target_mass": 0.0006828695592669487
+        },
+        "head": 12,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.4129437245699938,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.059070491337479325,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.00872026879242066,
+          "target_mass": 5.812093213698341e-05
+        },
+        "raw": {
+          "normalized_entropy": 0.7677999688677695,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.30965919934078556,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.1944627708703007,
+          "target_mass": 0.0012961019640525414
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4552330275316333,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.03359299512931102,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 13,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.49280961510292887,
+          "peak_distance_diagonal": 0.7032499108772616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            1
+          ],
+          "positive_mass": 0.0923597656255879,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.1256276067177646,
+          "target_mass": 0.0008373129061022885
+        },
+        "raw": {
+          "normalized_entropy": 0.7441388513253402,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.13495257665681493,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3248527516542976,
+          "target_mass": 0.002165156279336505
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.13907029349331257,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.2656996911390479,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 14,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.3609612121949137,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.027316250354232352,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.3531002641586876,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.4047978679591715,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.011795634128327417,
+          "target_mass": 7.861836223226038e-05
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5609971088714756,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.26582257478366955,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.05550081817765316,
+          "target_mass": 0.0003699151211547684
+        },
+        "head": 15,
+        "layer_ordinal": 1,
+        "prompt_difference": {
+          "normalized_entropy": 0.5348409152703449,
+          "peak_distance_diagonal": 0.23687480338717506,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            0
+          ],
+          "positive_mass": 0.08269384032064409,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0693648093805925,
+          "target_mass": 0.0004623191640845155
+        },
+        "raw": {
+          "normalized_entropy": 0.7058565747976622,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.47601801092525875,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.09652979830233076,
+          "target_mass": 0.0006433748763802807
+        },
+        "transformer_layer": 7
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7349624347456197,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.012421820366689929,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.33870439833617433,
+          "target_mass": 0.002257478045551162
+        },
+        "head": 0,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.5681660110790974,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.1759175120287182,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "raw": {
+          "normalized_entropy": 0.7760946999688514,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.016736622814544688,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.4364310656173923,
+          "target_mass": 0.0029088301004284206
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6959966086916648,
+          "peak_distance_diagonal": 0.17458631380810216,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            7
+          ],
+          "positive_mass": 0.32013915090155365,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.862065019650159,
+          "target_mass": 0.01907577515538314
+        },
+        "head": 1,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.5441447688511745,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.26850435198321065,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.651325910057793,
+          "target_mass": 0.03100126888295355
+        },
+        "raw": {
+          "normalized_entropy": 0.7282984086734996,
+          "peak_distance_diagonal": 0.17458631380810216,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            7
+          ],
+          "positive_mass": 0.35897679040155595,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.4400822683259733,
+          "target_mass": 0.02292828269660622
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6951247665209488,
+          "peak_distance_diagonal": 0.3024700079151687,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            10
+          ],
+          "positive_mass": 0.18017032125654708,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8002609024985554,
+          "target_mass": 0.005333770175344376
+        },
+        "head": 2,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.5057069232312176,
+          "peak_distance_diagonal": 0.3024700079151687,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            10
+          ],
+          "positive_mass": 0.19645542858870613,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.7984372743975344,
+          "target_mass": 0.005321615622815599
+        },
+        "raw": {
+          "normalized_entropy": 0.7417061971100987,
+          "peak_distance_diagonal": 0.3024700079151687,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            10
+          ],
+          "positive_mass": 0.23338080427500074,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.9603948152825876,
+          "target_mass": 0.006401068959280919
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7655917115293565,
+          "peak_distance_diagonal": 0.10314066341531022,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            3
+          ],
+          "positive_mass": 0.030269532317561243,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8335827177425286,
+          "target_mass": 0.0055558613755788645
+        },
+        "head": 3,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.67297842292476,
+          "peak_distance_diagonal": 0.10314066341531022,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            3
+          ],
+          "positive_mass": 0.11801082441525068,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.43789260943627,
+          "target_mass": 0.022913688534572797
+        },
+        "raw": {
+          "normalized_entropy": 0.8771361368178956,
+          "peak_distance_diagonal": 0.10314066341531022,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            3
+          ],
+          "positive_mass": 0.05620804229511123,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.3821567009016666,
+          "target_mass": 0.009212128402005738
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7493681300032367,
+          "peak_distance_diagonal": 0.6327686080283849,
+          "peak_inside_target": false,
+          "peak_patch": [
+            2,
+            7
+          ],
+          "positive_mass": 0.4069223079720814,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.7694888506010047,
+          "target_mass": 0.005128673247413923
+        },
+        "head": 4,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.6696579782118407,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.12729063111510186,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.8813028372498655,
+          "target_mass": 0.012538956898662433
+        },
+        "raw": {
+          "normalized_entropy": 0.8034887642817571,
+          "peak_distance_diagonal": 0.571590715361921,
+          "peak_inside_target": false,
+          "peak_patch": [
+            3,
+            2
+          ],
+          "positive_mass": 0.5410351969396743,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.0569632688487212,
+          "target_mass": 0.007044701474504416
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6888661680784383,
+          "peak_distance_diagonal": 0.4529662401073244,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            1
+          ],
+          "positive_mass": 0.41837813465031104,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.9723256724287765,
+          "target_mass": 0.006480588588209375
+        },
+        "head": 5,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.6473498722905345,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.2518773429196699,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.1780437906599124,
+          "target_mass": 0.014516746944583889
+        },
+        "raw": {
+          "normalized_entropy": 0.7630629013073444,
+          "peak_distance_diagonal": 0.17458631380810216,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            7
+          ],
+          "positive_mass": 0.5627191896481918,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.36019139794461,
+          "target_mass": 0.009065728799777309
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6421450973147441,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.1802042598560547,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.9615547916980605,
+          "target_mass": 0.019738878372401625
+        },
+        "head": 6,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.4772387974879265,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.16247809861806672,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.751931934089864,
+          "target_mass": 0.05166692915055012
+        },
+        "raw": {
+          "normalized_entropy": 0.6944095499998697,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.2477739081163861,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.452806752894137,
+          "target_mass": 0.01634805282080321
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6438058186595115,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.41149942526760697,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3094267650900083,
+          "target_mass": 0.002062341476307917
+        },
+        "head": 7,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.48429185726616336,
+          "peak_distance_diagonal": 0.35784595398974256,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            11
+          ],
+          "positive_mass": 0.1904004965654167,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.11989692744573312,
+          "target_mass": 0.0007991177048995396
+        },
+        "raw": {
+          "normalized_entropy": 0.6997812406156982,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.52116852080702,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3183076364063439,
+          "target_mass": 0.0021215328305403294
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.746301339761852,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.12022539962936207,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.954867814149115,
+          "target_mass": 0.013029270343327841
+        },
+        "head": 8,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.5994174897251775,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.3438718257493747,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.9677419055467045,
+          "target_mass": 0.03311019385288697
+        },
+        "raw": {
+          "normalized_entropy": 0.7755935989498758,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.13700419760937166,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.1427685130036647,
+          "target_mass": 0.014281635841064464
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7944102668372038,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.1941215335191373,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.4784197912797936,
+          "target_mass": 0.009853725659652922
+        },
+        "head": 9,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.630074067890694,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.19875468948157504,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.9375826140332673,
+          "target_mass": 0.026244141934352587
+        },
+        "raw": {
+          "normalized_entropy": 0.8613437093743532,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.278893007224724,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.1998515931573204,
+          "target_mass": 0.014662096800096398
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7618742555362268,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.213906138659695,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.7877683430200833,
+          "target_mass": 0.005250506778429754
+        },
+        "head": 10,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.643179521401463,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.21782325623644283,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.2942626964866815,
+          "target_mass": 0.015291350491720312
+        },
+        "raw": {
+          "normalized_entropy": 0.8327932027277375,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.32073643061403345,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8051261521027183,
+          "target_mass": 0.005366197254004934
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7233303396247053,
+          "peak_distance_diagonal": 0.7061909417873359,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            6
+          ],
+          "positive_mass": 0.14230634021760125,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.0418788368236727,
+          "target_mass": 0.006944163145821842
+        },
+        "head": 11,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.6275569838380634,
+          "peak_distance_diagonal": 0.3024700079151687,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            10
+          ],
+          "positive_mass": 0.2142450382852985,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.9649015939082863,
+          "target_mass": 0.01976118493986724
+        },
+        "raw": {
+          "normalized_entropy": 0.7969537234526564,
+          "peak_distance_diagonal": 0.7061909417873359,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            6
+          ],
+          "positive_mass": 0.19409260949362306,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.1716759487517312,
+          "target_mass": 0.007809265967022037
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7562281838065377,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.39226823722674453,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.31698285554221833,
+          "target_mass": 0.00211270311433168
+        },
+        "head": 12,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.6860394786532432,
+          "peak_distance_diagonal": 0.3024700079151687,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            10
+          ],
+          "positive_mass": 0.19910616439119622,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.1819759200835211,
+          "target_mass": 0.007877915678291048
+        },
+        "raw": {
+          "normalized_entropy": 0.8110147428112462,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.5371721409090355,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.4552304822990734,
+          "target_mass": 0.0030341289469640394
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7007683971804325,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.28799759982165796,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.41039220178614555,
+          "target_mass": 0.0027352800558500426
+        },
+        "head": 13,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.4831633608510533,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.17232341528506367,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.14773468445743707,
+          "target_mass": 0.0009846574427949297
+        },
+        "raw": {
+          "normalized_entropy": 0.7514338521421768,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.354754688805329,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.5318514348693983,
+          "target_mass": 0.0035448105888512146
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6808493418655023,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.4182604477632026,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.582866862184938,
+          "target_mass": 0.023879947592199417
+        },
+        "head": 14,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.5449417811231999,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.2878918042888472,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.3032334665532925,
+          "target_mass": 0.04867633633713498
+        },
+        "raw": {
+          "normalized_entropy": 0.7384814805525571,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.5298450679813698,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.0892949027708827,
+          "target_mass": 0.020590271202550074
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7791422988773471,
+          "peak_distance_diagonal": 0.6119646608568508,
+          "peak_inside_target": false,
+          "peak_patch": [
+            2,
+            4
+          ],
+          "positive_mass": 0.39321090940683234,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.21393336919013606,
+          "target_mass": 0.001425874262424491
+        },
+        "head": 15,
+        "layer_ordinal": 2,
+        "prompt_difference": {
+          "normalized_entropy": 0.6431986035140491,
+          "peak_distance_diagonal": 0.2126842600011745,
+          "peak_inside_target": false,
+          "peak_patch": [
+            12,
+            1
+          ],
+          "positive_mass": 0.17564629510161467,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.1729031119654091,
+          "target_mass": 0.001152405995277263
+        },
+        "raw": {
+          "normalized_entropy": 0.8226108009235201,
+          "peak_distance_diagonal": 0.6119646608568508,
+          "peak_inside_target": false,
+          "peak_patch": [
+            2,
+            4
+          ],
+          "positive_mass": 0.553121936368882,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.39221056682301764,
+          "target_mass": 0.0026140987486006793
+        },
+        "transformer_layer": 11
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7334162517958703,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.29615940823168785,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.67280713965732,
+          "target_mass": 0.02447940305484493
+        },
+        "head": 0,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.6118585273332592,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.32653159547407995,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.53711520547295,
+          "target_mass": 0.05690020632553994
+        },
+        "raw": {
+          "normalized_entropy": 0.800892852192748,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.4667050328989717,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.413869265441634,
+          "target_mass": 0.029418611070936674
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6083412981029774,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.32817796550506273,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.3675949962465832,
+          "target_mass": 0.009115074071663018
+        },
+        "head": 1,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.5744841550565076,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.5001435647444623,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.712069753608459,
+          "target_mass": 0.04473620709802513
+        },
+        "raw": {
+          "normalized_entropy": 0.6897564375759604,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.48071115952643595,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.53615930193669,
+          "target_mass": 0.030233678941130774
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6145253503686411,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.3621491105637915,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.024233373502514,
+          "target_mass": 0.03348671169351041
+        },
+        "head": 2,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.5421656401175616,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.5367627074471102,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.135144893279618,
+          "target_mass": 0.060886097555306044
+        },
+        "raw": {
+          "normalized_entropy": 0.6677011481289292,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.4875116587823314,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.216786859863858,
+          "target_mass": 0.04143512726422933
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6900678733893462,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.1962839598975279,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.434895921824718,
+          "target_mass": 0.016228676432083693
+        },
+        "head": 3,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.6140726540020774,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.38858385285175245,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.513476834364411,
+          "target_mass": 0.030082499408727644
+        },
+        "raw": {
+          "normalized_entropy": 0.7695170935254063,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.32242171817722465,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.8760348664694364,
+          "target_mass": 0.019168884730130765
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5847805070120193,
+          "peak_distance_diagonal": 0.7061909417873359,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            6
+          ],
+          "positive_mass": 0.0018662027088964805,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 4,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.6835753331230655,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.2833135235559894,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.7670092646585696,
+          "target_mass": 0.018442224835248766
+        },
+        "raw": {
+          "normalized_entropy": 0.7833522270972638,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.004822170559116046,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.3212481498991462,
+          "target_mass": 0.008806170530333664
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7295208808261413,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.06079108235735475,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.428867825414619,
+          "target_mass": 0.009523459871537866
+        },
+        "head": 5,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.6415452800388317,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.25782140750743565,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.363653237528128,
+          "target_mass": 0.055744075533329565
+        },
+        "raw": {
+          "normalized_entropy": 0.8225103318382367,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.12157889969103053,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.2060463325041337,
+          "target_mass": 0.021368424042324915
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5237881295272739,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.19148445071220976,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.486039219245944,
+          "target_mass": 0.05655978288218122
+        },
+        "head": 6,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.35081556336995523,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.4218012371638906,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 16.66699382977691,
+          "target_mass": 0.1110861649299096
+        },
+        "raw": {
+          "normalized_entropy": 0.5978496785206057,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.2361318303514679,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.60653372476196,
+          "target_mass": 0.06402792253076209
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4954835832467125,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.1223158112490843,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.268804181325844,
+          "target_mass": 0.05511190286870009
+        },
+        "head": 7,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.34375008220161685,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.3956827242691361,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 16.16140692220454,
+          "target_mass": 0.10771640844145117
+        },
+        "raw": {
+          "normalized_entropy": 0.5530313715173323,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.1499188057990981,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.664232856918073,
+          "target_mass": 0.05774745043795493
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6354410345203049,
+          "peak_distance_diagonal": 0.44798642323296045,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            5
+          ],
+          "positive_mass": 0.3080007548350068,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6771265971536683,
+          "target_mass": 0.004513075220286901
+        },
+        "head": 8,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.5371542656973833,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.37278650609118813,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.006751280618419,
+          "target_mass": 0.020040114736543664
+        },
+        "raw": {
+          "normalized_entropy": 0.6989126444559743,
+          "peak_distance_diagonal": 0.44798642323296045,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            5
+          ],
+          "positive_mass": 0.3950456580176933,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.4221761476466253,
+          "target_mass": 0.009478859577820525
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5939761357362793,
+          "peak_distance_diagonal": 0.44798642323296045,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            5
+          ],
+          "positive_mass": 0.37183221003192557,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.6906340328560746,
+          "target_mass": 0.004603102806877646
+        },
+        "head": 9,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.48402109974285384,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.30149678859197593,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.851080521177402,
+          "target_mass": 0.038997680231480245
+        },
+        "raw": {
+          "normalized_entropy": 0.6695110803490502,
+          "peak_distance_diagonal": 0.44798642323296045,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            5
+          ],
+          "positive_mass": 0.5228024882899831,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.368756110467877,
+          "target_mass": 0.015787852005803966
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5276139326364644,
+          "peak_distance_diagonal": 0.48815091971621616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            8
+          ],
+          "positive_mass": 0.35333469100083903,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.06494362630646972,
+          "target_mass": 0.0004328518061930233
+        },
+        "head": 10,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.4175675210083412,
+          "peak_distance_diagonal": 0.48815091971621616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            8
+          ],
+          "positive_mass": 0.31042030889602756,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.4085385875773191,
+          "target_mass": 0.002722925644741409
+        },
+        "raw": {
+          "normalized_entropy": 0.608410052577365,
+          "peak_distance_diagonal": 0.48815091971621616,
+          "peak_inside_target": false,
+          "peak_patch": [
+            6,
+            8
+          ],
+          "positive_mass": 0.4787536000835928,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.5316805255102888,
+          "target_mass": 0.003543671471296603
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.592594857505792,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.3410489894665716,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.3872614577649351,
+          "target_mass": 0.009246151805903987
+        },
+        "head": 11,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.5607125469437012,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.4308856035078179,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.504042820863196,
+          "target_mass": 0.036684660402725895
+        },
+        "raw": {
+          "normalized_entropy": 0.70272851144722,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.5670505845569522,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.148571333980379,
+          "target_mass": 0.02098535093204696
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5257884353218861,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.3159133990367877,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.048602389629988,
+          "target_mass": 0.026984093075414713
+        },
+        "head": 12,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.4118081563752852,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.3966069239127137,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 12.078627715616541,
+          "target_mass": 0.0805045255459794
+        },
+        "raw": {
+          "normalized_entropy": 0.5909277815440939,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.4309417924656884,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.458038604489104,
+          "target_mass": 0.04304307956605287
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6654225887696325,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.21425163335345587,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.520957503376857,
+          "target_mass": 0.03679739742240923
+        },
+        "head": 13,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.46193187684567594,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.32176859464743757,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.163713366455609,
+          "target_mass": 0.07440658566998001
+        },
+        "raw": {
+          "normalized_entropy": 0.7054626301445754,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.25375206026660635,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.253846076565118,
+          "target_mass": 0.03501708932866888
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.612906156158142,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.005949618465422191,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.06657867164783801,
+          "target_mass": 0.00044374944726220157
+        },
+        "head": 14,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.5063050885875768,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.21876375792635372,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.296018402115754,
+          "target_mass": 0.028633130463320333
+        },
+        "raw": {
+          "normalized_entropy": 0.7395126219274828,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.018530785661795335,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.9373460030539051,
+          "target_mass": 0.012912486787932522
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.602092064915124,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.4208889259366515,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.580085825832532,
+          "target_mass": 0.0171963728137764
+        },
+        "head": 15,
+        "layer_ordinal": 3,
+        "prompt_difference": {
+          "normalized_entropy": 0.46277761199148854,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.470918133557916,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.263581391210102,
+          "target_mass": 0.048412053706063427
+        },
+        "raw": {
+          "normalized_entropy": 0.6769936086617482,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.55262656617208,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.693994859139617,
+          "target_mass": 0.031285659095339736
+        },
+        "transformer_layer": 15
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4331661065639275,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.13903001675555515,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.179738377917722,
+          "target_mass": 0.02785811955985201
+        },
+        "head": 0,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.47776389408297476,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.7343025622651567,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.9136679344603165,
+          "target_mass": 0.0327497887233317
+        },
+        "raw": {
+          "normalized_entropy": 0.6229050337217902,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.27782092644589795,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.938005929163513,
+          "target_mass": 0.026246963346231424
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4995497074197887,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.08018793009802039,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.9613339365461964,
+          "target_mass": 0.006407328239187295
+        },
+        "head": 1,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.5861986536425255,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.5472544589426889,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.0489391449853716,
+          "target_mass": 0.02032129850051285
+        },
+        "raw": {
+          "normalized_entropy": 0.7015868555196333,
+          "peak_distance_diagonal": 0.7109398815486033,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.19151543705300256,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.0928927765170138,
+          "target_mass": 0.01394921210910998
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.2566206145879154,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.25690471694244366,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.423402318429734,
+          "target_mass": 0.07613742267898724
+        },
+        "head": 2,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.2949715522185404,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.7672141049147854,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 16.055890083180152,
+          "target_mass": 0.1070131345876021
+        },
+        "raw": {
+          "normalized_entropy": 0.3882754207129472,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.3906614582628265,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 13.741295026546576,
+          "target_mass": 0.09158626812126991
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.27787129491833906,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.11312130661942632,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.9343908815233135,
+          "target_mass": 0.0528830251624967
+        },
+        "head": 3,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.29790366354039416,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.8257314856800804,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 10.970246088302769,
+          "target_mass": 0.07311711870377578
+        },
+        "raw": {
+          "normalized_entropy": 0.38397642132474374,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.1826822264736574,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.640320622840399,
+          "target_mass": 0.0642531135262556
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4455674341502053,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.14714093721869403,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 20.02133349082287,
+          "target_mass": 0.1334429697996739
+        },
+        "head": 4,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.34342323904794075,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.7200665166019462,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 21.307425321022063,
+          "target_mass": 0.14201482208591365
+        },
+        "raw": {
+          "normalized_entropy": 0.530869333710623,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.18518625306489866,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 17.443319264339436,
+          "target_mass": 0.1162604042764811
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5444957835953377,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.027764022022566337,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 15.133188948314908,
+          "target_mass": 0.10086329548071216
+        },
+        "head": 5,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.44336434211393766,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.6496876420096669,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 20.514401959699722,
+          "target_mass": 0.1367292904052252
+        },
+        "raw": {
+          "normalized_entropy": 0.6089305910847272,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.031905101956539283,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 14.225142086592943,
+          "target_mass": 0.09481112767675472
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6137073808592258,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.003560324047395369,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.9198417125847294,
+          "target_mass": 0.006130780945694119
+        },
+        "head": 6,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.6249902976718074,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.2965379408269655,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.3855655336405457,
+          "target_mass": 0.015899887467867895
+        },
+        "raw": {
+          "normalized_entropy": 0.7323463028487817,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.005367164855197615,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.460662397130902,
+          "target_mass": 0.00973537193400235
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.48830719169322995,
+          "peak_distance_diagonal": 0.7264112766826364,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            8
+          ],
+          "positive_mass": 0.022092426914781527,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.6095702115437165,
+          "target_mass": 0.03738800458377526
+        },
+        "head": 7,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.41187693797110203,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.5088751682997099,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.933142699991594,
+          "target_mass": 0.059539745046330694
+        },
+        "raw": {
+          "normalized_entropy": 0.5650101323264266,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.03166042024105309,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.26409240992147,
+          "target_mass": 0.03508538154073636
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5896936810504687,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.07728358299982574,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.67808587109613,
+          "target_mass": 0.05783978131858505
+        },
+        "head": 8,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.5161744843977011,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.5131684881271212,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 12.838809734655955,
+          "target_mass": 0.0855711683974872
+        },
+        "raw": {
+          "normalized_entropy": 0.737388842208369,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.17367325304076076,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.246412149419692,
+          "target_mass": 0.048297620038856834
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.558261414131917,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.19586710577232225,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 9,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.5820581525073482,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.27092324187833583,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.381663412843439,
+          "target_mass": 0.015873879680328586
+        },
+        "raw": {
+          "normalized_entropy": 0.6610119380863827,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.29804865389587576,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.9507150659238724,
+          "target_mass": 0.006336553051689873
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.3754600786119567,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.24863391624705855,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 10.994890929883308,
+          "target_mass": 0.0732813775355992
+        },
+        "head": 10,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.37230828844143854,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.8751343010478081,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 12.512286086595912,
+          "target_mass": 0.08339487552833702
+        },
+        "raw": {
+          "normalized_entropy": 0.4522113312099405,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.336943954494636,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.619733009341319,
+          "target_mass": 0.07744597440308057
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.27316272395111724,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.26005071404520663,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.0544198655126544,
+          "target_mass": 0.007027749591917839
+        },
+        "head": 11,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.3181688755600422,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.8224218681424986,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.555930239752988,
+          "target_mass": 0.037030492076478655
+        },
+        "raw": {
+          "normalized_entropy": 0.39276460778948963,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.37225322230617053,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.601815614204491,
+          "target_mass": 0.03733631988959536
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.41138523029427376,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.15125742497212258,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.129879732666538,
+          "target_mass": 0.07418108317914954
+        },
+        "head": 12,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.36692788689911043,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.8447858299587097,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 13.34729478831274,
+          "target_mass": 0.08896024114280708
+        },
+        "raw": {
+          "normalized_entropy": 0.47277330434502096,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.17404519747766756,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.895734809973808,
+          "target_mass": 0.07928553718561644
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5164126851484195,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.13071616269758124,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.5640229130270957,
+          "target_mass": 0.010424273809970633
+        },
+        "head": 13,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.462089166989496,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.5780459458619589,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.4275678152718854,
+          "target_mass": 0.0228448733781549
+        },
+        "raw": {
+          "normalized_entropy": 0.6217292213183284,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.1860014927251541,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.2861536511408134,
+          "target_mass": 0.015237303387730518
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.37594159369248475,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.23252036907285856,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 13.31440527662411,
+          "target_mass": 0.08874103126265581
+        },
+        "head": 14,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.37832576305927834,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.8461037159263469,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 15.41906338511952,
+          "target_mass": 0.10276865976898508
+        },
+        "raw": {
+          "normalized_entropy": 0.4521235156045651,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.3102525382024979,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 13.86156246152467,
+          "target_mass": 0.09238785527334559
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.34358873788490324,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.18758260623478407,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 12.91696521429026,
+          "target_mass": 0.08609207772219826
+        },
+        "head": 15,
+        "layer_ordinal": 4,
+        "prompt_difference": {
+          "normalized_entropy": 0.32849190540469725,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.7982852659633863,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 13.870162300593515,
+          "target_mass": 0.09244517353667064
+        },
+        "raw": {
+          "normalized_entropy": 0.41512351349866866,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.2921598071211875,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.55066786830221,
+          "target_mass": 0.07698565254019783
+        },
+        "transformer_layer": 19
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.39045283004842707,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.11200444537143994,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 0,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.32429018271914534,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.7037774576194806,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.24504959458641895,
+          "target_mass": 0.0016332651201682708
+        },
+        "raw": {
+          "normalized_entropy": 0.5281247753354958,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.1469762590128454,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.38115462224052227,
+          "target_mass": 0.002540410446085512
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6086177270869925,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.050290929675156804,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 1,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.42696270281151866,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.3645620136285288,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.1569636828710856,
+          "target_mass": 0.007711208140229649
+        },
+        "raw": {
+          "normalized_entropy": 0.6914939753106971,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.06756752875213579,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8952385288917533,
+          "target_mass": 0.005966799765318571
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6823118903115266,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.06789467749854339,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.003752718496885067,
+          "target_mass": 2.5012015372305256e-05
+        },
+        "head": 2,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.5884063263638011,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.5559574446433544,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.04967440135031,
+          "target_mass": 0.00699612088790612
+        },
+        "raw": {
+          "normalized_entropy": 0.7268392932108894,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.08623166822336259,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.4175443971890465,
+          "target_mass": 0.00944798878009301
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5719265030142866,
+          "peak_distance_diagonal": 0.062054631967539034,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            2
+          ],
+          "positive_mass": 0.02872576531399318,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 3,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.5792464000793152,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.42531164638057817,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.8454382799260194,
+          "target_mass": 0.018964957285639728
+        },
+        "raw": {
+          "normalized_entropy": 0.7918197400611885,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.0890350519492813,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.853491124228481,
+          "target_mass": 0.012353590744979867
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5022187578511605,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.09672515338229459,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.9014985518160743,
+          "target_mass": 0.006008523062641316
+        },
+        "head": 4,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.41059403374536124,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.7012900873851322,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.191422509250019,
+          "target_mass": 0.014605916626593144
+        },
+        "raw": {
+          "normalized_entropy": 0.5964933471937218,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.13463327249769463,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.019466329836565,
+          "target_mass": 0.013459821973764215
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4933059261577817,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.1070727758628891,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.010319386130637109,
+          "target_mass": 6.877911166171706e-05
+        },
+        "head": 5,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.4004902166476723,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.7067873529067583,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.950360049533687,
+          "target_mass": 0.03965938216608146
+        },
+        "raw": {
+          "normalized_entropy": 0.5599757414807149,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.1524231316478506,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.567998083415543,
+          "target_mass": 0.03711092472588973
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4473610269531574,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.08166945617614374,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.22369369311393267,
+          "target_mass": 0.0014909272026392484
+        },
+        "head": 6,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.410186471874611,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.7584318904528118,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.557040251604797,
+          "target_mass": 0.023707812223830803
+        },
+        "raw": {
+          "normalized_entropy": 0.5444084676365885,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.112269073484768,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.549529587660573,
+          "target_mass": 0.023657753355257237
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.44034210408083796,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.1199634313057345,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.30272943124137874,
+          "target_mass": 0.002017703484592197
+        },
+        "head": 7,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.33278346990951924,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.7662574874248094,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.48203294982963363,
+          "target_mass": 0.003212768440026611
+        },
+        "raw": {
+          "normalized_entropy": 0.48664795689717344,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.16309550309372867,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.5787818060061677,
+          "target_mass": 0.003857603345695405
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5571207725199752,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.08841478787326196,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.660763874579159,
+          "target_mass": 0.07771944672265894
+        },
+        "head": 8,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.5003801222977792,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.7306489635884645,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 13.684541244006974,
+          "target_mass": 0.09120800194369882
+        },
+        "raw": {
+          "normalized_entropy": 0.6190222160593618,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.15196158651018976,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 10.995279670077405,
+          "target_mass": 0.07328396850417802
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4595125504896791,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.08241419113460324,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 9,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.4689728237688332,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.7936681720766501,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.9356294506132916,
+          "target_mass": 0.026231124023863003
+        },
+        "raw": {
+          "normalized_entropy": 0.5720868034719033,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.1147406143384444,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.458680279605032,
+          "target_mass": 0.023052239168265962
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4770782290874709,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.06670049282379864,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 10,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.49803772136529584,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.5387867360150267,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.9162159457743257,
+          "target_mass": 0.012771654130771264
+        },
+        "raw": {
+          "normalized_entropy": 0.6386357650416841,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.10909582079912639,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.6057023852474923,
+          "target_mass": 0.01070206912042396
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6518899846621135,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.12975091528630855,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 11,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.5145585521743403,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6320876885729376,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.5523857801102348,
+          "target_mass": 0.02367678998950425
+        },
+        "raw": {
+          "normalized_entropy": 0.7013973086555323,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.17280774855464642,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.6829838783171582,
+          "target_mass": 0.017882192353041608
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5662574322006036,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.10447722699495898,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0075988348504347275,
+          "target_mass": 5.0646531107633807e-05
+        },
+        "head": 12,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.4590795677427666,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6675944434064149,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.8139563810108721,
+          "target_mass": 0.0054250510746085955
+        },
+        "raw": {
+          "normalized_entropy": 0.643299287236447,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.1255230122951616,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.7744918258456525,
+          "target_mass": 0.005162018272848221
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5405981333950003,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.04566869693076114,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.387904143883658,
+          "target_mass": 0.0292455525214902
+        },
+        "head": 13,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.5004910100636779,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6204979852409451,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.011141281593705,
+          "target_mass": 0.06005960863952836
+        },
+        "raw": {
+          "normalized_entropy": 0.680094938987916,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.0744875865061232,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.685346212363709,
+          "target_mass": 0.044558093651740543
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.45237741075493604,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.051603670998588314,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.5226392073222406,
+          "target_mass": 0.01014844979489677
+        },
+        "head": 14,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.42558365272766363,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.7177139147679554,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.281459747194729,
+          "target_mass": 0.05519625270957425
+        },
+        "raw": {
+          "normalized_entropy": 0.5721608581999847,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.10106503074928241,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.45343527477554,
+          "target_mass": 0.043012398193694394
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.43298964042323534,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.08162155215173073,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.675539235786632,
+          "target_mass": 0.0511577688322693
+        },
+        "head": 15,
+        "layer_ordinal": 5,
+        "prompt_difference": {
+          "normalized_entropy": 0.34908848595714664,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.7979492381418822,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 11.053158636492935,
+          "target_mass": 0.07366973407623464
+        },
+        "raw": {
+          "normalized_entropy": 0.46704675188055544,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.13067032012412483,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.396293251215763,
+          "target_mass": 0.06262666156205819
+        },
+        "transformer_layer": 23
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5130773535623679,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.042417336613937096,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 0,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.37924795917956294,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.6882496674479626,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 12.805854341507471,
+          "target_mass": 0.08535151941483252
+        },
+        "raw": {
+          "normalized_entropy": 0.5491886214786674,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.09117588240468422,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.75637637445684,
+          "target_mass": 0.06502662964420697
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6522324544326509,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.04586101304380463,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.112859904279622,
+          "target_mass": 0.007417254733113691
+        },
+        "head": 1,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.5333470148442863,
+          "peak_distance_diagonal": 0.06128600148353782,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            3
+          ],
+          "positive_mass": 0.48497089814190986,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.896566113264412,
+          "target_mass": 0.039300843479521105
+        },
+        "raw": {
+          "normalized_entropy": 0.7157140280486403,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.08429353252756755,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.6622540005030753,
+          "target_mass": 0.02440906597014989
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6461668263652145,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.040695020684324845,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.12194006260918218,
+          "target_mass": 0.0008127352805738949
+        },
+        "head": 2,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.5779090694445477,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.3841474531800486,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.9126863430168077,
+          "target_mass": 0.0260782073155173
+        },
+        "raw": {
+          "normalized_entropy": 0.8122106812415395,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.10097429596362417,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.25828315264298,
+          "target_mass": 0.015051545426551113
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.45235958293514417,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.059999696336888064,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 3,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.418770267934491,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6332045682574972,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.8931384428451405,
+          "target_mass": 0.032612958859783284
+        },
+        "raw": {
+          "normalized_entropy": 0.6079676720914817,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.10177877547755543,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.418311559218846,
+          "target_mass": 0.02278318006998889
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4568577371091462,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.02506744668932015,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.35929951624907464,
+          "target_mass": 0.002394745310937436
+        },
+        "head": 4,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.44155618943089486,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.7175835078824093,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.412311412128719,
+          "target_mass": 0.042738306042752444
+        },
+        "raw": {
+          "normalized_entropy": 0.5781768636018394,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.056028496178456066,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.037668139710099,
+          "target_mass": 0.033576254935079514
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4555464534407821,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.04325433401419332,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 5,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.417521543434441,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6756062475669751,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.725648018914983,
+          "target_mass": 0.0314966286416941
+        },
+        "raw": {
+          "normalized_entropy": 0.5880115350741019,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.07274695652660057,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.7138010121887075,
+          "target_mass": 0.024752628816589774
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4717225124089707,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.041356269355802056,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3137817875873229,
+          "target_mass": 0.002091367871370585
+        },
+        "head": 6,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.4003843902775418,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6978369087164538,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.033215731072292,
+          "target_mass": 0.04021161852008632
+        },
+        "raw": {
+          "normalized_entropy": 0.5719899303843075,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.07509892281188968,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.615793873792521,
+          "target_mass": 0.03076444647327535
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.49232291488290514,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.02270036701202116,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.9264826291417245,
+          "target_mass": 0.032835199163957295
+        },
+        "head": 7,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.5253340144965106,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.46415381044789683,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.707673027661012,
+          "target_mass": 0.04470690274783829
+        },
+        "raw": {
+          "normalized_entropy": 0.7548720727440426,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.06501746955740373,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.631842302577299,
+          "target_mass": 0.024206370815517644
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5614700214317475,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.02209084080217849,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.0,
+          "target_mass": 0.0
+        },
+        "head": 8,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.4497349437276798,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.6931577316499897,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 8.048808095665349,
+          "target_mass": 0.05364562036417579
+        },
+        "raw": {
+          "normalized_entropy": 0.6202800244609953,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.05027538288353384,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.306806572935516,
+          "target_mass": 0.04203511216824697
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.659805011070627,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.03696102772573795,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.654534206579712,
+          "target_mass": 0.03768769136709623
+        },
+        "head": 9,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.6357405368735815,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.37284550786716864,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.32829000686855,
+          "target_mass": 0.06217341728210728
+        },
+        "raw": {
+          "normalized_entropy": 0.8274704516200473,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.09817730420468251,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.501613397669056,
+          "target_mass": 0.0300034291397376
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6206774662783288,
+          "peak_distance_diagonal": 0.10314066341531022,
+          "peak_inside_target": false,
+          "peak_patch": [
+            14,
+            3
+          ],
+          "positive_mass": 0.07195090573929974,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.67716582279007,
+          "target_mass": 0.024508453848185768
+        },
+        "head": 10,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.44137265037052936,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.6870561292289494,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 10.858680908594385,
+          "target_mass": 0.07237353242300457
+        },
+        "raw": {
+          "normalized_entropy": 0.6145575530038176,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.12261579459945438,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.971241500235352,
+          "target_mass": 0.053128635975689724
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5552325397161986,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.037081946867857596,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.4941477641122602,
+          "target_mass": 0.00995855321295525
+        },
+        "head": 11,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.4794901430673669,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.7057807246019365,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.241215706715183,
+          "target_mass": 0.04826298554524524
+        },
+        "raw": {
+          "normalized_entropy": 0.6216779215734377,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.07175394481463115,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.831486130647242,
+          "target_mass": 0.03886708285319085
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5744273366327859,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.02957086817025356,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.3897419548662069,
+          "target_mass": 0.002597645353478381
+        },
+        "head": 12,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.5206440898931823,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.6346600402575859,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.3185597434707645,
+          "target_mass": 0.04877848657147263
+        },
+        "raw": {
+          "normalized_entropy": 0.6586901788446359,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.055658863753592414,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.319521415897103,
+          "target_mass": 0.035454818030759505
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.627914930491092,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.12980575514792747,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.511674248023821,
+          "target_mass": 0.05006560228785408
+        },
+        "head": 13,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.4832814199305154,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.6704407067227294,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 10.206190318877402,
+          "target_mass": 0.06802465715462722
+        },
+        "raw": {
+          "normalized_entropy": 0.6342776121831775,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.1336004008814058,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.518970256918171,
+          "target_mass": 0.05011423047213527
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5606695647228865,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.019086155074887756,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.0592477115523877,
+          "target_mass": 0.0070599273743603965
+        },
+        "head": 14,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.45479405564978964,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.34524846606655046,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.120373116231474,
+          "target_mass": 0.014132369646757629
+        },
+        "raw": {
+          "normalized_entropy": 0.6734867930779851,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.030344080789859618,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.494094586132452,
+          "target_mass": 0.009958198779642564
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6055044959185103,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.04258606735459125,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.26603932552925535,
+          "target_mass": 0.0017731624968136406
+        },
+        "head": 15,
+        "layer_ordinal": 6,
+        "prompt_difference": {
+          "normalized_entropy": 0.4954382811162444,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.6172678969087428,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.074693757404716,
+          "target_mass": 0.013827914935827332
+        },
+        "raw": {
+          "normalized_entropy": 0.6770931736654272,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.05515832498051054,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.7032931832975489,
+          "target_mass": 0.011352515601568136
+        },
+        "transformer_layer": 27
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5980480044106368,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.09093325275995312,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.976609884467391,
+          "target_mass": 0.03983433834129877
+        },
+        "head": 0,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.5381211727055142,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.5614087590365671,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 9.831356619703081,
+          "target_mass": 0.06552637590768899
+        },
+        "raw": {
+          "normalized_entropy": 0.6486276895431152,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.12691749539840202,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.073807602529386,
+          "target_mass": 0.040482164928967834
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5454536288903423,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.04565261074526461,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.8584565408579126,
+          "target_mass": 0.012386685440776615
+        },
+        "head": 1,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.48664193414990464,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.5622854610264767,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.822068667814184,
+          "target_mass": 0.04546935415803888
+        },
+        "raw": {
+          "normalized_entropy": 0.6120404662881362,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.07979165763498486,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.688217471818171,
+          "target_mass": 0.0312471525831631
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4679714741997098,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.07920779265680267,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.528662943186499,
+          "target_mass": 0.030183715417234237
+        },
+        "head": 2,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.42622227214708663,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.5004091566261195,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.43852018997509,
+          "target_mass": 0.0495780276333789
+        },
+        "raw": {
+          "normalized_entropy": 0.6094852951531617,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.11942988834397283,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.4542343981773005,
+          "target_mass": 0.029687646257382887
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6766237765282972,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.07848464510101394,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.5736766358122125,
+          "target_mass": 0.010488616249431983
+        },
+        "head": 3,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.6041703973800102,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.5250289676623652,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.618778318116469,
+          "target_mass": 0.04411441603627432
+        },
+        "raw": {
+          "normalized_entropy": 0.7289337745681914,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.10850595642500593,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.361680685767928,
+          "target_mass": 0.029070772148795023
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.709880211470637,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.052174155345483086,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.4194374088967643,
+          "target_mass": 0.009460605777070719
+        },
+        "head": 4,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.5252681891436479,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.4387957511935383,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.217918122554998,
+          "target_mass": 0.014782510924255726
+        },
+        "raw": {
+          "normalized_entropy": 0.7528492827770595,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.06620043215571059,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.112560821881787,
+          "target_mass": 0.014080300399749215
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7610771874228824,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.0863091868329775,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.6891806973522934,
+          "target_mass": 0.011258455331474026
+        },
+        "head": 5,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.535733380203222,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.38182220314774895,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.79828818329135,
+          "target_mass": 0.018650700049769008
+        },
+        "raw": {
+          "normalized_entropy": 0.7740432626008598,
+          "peak_distance_diagonal": 0.08263356121161884,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            2
+          ],
+          "positive_mass": 0.09108080373516714,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.15376967660639,
+          "target_mass": 0.014354959026209582
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7898275224140007,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.02832462777530509,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.9837243398734647,
+          "target_mass": 0.01322160021448867
+        },
+        "head": 6,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.6645925457884627,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.36752173578133807,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.9402293181295813,
+          "target_mass": 0.0195967432580414
+        },
+        "raw": {
+          "normalized_entropy": 0.8156120188948672,
+          "peak_distance_diagonal": 0.23524855412422954,
+          "peak_inside_target": false,
+          "peak_patch": [
+            19,
+            8
+          ],
+          "positive_mass": 0.032746303307419566,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.089859876540296,
+          "target_mass": 0.013928997712292501
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.6304406543839969,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.05519915988543289,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.6522882506010348,
+          "target_mass": 0.011012565732765687
+        },
+        "head": 7,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.5240434174313816,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.3907155977358343,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.2522994987226794,
+          "target_mass": 0.021676703201935828
+        },
+        "raw": {
+          "normalized_entropy": 0.7251240871948482,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.07019736078392214,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.7891101751757583,
+          "target_mass": 0.011924489204662648
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5869147071524027,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.051878245856499916,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.608300340108533,
+          "target_mass": 0.04404457990355541
+        },
+        "head": 8,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.475018672993688,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.512016205368127,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 12.308964290995972,
+          "target_mass": 0.08203972781840577
+        },
+        "raw": {
+          "normalized_entropy": 0.5880367291224025,
+          "peak_distance_diagonal": 0.04009348713537097,
+          "peak_inside_target": true,
+          "peak_patch": [
+            17,
+            4
+          ],
+          "positive_mass": 0.05631005936450606,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.661285016315328,
+          "target_mass": 0.04439772484018761
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7992312142574812,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.031490973868358196,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.8052716577696284,
+          "target_mass": 0.018697245179958705
+        },
+        "head": 9,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.6354939592164937,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.3313452986840275,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.834396277357859,
+          "target_mass": 0.03888647909469472
+        },
+        "raw": {
+          "normalized_entropy": 0.8133670165385748,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.03503811196162587,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.7623077161622454,
+          "target_mass": 0.01841088883086653
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.520591870671708,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.004117744072345886,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 0.06997618934008905,
+          "target_mass": 0.0004663940353965896
+        },
+        "head": 10,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.6347347933051574,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.3735039462335408,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.506832264020878,
+          "target_mass": 0.016708134962834468
+        },
+        "raw": {
+          "normalized_entropy": 0.7984189157016336,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.010709125740248737,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.4196757843673757,
+          "target_mass": 0.009462194558893886
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.668511156309549,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.05221754598687767,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.123853101110975,
+          "target_mass": 0.02748564200691641
+        },
+        "head": 11,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.5500978809704428,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.49246651132853003,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 7.8493282620253435,
+          "target_mass": 0.05231607948078415
+        },
+        "raw": {
+          "normalized_entropy": 0.7098675366186853,
+          "peak_distance_diagonal": 0.0595129278777458,
+          "peak_inside_target": false,
+          "peak_patch": [
+            16,
+            2
+          ],
+          "positive_mass": 0.06484829179947837,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.614102493363797,
+          "target_mass": 0.03075317335664835
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.5111160328678125,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.00908882174428527,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.002984930997194,
+          "target_mass": 0.006684933744195166
+        },
+        "head": 12,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.523888069257825,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.5784795686231519,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.0597323240953,
+          "target_mass": 0.02705827452338909
+        },
+        "raw": {
+          "normalized_entropy": 0.6776602916555184,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.01453657037126277,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.8478340241199094,
+          "target_mass": 0.018980925014275764
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.7806670496616516,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.031966311169981054,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.2137074186348458,
+          "target_mass": 0.014754446418147287
+        },
+        "head": 13,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.7262197968475904,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.28750145591038745,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 6.511004876103586,
+          "target_mass": 0.04339610183535837
+        },
+        "raw": {
+          "normalized_entropy": 0.8736019267220317,
+          "peak_distance_diagonal": 0.21659851321143858,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            8
+          ],
+          "positive_mass": 0.06093289830573667,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.44584183320574,
+          "target_mass": 0.022966670421512868
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.4588296076113061,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.04483739416266985,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.1007568767538394,
+          "target_mass": 0.014001626644379839
+        },
+        "head": 14,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.4346262704895147,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.5700354408145358,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 5.836441783139921,
+          "target_mass": 0.038900112470634726
+        },
+        "raw": {
+          "normalized_entropy": 0.5657580999610569,
+          "peak_distance_diagonal": 0.6966659477589341,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            4
+          ],
+          "positive_mass": 0.061236125024265675,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 3.8259985715007487,
+          "target_mass": 0.02550042993212169
+        },
+        "transformer_layer": 31
+      },
+      {
+        "causal": {
+          "normalized_entropy": 0.513208503749838,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.06344205034679362,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 1.9828827239161262,
+          "target_mass": 0.013215990811257385
+        },
+        "head": 15,
+        "layer_ordinal": 7,
+        "prompt_difference": {
+          "normalized_entropy": 0.5315078870515366,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.48895344832271803,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 4.45886443705159,
+          "target_mass": 0.029718505647340916
+        },
+        "raw": {
+          "normalized_entropy": 0.6694207028063853,
+          "peak_distance_diagonal": 0.6982741097912813,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            2
+          ],
+          "positive_mass": 0.10244032785067247,
+          "target_area_fraction": 0.0066650390625,
+          "target_lift": 2.972780254544808,
+          "target_mass": 0.01981369652076984
+        },
+        "transformer_layer": 31
+      }
+    ],
+    "layers": [
+      {
+        "best_prompt_head": 12,
+        "best_prompt_target_lift": 3.1504179512231607,
+        "causal_mean_target_lift": 0.6549298708619509,
+        "layer_ordinal": 0,
+        "prompt_mean_target_lift": 0.528409512070118,
+        "raw_mean_target_lift": 0.7002377161049179,
+        "transformer_layer": 3
+      },
+      {
+        "best_prompt_head": 1,
+        "best_prompt_target_lift": 1.7529684301677333,
+        "causal_mean_target_lift": 0.1204406562041157,
+        "layer_ordinal": 1,
+        "prompt_mean_target_lift": 0.28790551262233977,
+        "raw_mean_target_lift": 0.416355009243765,
+        "transformer_layer": 7
+      },
+      {
+        "best_prompt_head": 6,
+        "best_prompt_target_lift": 7.751931934089864,
+        "causal_mean_target_lift": 1.2271574495013358,
+        "layer_ordinal": 2,
+        "prompt_mean_target_lift": 2.7368229547732232,
+        "raw_mean_target_lift": 1.3872089687499525,
+        "transformer_layer": 11
+      },
+      {
+        "best_prompt_head": 6,
+        "best_prompt_target_lift": 16.66699382977691,
+        "causal_mean_target_lift": 2.857464547611619,
+        "layer_ordinal": 3,
+        "prompt_mean_target_lift": 7.651826501657995,
+        "raw_mean_target_lift": 4.16595756366549,
+        "transformer_layer": 15
+      },
+      {
+        "best_prompt_head": 4,
+        "best_prompt_target_lift": 21.307425321022063,
+        "causal_mean_target_lift": 7.864716855048956,
+        "layer_ordinal": 4,
+        "prompt_mean_target_lift": 10.46762853302678,
+        "raw_mean_target_lift": 8.301157821430195,
+        "transformer_layer": 19
+      },
+      {
+        "best_prompt_head": 8,
+        "best_prompt_target_lift": 13.684541244006974,
+        "causal_mean_target_lift": 1.6685274423263143,
+        "layer_ordinal": 5,
+        "prompt_mean_target_lift": 4.357904386609315,
+        "raw_mean_target_lift": 3.6447135785572753,
+        "transformer_layer": 23
+      },
+      {
+        "best_prompt_head": 0,
+        "best_prompt_target_lift": 12.805854341507471,
+        "causal_mean_target_lift": 1.68043218333254,
+        "layer_ordinal": 6,
+        "prompt_mean_target_lift": 6.786494067764916,
+        "raw_mean_target_lift": 4.796334841176425,
+        "transformer_layer": 27
+      },
+      {
+        "best_prompt_head": 8,
+        "best_prompt_target_lift": 12.308964290995972,
+        "causal_mean_target_lift": 2.599360621229925,
+        "layer_ordinal": 7,
+        "prompt_mean_target_lift": 5.705313964568617,
+        "raw_mean_target_lift": 3.5170666501298102,
+        "transformer_layer": 31
+      }
+    ]
+  },
+  "method": "value_norm_rollout",
+  "metrics": {
+    "causal": [
+      null,
+      null,
+      {
+        "normalized_entropy": 0.8511633141687823,
+        "peak_distance_diagonal": 0.3491338335304499,
+        "peak_inside_target": false,
+        "peak_patch": [
+          15,
+          3
+        ],
+        "positive_mass": 0.020017601352947167,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 1.7198794286135553,
+        "target_mass": 0.011463063574499527
+      },
+      {
+        "normalized_entropy": 0.8003242981407734,
+        "peak_distance_diagonal": 0.06128600148353782,
+        "peak_inside_target": false,
+        "peak_patch": [
+          15,
+          3
+        ],
+        "positive_mass": 0.02710803205764023,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 2.22435544923248,
+        "target_mass": 0.014825415958019218
+      }
+    ],
+    "prompt_baseline": [
+      null,
+      null,
+      {
+        "normalized_entropy": 0.9265046115656714,
+        "peak_distance_diagonal": 0.7419461484998222,
+        "peak_inside_target": false,
+        "peak_patch": [
+          3,
+          0
+        ],
+        "positive_mass": 0.1435606940776779,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 0.6930778027048817,
+        "target_mass": 0.004619390628379705
+      },
+      {
+        "normalized_entropy": 0.8921902441225095,
+        "peak_distance_diagonal": 0.7109398815486033,
+        "peak_inside_target": false,
+        "peak_patch": [
+          0,
+          0
+        ],
+        "positive_mass": 0.23784984103167517,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 1.3889304473324828,
+        "target_mass": 0.009257275686566598
+      }
+    ],
+    "prompt_difference": [
+      null,
+      null,
+      {
+        "normalized_entropy": 0.6790717072468223,
+        "peak_distance_diagonal": 0.3491338335304499,
+        "peak_inside_target": false,
+        "peak_patch": [
+          15,
+          3
+        ],
+        "positive_mass": 0.044137381184555124,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 2.7788851688747154,
+        "target_mass": 0.01852137820075189
+      },
+      {
+        "normalized_entropy": 0.45794672450682095,
+        "peak_distance_diagonal": 0.06128600148353782,
+        "peak_inside_target": false,
+        "peak_patch": [
+          15,
+          3
+        ],
+        "positive_mass": 0.028696175680124725,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 8.587236214932963,
+        "target_mass": 0.05723426481144285
+      }
+    ],
+    "raw": [
+      null,
+      null,
+      {
+        "normalized_entropy": 0.8931137558912444,
+        "peak_distance_diagonal": 0.3491338335304499,
+        "peak_inside_target": false,
+        "peak_patch": [
+          15,
+          3
+        ],
+        "positive_mass": 0.1653441948856198,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 1.3419043262520318,
+        "target_mass": 0.008943844752607536
+      },
+      {
+        "normalized_entropy": 0.8423251688547425,
+        "peak_distance_diagonal": 0.06128600148353782,
+        "peak_inside_target": false,
+        "peak_patch": [
+          15,
+          3
+        ],
+        "positive_mass": 0.18129970530208084,
+        "target_area_fraction": 0.0066650390625,
+        "target_lift": 3.0899795759979902,
+        "target_mass": 0.020594834576353794
+      }
+    ]
+  },
+  "parameters": [
+    "x",
+    "y"
+  ],
+  "predicted_click": [
+    960.0,
+    120.0
+  ],
+  "sample_id": "hotel-cheapest-multiframe",
+  "schema_version": 1,
+  "source_label": "Synthetic hotel trajectory",
+  "stability": {
+    "mean_leave_one_out_cosine": 0.8983688751856486,
+    "minimum_leave_one_out_cosine": 0.7694278955459595
+  },
+  "target_instruction": "Click View details for the hotel with the lowest nightly price across all screenshots.",
+  "target_steps": [
+    26,
+    27,
+    28,
+    39,
+    40,
+    41
+  ],
+  "trace_ids": {
+    "controls": [
+      "trace-20260920T170618Z-bb64df001dbd",
+      "trace-20260920T172228Z-7e0022679567",
+      "trace-20260920T173236Z-5bb962e8c6e3"
+    ],
+    "target": "trace-20260920T170308Z-4bb2252adcff"
+  }
+}

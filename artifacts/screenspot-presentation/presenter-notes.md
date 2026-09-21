@@ -28,7 +28,7 @@
 2. Start on **Raw value-norm rollout**, then select **Target minus diverse-instruction baseline**. Show the peak entering the template and the 16.08x lift.
 3. Sort heads by **Prompt difference** and point out layer 19 / head 10 as the strongest direct value-norm head in this case.
 4. Open the [ScreenSpot miss viewer](../../data/attributions/screenspot-powerpoint_windows_48/viewer.html). Show the task-region signal and the click on the slide thumbnail.
-5. Open the [multi-frame hotel viewer](../../data/attributions/hotel-cheapest-multiframe-contrast/viewer.html).
+5. Open the [multi-frame hotel viewer](live/hotel-cheapest-multiframe/viewer.html).
 6. Select **Target minus diverse-instruction baseline**. Step from frame 2 to frame 3. The green box marks the target button; the white cross on frame 3 marks the failed click.
 7. End on the layer/head table as a source of intervention hypotheses, not a causal conclusion.
 
@@ -82,5 +82,5 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Method: `docs/attention-attribution.md`
 - Case study: `docs/screenspot-case-study.md`
 - Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
-- Hotel measurement: `data/attributions/hotel-cheapest-multiframe-contrast/analysis.json`
+- Tracked hotel viewer and measurement: `artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/`
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)

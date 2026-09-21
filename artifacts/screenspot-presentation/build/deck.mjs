@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.909.61513/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v3.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v4.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -37,7 +37,7 @@ const successDiff = path.join(workspaceDir, "data/attributions/screenspot-powerp
 const failureDiff = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_48/preview-target-minus-prompt-baseline.png");
 const hotelContrast = path.join(
   workspaceDir,
-  "data/attributions/hotel-cheapest-multiframe-contrast",
+  "artifacts/screenspot-presentation/live/hotel-cheapest-multiframe",
 );
 const hotelDiffMaps = [0, 1, 2, 3].map((frame) =>
   path.join(
@@ -389,7 +389,7 @@ function metricCard(slide, left, top, width, label, value, accent = C.orange, ca
   });
   rect(slide, 64, 588, 1152, 50, "#202C38", true);
   textBox(slide, "Next decisive experiment: patch intervention across a frozen, matched evaluation split", 90, 598, 1098, 28, { fontSize: 20, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
-  footer(slide, "Viewers: ScreenSpot hit + miss · data/attributions/hotel-cheapest-multiframe-contrast/viewer.html", true);
+  footer(slide, "Viewers: ScreenSpot hit + miss · artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/viewer.html", true);
   slide.speakerNotes.textFrame.setText("8:35–10:00 — Close on three defensible conclusions. The prompt ensemble changes the measurement materially. Correct and incorrect cases can share coarse routing while differing in precise binding. Layer patterns are candidate readout features, not confidence by themselves. In the live demo, show raw versus prompt differential on the hit, the static miss, then step through all four hotel frames and point out the earlier-frame and final-frame target lift. Finish with the intervention experiment. Q&A: attention is a routing diagnostic, the controls are matched but small, and these three cases are hypothesis-generating rather than population estimates.");
 }
 
@@ -402,7 +402,7 @@ const requirements = {
 const fontPolicy = { basis: "design", families: [family] };
 const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v3.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v4.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
