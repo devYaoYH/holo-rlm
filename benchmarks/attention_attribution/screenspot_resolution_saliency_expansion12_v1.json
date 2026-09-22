@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "experiment": "screenspot_resolution_saliency_expansion12_v1",
+  "source_cohort": "benchmarks/resolution_ablation/screenspot_success_retention_v1.json",
+  "description": "Twelve-case balanced expansion of the resolution-saliency pilot. Two additional cases per application and UI-type stratum span retained, early-loss, and quarter-resolution-survivor outcomes.",
+  "linear_scales": [1.0, 0.75, 0.5, 0.25],
+  "controls_by_application": {
+    "photoshop": [
+      "Open the File menu",
+      "Open the Edit menu",
+      "Select the Move tool",
+      "Open the Window menu"
+    ],
+    "powerpoint": [
+      "Open the Home tab",
+      "Open the Insert tab",
+      "Open the Design tab",
+      "Open the Review tab"
+    ],
+    "vscode": [
+      "Open the Explorer view",
+      "Open Search",
+      "Open Source Control",
+      "Open Extensions"
+    ]
+  },
+  "cases": [
+    {"id": "photoshop_windows_18", "selection_group": "text_retained_through_50_percent"},
+    {"id": "photoshop_windows_6", "selection_group": "text_lost_at_50_percent"},
+    {"id": "photoshop_windows_23", "selection_group": "icon_lost_at_75_percent"},
+    {"id": "photoshop_windows_7", "selection_group": "icon_retained_at_75_lost_at_50_percent"},
+    {"id": "powerpoint_windows_14", "selection_group": "text_retained_through_50_percent"},
+    {"id": "powerpoint_windows_59", "selection_group": "text_retained_through_25_percent"},
+    {"id": "powerpoint_windows_24", "selection_group": "icon_lost_at_75_percent"},
+    {"id": "powerpoint_windows_22", "selection_group": "icon_retained_through_50_percent"},
+    {"id": "vscode_macos_16", "selection_group": "text_retained_through_50_percent"},
+    {"id": "vscode_macos_29", "selection_group": "text_retained_through_25_percent"},
+    {"id": "vscode_macos_28", "selection_group": "icon_lost_at_75_percent"},
+    {"id": "vscode_macos_32", "selection_group": "icon_retained_through_50_percent"}
+  ]
+}
