@@ -1,0 +1,833 @@
+{
+  "experiment": "hotel_freegen_paired_v1",
+  "protocol": {
+    "mode": "independent free generation",
+    "checkpoints": [
+      "Holo-3.1-4B",
+      "Qwen3.5-4B"
+    ],
+    "tool_contract": "HoloDesktop runtime 0.1.10",
+    "coordinate_space": "normalized_0_1000",
+    "maximum_model_actions": 4,
+    "visual_history": "current screenshot plus at most two retained screenshots",
+    "trace_capture": "Holo test-0010: three successful action traces; Qwen test-0010: one pre-action trace before invalid structured output",
+    "selection": "six primary frozen cases whose deterministic golden route requires no more than three scroll actions before the click; one retained diagnostic case is excluded after audit correction"
+  },
+  "item_ids": [
+    "test-0000",
+    "test-0005",
+    "test-0010",
+    "test-0020",
+    "test-0026",
+    "test-0040",
+    "test-0070"
+  ],
+  "primary_item_ids": [
+    "test-0005",
+    "test-0010",
+    "test-0020",
+    "test-0026",
+    "test-0040",
+    "test-0070"
+  ],
+  "excluded_diagnostic_item_ids": [
+    "test-0000"
+  ],
+  "primary_diversity": {
+    "cheapest_placements": {
+      "bottom": 3,
+      "middle": 3
+    },
+    "currencies": {
+      "$": 1,
+      "\u00a3": 2,
+      "\u20ac": 3
+    },
+    "hotel_counts": {
+      "6": 5,
+      "7": 1
+    },
+    "runner_up_gap_range": [
+      2,
+      69
+    ]
+  },
+  "all_collected_diversity": {
+    "cheapest_placements": {
+      "bottom": 3,
+      "middle": 3,
+      "top": 1
+    },
+    "currencies": {
+      "$": 1,
+      "\u00a3": 2,
+      "\u20ac": 4
+    },
+    "hotel_counts": {
+      "6": 6,
+      "7": 1
+    },
+    "runner_up_gap_range": [
+      2,
+      69
+    ]
+  },
+  "holo": {
+    "primary_aggregate": {
+      "count": 6,
+      "success_count": 2,
+      "click_count": 2,
+      "valid_action_through_step_limit_count": 2,
+      "terminal_reason_counts": {
+        "backend_or_action_error": 4,
+        "fixture_success": 2
+      },
+      "positive_case_ids": [
+        "test-0010",
+        "test-0020"
+      ]
+    },
+    "all_collected_aggregate": {
+      "count": 7,
+      "success_count": 2,
+      "click_count": 2,
+      "valid_action_through_step_limit_count": 3,
+      "terminal_reason_counts": {
+        "backend_or_action_error": 4,
+        "bounded_step_limit": 1,
+        "fixture_success": 2
+      },
+      "positive_case_ids": [
+        "test-0010",
+        "test-0020"
+      ]
+    },
+    "cases": [
+      {
+        "item_id": "test-0000",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 4,
+        "terminal_reason": "bounded_step_limit",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "scroll",
+          "scroll"
+        ],
+        "cheapest_placement": "top",
+        "runner_up_gap": 2,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 900,
+          "width": 1440
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 397
+            },
+            {
+              "action": "scroll",
+              "delta_y": -500
+            },
+            {
+              "action": "scroll",
+              "delta_y": -272
+            },
+            {
+              "action": "click",
+              "x": 1092,
+              "y": 319
+            }
+          ],
+          "scroll_action_count": 4,
+          "scroll_offsets": [
+            0,
+            500,
+            897,
+            397,
+            125
+          ],
+          "total_action_count": 5
+        },
+        "golden_route_within_three_scrolls": false
+      },
+      {
+        "item_id": "test-0005",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 2,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: Expecting ',' delimiter: line 1 column 765 (char 764)",
+        "action_sequence": [
+          "scroll",
+          "scroll"
+        ],
+        "cheapest_placement": "bottom",
+        "runner_up_gap": 3,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 800,
+          "width": 1280
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 460
+            },
+            {
+              "action": "click",
+              "x": 988,
+              "y": 407
+            }
+          ],
+          "scroll_action_count": 2,
+          "scroll_offsets": [
+            0,
+            500,
+            960
+          ],
+          "total_action_count": 3
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0010",
+        "task_success": true,
+        "captured_click": true,
+        "completed_steps": 3,
+        "terminal_reason": "fixture_success",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "click"
+        ],
+        "cheapest_placement": "middle",
+        "runner_up_gap": 14,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 800,
+          "width": 1280
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 45
+            },
+            {
+              "action": "click",
+              "x": 1041,
+              "y": 171
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1045
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0020",
+        "task_success": true,
+        "captured_click": true,
+        "completed_steps": 3,
+        "terminal_reason": "fixture_success",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "click"
+        ],
+        "cheapest_placement": "bottom",
+        "runner_up_gap": 35,
+        "currency": "$",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 768,
+          "width": 1152
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 395
+            },
+            {
+              "action": "click",
+              "x": 764,
+              "y": 641
+            }
+          ],
+          "scroll_action_count": 2,
+          "scroll_offsets": [
+            0,
+            500,
+            895
+          ],
+          "total_action_count": 3
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0026",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 3,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: Unterminated string starting at: line 1 column 645 (char 644)",
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "scroll"
+        ],
+        "cheapest_placement": "bottom",
+        "runner_up_gap": 12,
+        "currency": "\u00a3",
+        "hotel_count": 7,
+        "viewport": {
+          "height": 900,
+          "width": 1440
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 57
+            },
+            {
+              "action": "click",
+              "x": 1084,
+              "y": 765
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1057
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0040",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 3,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: Expecting ',' delimiter: line 1 column 678 (char 677)",
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "scroll"
+        ],
+        "cheapest_placement": "middle",
+        "runner_up_gap": 69,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 800,
+          "width": 1280
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 169
+            },
+            {
+              "action": "click",
+              "x": 1082,
+              "y": 117
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1169
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0070",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 1,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: Unterminated string starting at: line 1 column 844 (char 843)",
+        "action_sequence": [
+          "scroll"
+        ],
+        "cheapest_placement": "middle",
+        "runner_up_gap": 2,
+        "currency": "\u00a3",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 900,
+          "width": 1440
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 53
+            },
+            {
+              "action": "click",
+              "x": 952,
+              "y": 235
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1053
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      }
+    ]
+  },
+  "qwen": {
+    "primary_aggregate": {
+      "count": 6,
+      "success_count": 0,
+      "click_count": 2,
+      "valid_action_through_step_limit_count": 4,
+      "terminal_reason_counts": {
+        "backend_or_action_error": 2,
+        "bounded_step_limit": 2,
+        "click_issued": 2
+      },
+      "positive_case_ids": []
+    },
+    "all_collected_aggregate": {
+      "count": 7,
+      "success_count": 0,
+      "click_count": 2,
+      "valid_action_through_step_limit_count": 4,
+      "terminal_reason_counts": {
+        "backend_or_action_error": 3,
+        "bounded_step_limit": 2,
+        "click_issued": 2
+      },
+      "positive_case_ids": []
+    },
+    "cases": [
+      {
+        "item_id": "test-0000",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 0,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: structured desktop output must contain exactly one tool call",
+        "action_sequence": [],
+        "cheapest_placement": "top",
+        "runner_up_gap": 2,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 900,
+          "width": 1440
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 397
+            },
+            {
+              "action": "scroll",
+              "delta_y": -500
+            },
+            {
+              "action": "scroll",
+              "delta_y": -272
+            },
+            {
+              "action": "click",
+              "x": 1092,
+              "y": 319
+            }
+          ],
+          "scroll_action_count": 4,
+          "scroll_offsets": [
+            0,
+            500,
+            897,
+            397,
+            125
+          ],
+          "total_action_count": 5
+        },
+        "golden_route_within_three_scrolls": false
+      },
+      {
+        "item_id": "test-0005",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 0,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: structured desktop output must contain exactly one tool call",
+        "action_sequence": [],
+        "cheapest_placement": "bottom",
+        "runner_up_gap": 3,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 800,
+          "width": 1280
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 460
+            },
+            {
+              "action": "click",
+              "x": 988,
+              "y": 407
+            }
+          ],
+          "scroll_action_count": 2,
+          "scroll_offsets": [
+            0,
+            500,
+            960
+          ],
+          "total_action_count": 3
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0010",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 4,
+        "terminal_reason": "bounded_step_limit",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "scroll",
+          "scroll"
+        ],
+        "cheapest_placement": "middle",
+        "runner_up_gap": 14,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 800,
+          "width": 1280
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 45
+            },
+            {
+              "action": "click",
+              "x": 1041,
+              "y": 171
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1045
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0020",
+        "task_success": false,
+        "captured_click": true,
+        "completed_steps": 2,
+        "terminal_reason": "click_issued",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "click"
+        ],
+        "cheapest_placement": "bottom",
+        "runner_up_gap": 35,
+        "currency": "$",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 768,
+          "width": 1152
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 395
+            },
+            {
+              "action": "click",
+              "x": 764,
+              "y": 641
+            }
+          ],
+          "scroll_action_count": 2,
+          "scroll_offsets": [
+            0,
+            500,
+            895
+          ],
+          "total_action_count": 3
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0026",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 0,
+        "terminal_reason": "backend_or_action_error",
+        "error": "BackendDecisionError: completion did not contain exactly one valid action: Unterminated string starting at: line 2 column 16 (char 17)",
+        "action_sequence": [],
+        "cheapest_placement": "bottom",
+        "runner_up_gap": 12,
+        "currency": "\u00a3",
+        "hotel_count": 7,
+        "viewport": {
+          "height": 900,
+          "width": 1440
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 57
+            },
+            {
+              "action": "click",
+              "x": 1084,
+              "y": 765
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1057
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0040",
+        "task_success": false,
+        "captured_click": true,
+        "completed_steps": 4,
+        "terminal_reason": "click_issued",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "scroll",
+          "click"
+        ],
+        "cheapest_placement": "middle",
+        "runner_up_gap": 69,
+        "currency": "\u20ac",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 800,
+          "width": 1280
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 169
+            },
+            {
+              "action": "click",
+              "x": 1082,
+              "y": 117
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1169
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      },
+      {
+        "item_id": "test-0070",
+        "task_success": false,
+        "captured_click": false,
+        "completed_steps": 4,
+        "terminal_reason": "bounded_step_limit",
+        "error": null,
+        "action_sequence": [
+          "scroll",
+          "scroll",
+          "scroll",
+          "scroll"
+        ],
+        "cheapest_placement": "middle",
+        "runner_up_gap": 2,
+        "currency": "\u00a3",
+        "hotel_count": 6,
+        "viewport": {
+          "height": 900,
+          "width": 1440
+        },
+        "golden_route": {
+          "actions": [
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 500
+            },
+            {
+              "action": "scroll",
+              "delta_y": 53
+            },
+            {
+              "action": "click",
+              "x": 952,
+              "y": 235
+            }
+          ],
+          "scroll_action_count": 3,
+          "scroll_offsets": [
+            0,
+            500,
+            1000,
+            1053
+          ],
+          "total_action_count": 4
+        },
+        "golden_route_within_three_scrolls": true
+      }
+    ]
+  },
+  "interpretation": {
+    "headline": "Under the four-action cap, Holo completes two of six audited primary cases and Qwen completes none.",
+    "failure_breakdown": "Both checkpoints show action-interface fragility: invalid structured outputs, excessive scrolling, or incorrect clicks.",
+    "claim_boundary": "Small exploratory synthetic slice; test-0000 is retained as a diagnostic but excluded because its deterministic golden route needs four scrolls. The experiment does not isolate visual understanding from policy, formatting, or stopping behavior."
+  }
+}

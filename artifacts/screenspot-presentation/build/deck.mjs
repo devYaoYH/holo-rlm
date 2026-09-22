@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v45.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v47.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -76,6 +76,12 @@ const resolutionSaliencyCohort = JSON.parse(
     "utf8",
   ),
 );
+const causalPanelStats = JSON.parse(
+  await fs.readFile(
+    path.join(workspaceDir, "artifacts/screenspot-presentation/causal-panel-statistics-v1.json"),
+    "utf8",
+  ),
+);
 const resolutionSaliencyMaps = [100, 75, 50, 25].map((scale) =>
   path.join(resolutionSaliencyDir, `scale-${scale}.png`),
 );
@@ -104,11 +110,11 @@ const slide67Native = JSON.parse(
 );
 const slide6Hit = slide67Native.cases.powerpoint_windows_63;
 const slide7Miss = slide67Native.cases.powerpoint_windows_54;
-const slide6Raw = path.join(slide67NativeDir, "powerpoint_windows_63/raw-tight.png");
+const slide6Raw = path.join(slide67NativeDir, "powerpoint_windows_63/raw-context.png");
 const slide6RawMetrics = slide6Hit.metrics.raw;
 const slide6PromptDifference = path.join(
   slide67NativeDir,
-  "powerpoint_windows_63/prompt_difference-tight.png",
+  "powerpoint_windows_63/prompt_difference-context.png",
 );
 const slide7PromptDifference = path.join(
   slide67NativeDir,
@@ -697,37 +703,38 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   }
 
   rect(slide, 790, 408, 426, 224, C.deep, true);
-  textBox(slide, "WHAT CHANGED", 818, 432, 210, 18, { fontSize: 11, bold: true, color: C.gold });
-  textBox(slide, "Most lost clicks lose localization", 818, 466, 350, 52, { fontSize: 24, bold: true, color: C.white });
-  textBox(slide, "At 25%, lost cases have 1.1× median target lift versus 12.0× for retained clicks.", 818, 526, 350, 46, { fontSize: 15, color: "#C4CED7" });
-  textBox(slide, "Yet 7 of 29 non-native misses still rank the oracle patch first, exposing a repeatable coordinate-readout failure mode.", 818, 580, 350, 40, { fontSize: 14, bold: true, color: "#8FE0BF" });
+  textBox(slide, "NO FIXED-GRID PADDING CONFOUND", 818, 432, 310, 18, { fontSize: 11, bold: true, color: C.gold });
+  textBox(slide, "90×160 → 22×40", 818, 464, 350, 38, { fontSize: 28, bold: true, color: C.white });
+  textBox(slide, "raw patch grid · ≈3,600 → 220 merged visual tokens", 818, 504, 350, 32, { fontSize: 14, color: "#C4CED7" });
+  textBox(slide, "The grid shrinks with the image; it is not padded back to a fixed ≈1k-token budget.", 818, 544, 350, 42, { fontSize: 14, bold: true, color: "#8FE0BF" });
+  textBox(slide, "Remaining confounds: fewer spatial samples and downsampling/aliasing.", 818, 590, 350, 28, { fontSize: 13, color: "#C4CED7" });
   footer(slide, "360 deterministic requests · official localization prompt and 0–1000 contract · eager attention · n=18");
-  slide.speakerNotes.textFrame.setText("3:50–4:30 — This expands the six-case pilot to 18 native-resolution successes, balanced at three cases in each application-by-UI-type stratum across Photoshop, PowerPoint, and VS Code. Each case runs at 100, 75, 50, and 25 percent linear resolution. At every scale, Holo receives the official localization prompt and VisualLocalizerOutput contract, then the eager-attention harness traces the freely generated coordinate tokens. The primary attribution is value-norm rollout after subtracting the mean of four visible same-image alternate instructions. Median target-specific mass falls from 5.22 percent at native resolution to 2.18, 1.16, and 0.21 percent as resolution decreases, a 24-fold cohort-level reduction at quarter resolution. The paired within-case median retains 6.23 percent of native target mass at quarter resolution, with a bootstrap 95 percent interval of 0.18 to 14.47 percent. Median target lift falls from 168.7 to 5.4, and median best-target-patch rank falls from first to 6.5. Strict hits fall from 18 of 18 to 12, 10, and 3 of 18. The Photoshop sequence above remains a single readable example from the original pilot. Localization loss explains most failures, but not all: 7 of 29 non-native misses still place the highest prompt-differential patch inside the oracle, including 3 of 8 misses at half resolution and 3 of 15 at quarter resolution. This repeatable dissociation motivates a separate coordinate-readout hypothesis. The cohort is conditioned on native success and remains a paired sensitivity diagnostic rather than an unconditional benchmark estimate. Sources: artifacts/screenspot-presentation/resolution-saliency-cohort18-v1/summary.json and docs/screenspot-resolution-saliency-cohort18.md.");
+  slide.speakerNotes.textFrame.setText("3:50–4:30 — This expands the six-case pilot to 18 native-resolution successes, balanced at three cases in each application-by-UI-type stratum across Photoshop, PowerPoint, and VS Code. Each case runs at 100, 75, 50, and 25 percent linear resolution. At every scale, Holo receives the official localization prompt and VisualLocalizerOutput contract, then the eager-attention harness traces the freely generated coordinate tokens. The primary attribution is value-norm rollout after subtracting the mean of four visible same-image alternate instructions. Median target-specific mass falls from 5.22 percent at native resolution to 2.18, 1.16, and 0.21 percent as resolution decreases, a 24-fold cohort-level reduction at quarter resolution. The paired within-case median retains 6.23 percent of native target mass at quarter resolution, with a bootstrap 95 percent interval of 0.18 to 14.47 percent. Median target lift falls from 168.7 to 5.4, and median best-target-patch rank falls from first to 6.5. Strict hits fall from 18 of 18 to 12, 10, and 3 of 18. In the exact Photoshop trace shown here, the processor records a 90 by 160 raw visual patch grid at native resolution and 22 by 40 at quarter resolution. With the model's two-by-two spatial merge, that is about 3,600 versus 220 visual tokens. The lower-resolution input is therefore not padded back to a fixed approximately one-thousand-token budget; the remaining resolution confounds are reduced spatial sampling and downsampling or aliasing. Localization loss explains most failures, but not all: 7 of 29 non-native misses still place the highest prompt-differential patch inside the oracle, including 3 of 8 misses at half resolution and 3 of 15 at quarter resolution. This repeatable dissociation motivates a separate coordinate-readout hypothesis. The cohort is conditioned on native success and remains a paired sensitivity diagnostic rather than an unconditional benchmark estimate. Sources: artifacts/screenspot-presentation/resolution-saliency-cohort18-v1/summary.json, data/remote-results/screenspot-resolution-saliency-pilot-v1, and docs/screenspot-resolution-saliency-cohort18.md.");
 }
 
 // 7 — native-resolution baseline comparison on a free-generation success
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Attribution baseline matters", "Same action, different task-specific maps", 7);
+  slideTitle(slide, "Attribution baseline matters", "Instruction controls suppress generic edge saliency", 7);
   textBox(slide, "Instruction: Fill color · free Holo click (209,243)", 64, 116, 660, 24, { fontSize: 17, bold: true, color: C.muted });
   pill(slide, "GREEN = ORACLE · WHITE = CLICK", 838, 113, 378, C.deep, C.white);
 
   const panelWidth = 544;
   const panelHeight = 400;
-  textBox(slide, "VALUE-NORM ROLLOUT", 64, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.orange });
-  textBox(slide, "VALUE-NORM + DIVERSE-INSTRUCTION SUBTRACTION", 672, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.green });
+  textBox(slide, "VALUE-NORM · NO INSTRUCTION BASELINE", 64, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "VALUE-NORM · MINUS 4 SAME-IMAGE INSTRUCTIONS", 672, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.green });
   await image(slide, slide6Raw, 64, 180, panelWidth, panelHeight, { alt: "Native-resolution value-norm rollout for the generated x and y coordinate tokens" });
   await image(slide, slide6PromptDifference, 672, 180, panelWidth, panelHeight, { alt: "Native-resolution value-norm rollout after subtracting four same-image diverse instructions" });
 
   rect(slide, 64, 594, panelWidth, 58, C.deep, true);
   textBox(slide, `${slide6RawMetrics.target_lift.toFixed(0)}× target lift`, 84, 603, 200, 26, { fontSize: 21, bold: true, color: C.orange });
-  textBox(slide, `${(slide6RawMetrics.target_mass * 100).toFixed(1)}% of positive mass`, 292, 607, 292, 20, { fontSize: 13, color: "#D5DEE6", alignment: "right" });
+  textBox(slide, "shared edge + canvas structure remains", 292, 607, 292, 20, { fontSize: 12, color: "#D5DEE6", alignment: "right" });
   rect(slide, 672, 594, panelWidth, 58, C.deep, true);
   textBox(slide, `${slide6Hit.metrics.prompt_difference.target_lift.toFixed(0)}× target lift`, 692, 603, 220, 26, { fontSize: 21, bold: true, color: C.green });
-  textBox(slide, `${(slide6Hit.metrics.prompt_difference.target_mass * 100).toFixed(1)}% · LOO ≥${slide6Hit.stability.minimum_leave_one_out_cosine.toFixed(3)}`, 918, 607, 274, 20, { fontSize: 13, color: "#D5DEE6", alignment: "right" });
-  footer(slide, "Same native screenshot, official prompt, generated click, coordinate tokens, and value-norm rollout · only the baseline changes");
-  slide.speakerNotes.textFrame.setText("4:30–5:30 — The left panel is the value-norm rollout for Holo's freely generated x/y coordinate tokens. It places 4.43% of its positive mass in the tiny oracle, a 110.7x lift. The right panel subtracts the mean of four separately measured same-image instructions: Cut, Copy, Send backward, and Add comment. That baseline raises the target-specific concentration to 18.58% and 464.4x lift, with minimum leave-one-control-out cosine 0.991. Both panels use the same native 2880x1800 screenshot, official localization prompt, Holo output (209,243), and x/y token aggregation. The comparison shows how a resting-state-like control removes generic image saliency. Neither map by itself proves a causal mechanism. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
+  textBox(slide, `${(slide6Hit.metrics.prompt_difference.target_mass * 100).toFixed(1)}% target mass · LOO ≥${slide6Hit.stability.minimum_leave_one_out_cosine.toFixed(3)}`, 918, 607, 274, 20, { fontSize: 12, color: "#D5DEE6", alignment: "right" });
+  footer(slide, "Resting-state analogy: same image and action; subtract the mean saliency shared across four visible alternate instructions");
+  slide.speakerNotes.textFrame.setText("4:30–5:30 — Pull back to the larger screenshot context. The left panel is value-norm rollout for Holo's freely generated x/y coordinate tokens without an instruction baseline. It puts 4.43% of positive mass in the tiny oracle, a 110.7x lift, but also retains saliency shared across the image edge, upper-left chrome, and broad canvas structure. The right panel subtracts the mean of four separately measured same-image instructions: Cut, Copy, Send backward, and Add comment. This resting-state-like control suppresses those instruction-invariant false positives and raises target-specific concentration to 18.58% and 464.4x lift; the minimum leave-one-control-out cosine is 0.991. Both panels use the same native 2880x1800 screenshot, official localization prompt, Holo output (209,243), and x/y token aggregation. The subtraction isolates instruction-conditioned saliency; neither map by itself proves a causal mechanism. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
 }
 
 // 8 — native-resolution free-generation failure after diverse-instruction subtraction
@@ -873,26 +880,27 @@ function addHeadMatrix(slide, headCase, left, top, width) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Causal result · Layer 15", "Fine-tuning makes the coordinate state more recoverable", 11);
+  const pairedStats = causalPanelStats.paired_holo_minus_qwen;
+  slideTitle(slide, "Causal result · Layer 15", "Fine-tuning doubles recovery of the coordinate state", 11);
   textBox(slide, "Eight mirrored prompts · x-coordinate teacher forcing · same processor, prompt, image bytes, and candidate syntax", 64, 118, 1120, 24, { fontSize: 14, color: C.muted });
 
   rect(slide, 64, 160, 550, 166, C.greenSoft, true, C.green);
   textBox(slide, "PATCH CLEAN STATE INTO THE CORRUPTED RUN", 86, 184, 470, 20, { fontSize: 11, bold: true, color: C.green });
   textBox(slide, "Holo  +1.01 nats", 86, 222, 230, 32, { fontSize: 25, bold: true, color: C.green });
   textBox(slide, "Qwen  +0.10 nats", 332, 222, 220, 32, { fontSize: 25, bold: true, color: C.deep });
-  textBox(slide, "Median gain in target-over-distractor coordinate margin", 86, 272, 470, 28, { fontSize: 14, color: C.muted });
+  textBox(slide, "Positive restoration: Holo 7/8 · Qwen 5/8 prompts", 86, 272, 470, 28, { fontSize: 14, color: C.muted });
 
   rect(slide, 638, 160, 578, 166, C.white, true, C.line);
-  textBox(slide, "ZERO THE SAME STATE IN THE CLEAN RUN", 660, 184, 480, 20, { fontSize: 11, bold: true, color: C.orange });
-  textBox(slide, "Holo  4.51 nats lost", 660, 222, 230, 32, { fontSize: 21, bold: true, color: C.orange });
-  textBox(slide, "Qwen  6.27 nats lost", 930, 222, 230, 32, { fontSize: 21, bold: true, color: C.deep });
-  textBox(slide, "Zero-ablation sets the Layer 15 coordinate residual to zero and measures the clean-margin drop", 660, 270, 510, 42, { fontSize: 14, color: C.muted });
+  textBox(slide, "PAIRED HOLO − QWEN EFFECT", 660, 184, 480, 20, { fontSize: 11, bold: true, color: C.blue });
+  textBox(slide, `${pairedStats.likelihood_ratio_factor.toFixed(2)}×`, 660, 216, 170, 48, { fontSize: 38, bold: true, color: C.blue });
+  textBox(slide, "+105% likelihood-ratio recovery", 826, 224, 340, 28, { fontSize: 20, bold: true, color: C.deep });
+  textBox(slide, `bootstrap 95% CI ${pairedStats.likelihood_ratio_factor_95_ci[0].toFixed(2)}×–${pairedStats.likelihood_ratio_factor_95_ci[1].toFixed(2)}× · exact paired p=${pairedStats.exact_one_sided_sign_flip_p_mean.toFixed(4)}`, 660, 278, 510, 28, { fontSize: 13, color: C.muted });
 
   textBox(slide, "WHAT THE INTERVENTIONS SHOW", 64, 356, 520, 18, { fontSize: 11, bold: true, color: C.blue });
   const findings = [
-    ["1", "Reliable Holo restoration", "Holo's clean Layer 15 state improves the corrupted margin in 7 of 8 prompts; the paired Holo-minus-Qwen median is +0.72 nats.", C.greenSoft, C.green],
-    ["2", "Shared necessity", "Zeroing the state harms both checkpoints. Holo gains recoverability after fine-tuning, but the underlying coordinate state is not unique to Holo.", "#E9EDF1", C.deep],
-    ["3", "Distributed across heads", "All 16 heads were tested. Holo head 1 restores +0.54 nats, while Qwen also uses it at +0.36; no single head explains the effect.", C.orangeSoft, C.orange],
+    ["1", "Paired margin", `The median Holo-minus-Qwen restoration is +${pairedStats.median_nats.toFixed(2)} nats; every prompt uses identical clean/corrupt images and candidate strings.`, C.greenSoft, C.green],
+    ["2", "Shared necessity", "Setting the Layer 15 coordinate state to zero in a clean run costs 4.51 nats for Holo and 6.27 for Qwen: both checkpoints rely on it.", "#E9EDF1", C.deep],
+    ["3", "Distributed mechanism", "All 16 heads were tested. No single head explains the checkpoint difference; the recoverable effect is distributed in the residual state.", C.orangeSoft, C.orange],
   ];
   findings.forEach(([num, heading, body, fill, accent], index) => {
     const top = 384 + index * 72;
@@ -903,9 +911,9 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   });
 
   rect(slide, 64, 612, 1152, 42, C.deep, true);
-  textBox(slide, "The causal gain sits in a distributed coordinate state, not in one specialized attention head.", 84, 622, 1112, 20, { fontSize: 16, bold: true, color: C.white, alignment: "center" });
-  footer(slide, "Within-image causal panel · not an independent-image benchmark or a single-head circuit claim");
-  slide.speakerNotes.textFrame.setText("8:20–9:20 — Lead with the directly interpretable intervention. Replacing the corrupted-run Layer 15 x-coordinate residual with the clean-run state raises Holo's target-over-distractor margin by a median 1.01 nats, versus 0.10 for Qwen. Holo restoration is positive in seven of eight prompts, and the paired Holo-minus-Qwen median is +0.72 nats. Zero-ablation means setting that same coordinate residual to zero in the clean run; the median clean-margin drop is 4.51 nats for Holo and 6.27 for Qwen. Both models therefore rely on this state. Fine-tuning increases its recoverability rather than creating a Holo-exclusive necessity. The all-head sweep also rejects a single-head explanation: Holo head 1 restores 0.54 nats, but Qwen uses the same head at 0.36. Sources: data/remote-results/qwen-holo-action-panel-v1-20260922 and data/remote-results/qwen-holo-action-panel-v1-20260922-phase-b-layer15.");
+  textBox(slide, "Fine-tuning strengthens recoverable action state; it does not create a Holo-only coordinate circuit.", 84, 622, 1112, 20, { fontSize: 16, bold: true, color: C.white, alignment: "center" });
+  footer(slide, "Exploratory n=8 within-image panel · paired bootstrap and all 256 sign flips · not an independent-image benchmark");
+  slide.speakerNotes.textFrame.setText("8:20–9:20 — Lead with the directly interpretable intervention. Replacing the corrupted-run Layer 15 x-coordinate residual with the clean-run state raises Holo's target-over-distractor margin by a median 1.01 nats in seven of eight prompts. Qwen's median is 0.10 nats and is positive in five of eight. The paired Holo-minus-Qwen median is 0.718 nats. Because the margin is a log target-versus-distractor sequence likelihood ratio, exponentiating the paired difference gives a 2.05-times likelihood-ratio recovery, or 105 percent larger. A paired nonparametric bootstrap gives a 95 percent interval of 1.74 to 3.15 times. An exact one-sided paired sign-flip test over all 256 assignments gives p=0.0078; with only eight mirrored prompts from four synthetic image pairs, treat this as exploratory within-panel evidence rather than population-level benchmark significance. Zero-ablation means setting that same Layer 15 coordinate residual to zero in the clean run, then measuring the clean-margin loss: 4.51 nats for Holo and 6.27 for Qwen. Both checkpoints rely on the state, so fine-tuning increases recoverability rather than creating a Holo-exclusive circuit. The all-head sweep also rejects a single-head explanation. Sources: artifacts/screenspot-presentation/causal-panel-statistics-v1.json, data/remote-results/qwen-holo-action-panel-v1-20260922, and data/remote-results/qwen-holo-action-panel-v1-20260922-phase-b-layer15.");
 }
 
 // Legacy exploratory slides omitted from the presentation flow.
@@ -1319,9 +1327,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v45");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v47");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v45.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v47.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({

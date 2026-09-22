@@ -1,0 +1,35 @@
+{
+  "actions": [
+    {
+      "action": "scroll",
+      "delta_y": 500
+    },
+    {
+      "action": "scroll",
+      "delta_y": 500
+    },
+    {
+      "action": "click",
+      "x": 1023,
+      "y": 216
+    }
+  ],
+  "captured_click": true,
+  "frame_count": 3,
+  "schema_version": 1,
+  "target": {
+    "expected_destination": "/details/test-0010-fjord-compass-lodge",
+    "hotel": "Fjord Compass Lodge",
+    "hotel_id": "test-0010-fjord-compass-lodge",
+    "price": 166
+  },
+  "task_success": true,
+  "terminal_reason": "fixture_success",
+  "trace_ids": [
+    "trace-20260922T132636Z-90d2bf0e6ff6",
+    "trace-20260922T132702Z-dde1230b4a06",
+    "trace-20260922T132737Z-f6a7faa36844"
+  ],
+  "trajectory_id": "test-0010",
+  "warnings": []
+}

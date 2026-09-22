@@ -1,0 +1,94 @@
+{
+  "analysis": "paired_layer_15_coordinate_state_restoration",
+  "intervention": "layer_15_coordinate_x_residuals",
+  "count": 8,
+  "rows": [
+    {
+      "case": "monochromatic_artistic_artistic_neon",
+      "holo_nats": 1.0604519844055176,
+      "qwen_nats": 0.49600791931152344,
+      "difference_nats": 0.5644440650939941
+    },
+    {
+      "case": "monochromatic_artistic_monochromatic_horizon",
+      "holo_nats": 1.949449062347412,
+      "qwen_nats": -0.6104183197021484,
+      "difference_nats": 2.5598673820495605
+    },
+    {
+      "case": "psychedelic_woven_psychedelic_vibrant",
+      "holo_nats": 0.34998321533203125,
+      "qwen_nats": -0.2031707763671875,
+      "difference_nats": 0.5531539916992188
+    },
+    {
+      "case": "psychedelic_woven_woven_fibers",
+      "holo_nats": -0.17351436614990234,
+      "qwen_nats": 0.102996826171875,
+      "difference_nats": -0.27651119232177734
+    },
+    {
+      "case": "quadratic_statistics_quadratic_collection",
+      "holo_nats": 0.958549976348877,
+      "qwen_nats": 0.10062408447265625,
+      "difference_nats": 0.8579258918762207
+    },
+    {
+      "case": "quadratic_statistics_statistics_focus",
+      "holo_nats": 1.8632149696350098,
+      "qwen_nats": 1.2842350006103516,
+      "difference_nats": 0.5789799690246582
+    },
+    {
+      "case": "woven_color_color_swatch",
+      "holo_nats": 1.5978517532348633,
+      "qwen_nats": 0.4510231018066406,
+      "difference_nats": 1.1468286514282227
+    },
+    {
+      "case": "woven_color_woven_fibers",
+      "holo_nats": 0.5932812690734863,
+      "qwen_nats": -0.3861713409423828,
+      "difference_nats": 0.9794526100158691
+    }
+  ],
+  "holo": {
+    "median_restoration_nats": 1.0095009803771973,
+    "mean_restoration_nats": 1.0249084830284119,
+    "positive_count": 7
+  },
+  "qwen": {
+    "median_restoration_nats": 0.10181045532226562,
+    "mean_restoration_nats": 0.15439081192016602,
+    "positive_count": 5
+  },
+  "paired_holo_minus_qwen": {
+    "median_nats": 0.7184529304504395,
+    "mean_nats": 0.8705176711082458,
+    "positive_count": 7,
+    "bootstrap_median_95_ci_nats": [
+      0.5531539916992188,
+      1.1468286514282227
+    ],
+    "likelihood_ratio_factor": 2.0512573168798007,
+    "likelihood_ratio_factor_95_ci": [
+      1.7387283134779823,
+      3.148193044027165
+    ],
+    "likelihood_ratio_percent_increase": 105.12573168798005,
+    "likelihood_ratio_percent_increase_95_ci": [
+      73.87283134779823,
+      214.8193044027165
+    ],
+    "exact_one_sided_sign_flip_p_mean": 0.0078125,
+    "exact_one_sided_sign_test_p": 0.03515625
+  },
+  "method": {
+    "bootstrap": "paired nonparametric percentile bootstrap of the median",
+    "randomization_test": "all 2^8 paired sign flips; one-sided alternative Holo > Qwen; statistic is mean paired difference",
+    "interpretation": "Exponentiating a nat difference yields a multiplicative change in the target-versus-distractor sequence likelihood ratio.",
+    "caveat": "Eight mirrored prompts from four synthetic image pairs; exploratory within-image causal panel, not an independent-image benchmark.",
+    "seed": 20260922,
+    "bootstrap_draws": 200000
+  }
+}
