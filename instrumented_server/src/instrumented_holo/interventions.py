@@ -117,13 +117,20 @@ class InterventionConfig:
             raise ValueError("only clean-to-corrupted interchange is currently supported")
         if self.ablation == "mean" and self.representation.component != "residual_output":
             raise ValueError("mean ablation is currently supported for residual outputs only")
-        if self.ablation == "zero" and self.representation.component == "residual_output":
-            raise ValueError("residual outputs currently use mean ablation")
+        if self.representation.component == "residual_output":
+            if self.representation.unit == "scored_token_predictions" and self.ablation != "zero":
+                raise ValueError("coordinate-prediction residuals currently use zero ablation")
+            if self.representation.unit != "scored_token_predictions" and self.ablation != "mean":
+                raise ValueError("image-position residuals currently use mean ablation")
 
     @classmethod
     def from_dict(cls, value: Mapping[str, Any], *, index: int = 0) -> InterventionConfig:
         representation = RepresentationConfig.from_dict(value)
-        default_ablation: Ablation = "mean" if representation.component == "residual_output" else "zero"
+        default_ablation: Ablation = (
+            "mean"
+            if representation.component == "residual_output" and representation.unit != "scored_token_predictions"
+            else "zero"
+        )
         name = str(value.get("name") or f"{representation.component}-{representation.layer}-{index:03d}")
         return cls(
             name=name,
@@ -162,6 +169,16 @@ class InterventionEffect:
             "ablation_drop_nats": self.ablation_drop_nats,
             "patched_candidate_log_prob_nats": list(self.patched_corrupted.candidate_log_prob_nats),
             "ablated_candidate_log_prob_nats": list(self.ablated_clean.candidate_log_prob_nats),
+            "patched_field_margins_nats": dict(self.patched_corrupted.field_margin_nats),
+            "ablated_field_margins_nats": dict(self.ablated_clean.field_margin_nats),
+            "field_restoration_nats": {
+                field: self.patched_corrupted.field_margin_nats[field] - self.corrupted.field_margin_nats[field]
+                for field in sorted(set(self.patched_corrupted.field_margin_nats).intersection(self.corrupted.field_margin_nats))
+            },
+            "field_ablation_drop_nats": {
+                field: self.clean.field_margin_nats[field] - self.ablated_clean.field_margin_nats[field]
+                for field in sorted(set(self.clean.field_margin_nats).intersection(self.ablated_clean.field_margin_nats))
+            },
         }
 
 
@@ -253,8 +270,11 @@ class IntervenableHolo:
         module, kind = self._module(representation)
         source = self.source_activations[representation.key] if patch else None
         if representation.component == "residual_output":
-            positions, pool = self._residual_positions(representation, condition)
-            hook = residual_hook(positions, source, pool)
+            if representation.unit == "scored_token_predictions":
+                hook = prediction_hook(condition, source)
+            else:
+                positions, pool = self._residual_positions(representation, condition)
+                hook = residual_hook(positions, source, pool)
         elif representation.component == "mlp_output":
             hook = prediction_hook(condition, source)
         else:

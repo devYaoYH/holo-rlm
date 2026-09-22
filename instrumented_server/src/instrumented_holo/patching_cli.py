@@ -174,7 +174,10 @@ def _candidates(raw: list[dict[str, Any]]) -> tuple[CandidateSequence, Candidate
             coordinate = tuple(int(value) for value in candidate["json_coordinate"])
             if len(coordinate) != 2 or any(value < 0 or value > 1000 for value in coordinate):
                 raise ValueError(f"candidate {label!r} JSON coordinate must contain x/y within 0..1000")
-            result.append(json_coordinate_candidate(label, coordinate))  # type: ignore[arg-type]
+            scored_fields = candidate.get("scored_fields")
+            if scored_fields is not None and not isinstance(scored_fields, list):
+                raise ValueError(f"candidate {label!r} scored_fields must be a list")
+            result.append(json_coordinate_candidate(label, coordinate, scored_fields=scored_fields))  # type: ignore[arg-type]
         elif "tool_action" in candidate:
             action = candidate["tool_action"]
             if not isinstance(action, dict):
@@ -288,6 +291,8 @@ def run_manifest(
             "clean_minus_corrupted_nats": output.clean_corrupted_gap_nats,
             "clean_candidate_log_prob_nats": list(output.clean.candidate_log_prob_nats),
             "corrupted_candidate_log_prob_nats": list(output.corrupted.candidate_log_prob_nats),
+            "clean_field_margins_nats": dict(output.clean.field_margin_nats),
+            "corrupted_field_margins_nats": dict(output.corrupted.field_margin_nats),
         },
         "interventions": rows,
         "clean_activations": str(output_dir / "clean_activations.npz") if save_activations else None,

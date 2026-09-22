@@ -56,6 +56,18 @@ def test_manifest_candidates_support_coordinates_and_explicit_spans() -> None:
     assert candidates[1].scored_spans == ((3, 6),)
 
 
+def test_json_coordinate_candidates_can_score_the_x_field_only() -> None:
+    candidates = _candidates(
+        [
+            {"label": "target", "json_coordinate": [482, 351], "scored_fields": ["x"]},
+            {"label": "distractor", "json_coordinate": [406, 351], "scored_fields": ["x"]},
+        ]
+    )
+    assert candidates[0].text == '{"x":482,"y":351}'
+    assert candidates[0].field_spans is not None
+    assert tuple(candidates[0].field_spans) == ("x",)
+
+
 def test_representation_configs_are_serializable_and_accept_legacy_schema() -> None:
     current = InterventionConfig.from_dict(
         {
@@ -82,6 +94,18 @@ def test_representation_configs_are_serializable_and_accept_legacy_schema() -> N
     assert legacy.representation.component == "attention_head_output"
     assert legacy.representation.unit == "scored_token_predictions"
     assert legacy.ablation == "zero"
+
+    action_residual = InterventionConfig.from_dict(
+        {
+            "name": "coordinate residual",
+            "representation": {
+                "layer": 15,
+                "component": "residual_output",
+                "unit": "scored_token_predictions",
+            },
+        }
+    )
+    assert action_residual.ablation == "zero"
 
 
 def test_manifest_can_be_validated_without_loading_model(tmp_path: Path) -> None:

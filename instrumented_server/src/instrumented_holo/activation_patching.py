@@ -39,6 +39,7 @@ class CandidateSequence:
     label: str
     text: str
     scored_spans: tuple[tuple[int, int], ...]
+    field_spans: Mapping[str, tuple[tuple[int, int], ...]] | None = None
 
 
 @dataclass(frozen=True)
@@ -48,6 +49,7 @@ class EncodedCandidate:
     label: str
     token_ids: tuple[int, ...]
     scored_token_offsets: tuple[int, ...]
+    field_scored_token_offsets: Mapping[str, tuple[int, ...]]
 
 
 @dataclass(frozen=True)
@@ -88,6 +90,8 @@ class MarginScore:
     margin_nats: float
     candidate_log_prob_nats: tuple[float, float]
     reduction: ScoreReduction
+    field_margin_nats: Mapping[str, float]
+    field_candidate_log_prob_nats: Mapping[str, tuple[float, float]]
 
 
 def require_patch_alignment(clean: PreparedCondition, corrupted: PreparedCondition) -> None:
@@ -220,7 +224,12 @@ def coordinate_tool_candidate(label: str, coordinate: tuple[int, int]) -> Candid
     )
 
 
-def json_coordinate_candidate(label: str, coordinate: tuple[int, int]) -> CandidateSequence:
+def json_coordinate_candidate(
+    label: str,
+    coordinate: tuple[int, int],
+    *,
+    scored_fields: Sequence[str] | None = None,
+) -> CandidateSequence:
     """Build the canonical compact ScreenSpot JSON response, scoring only x/y values."""
 
     x, y = coordinate
@@ -228,10 +237,15 @@ def json_coordinate_candidate(label: str, coordinate: tuple[int, int]) -> Candid
     x_text, y_text = str(x), str(y)
     x_start = text.index(x_text, text.index('"x"'))
     y_start = text.index(y_text, text.index('"y"'))
+    fields = tuple(scored_fields or ("x", "y"))
+    if set(fields) - {"x", "y"}:
+        raise ValueError("JSON coordinate candidates may score only x and/or y")
+    spans = {"x": (x_start, x_start + len(x_text)), "y": (y_start, y_start + len(y_text))}
     return CandidateSequence(
         label=label,
         text=text,
-        scored_spans=((x_start, x_start + len(x_text)), (y_start, y_start + len(y_text))),
+        scored_spans=tuple(spans[field] for field in fields),
+        field_spans={field: (spans[field],) for field in fields},
     )
 
 
@@ -315,7 +329,19 @@ def encode_candidate(tokenizer: Any, candidate: CandidateSequence) -> EncodedCan
     )
     if not selected:
         raise RuntimeError(f"tokenizer produced no scored tokens for {candidate.label!r}")
-    return EncodedCandidate(candidate.label, token_ids, selected)
+    field_spans = candidate.field_spans or {"all": candidate.scored_spans}
+    fields = {
+        name: tuple(
+            index
+            for index, (start, end) in enumerate(encoded["offset_mapping"])
+            if any(start < span_end and end > span_start for span_start, span_end in spans)
+        )
+        for name, spans in field_spans.items()
+    }
+    if any(not offsets for offsets in fields.values()):
+        missing = ", ".join(name for name, offsets in fields.items() if not offsets)
+        raise RuntimeError(f"tokenizer produced no scored tokens for {candidate.label!r} fields: {missing}")
+    return EncodedCandidate(candidate.label, token_ids, selected, fields)
 
 
 def _image_sizes(messages: Sequence[dict[str, Any]]) -> tuple[tuple[int, int], ...]:
@@ -516,6 +542,7 @@ class ActivationPatchingRunner:
                     return_dict=True,
                 )
                 scores: list[float] = []
+                field_scores: list[dict[str, float]] = []
                 for batch_index, (positions, token_ids) in enumerate(
                     zip(condition.prediction_positions, condition.scored_token_ids, strict=True)
                 ):
@@ -525,8 +552,26 @@ class ActivationPatchingRunner:
                     token_log_probs = torch.log_softmax(logits, dim=-1).gather(1, targets[:, None])
                     aggregate = token_log_probs.sum() if self.reduction == "sum" else token_log_probs.mean()
                     scores.append(float(aggregate.item()))
+                    field_values: dict[str, float] = {}
+                    for field, offsets in condition.candidates[batch_index].field_scored_token_offsets.items():
+                        relevant = tuple(
+                            condition.candidates[batch_index].scored_token_offsets.index(offset)
+                            for offset in offsets
+                        )
+                        values = token_log_probs[list(relevant)]
+                        field_values[field] = float(
+                            (values.sum() if self.reduction == "sum" else values.mean()).item()
+                        )
+                    field_scores.append(field_values)
                 del outputs
-        return MarginScore(scores[0] - scores[1], (scores[0], scores[1]), self.reduction)
+        common_fields = set(field_scores[0]).intersection(field_scores[1])
+        return MarginScore(
+            scores[0] - scores[1],
+            (scores[0], scores[1]),
+            self.reduction,
+            {field: field_scores[0][field] - field_scores[1][field] for field in sorted(common_fields)},
+            {field: (field_scores[0][field], field_scores[1][field]) for field in sorted(common_fields)},
+        )
 
 
 def replace_positions(
