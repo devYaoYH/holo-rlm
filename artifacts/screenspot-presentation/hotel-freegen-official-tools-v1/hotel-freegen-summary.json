@@ -1,0 +1,157 @@
+{
+  "actions": [
+    {
+      "applied_action": {
+        "action": "scroll",
+        "delta_y": 500
+      },
+      "model_call": {
+        "direction": "down",
+        "element": "Hotel search results list",
+        "scroll_size": 10,
+        "tool_name": "scroll_desktop",
+        "x": 500,
+        "y": 600
+      }
+    },
+    {
+      "applied_action": {
+        "action": "scroll",
+        "delta_y": 500
+      },
+      "model_call": {
+        "direction": "down",
+        "element": "Hotel search results list",
+        "scroll_size": 10,
+        "tool_name": "scroll_desktop",
+        "x": 500,
+        "y": 600
+      }
+    },
+    {
+      "applied_action": {
+        "action": "scroll",
+        "delta_y": 500
+      },
+      "model_call": {
+        "direction": "down",
+        "element": "Hotel search results list",
+        "scroll_size": 10,
+        "tool_name": "scroll_desktop",
+        "x": 500,
+        "y": 600
+      }
+    },
+    {
+      "applied_action": {
+        "action": "click",
+        "x": 665,
+        "y": 324
+      },
+      "model_call": {
+        "button": "left",
+        "element": "View details button for Lumen Harbor Rooms hotel",
+        "tool_name": "click_desktop",
+        "x": 650,
+        "y": 450
+      }
+    }
+  ],
+  "assets": [
+    {
+      "frame": 0,
+      "height": 647,
+      "path": "artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/final-y-attribution-frame-0.png",
+      "sha256": "aa1ef00588d1424a557f12dfce83ad812ffe821eaecd2a8d2b9c2c056d313cfc",
+      "width": 330
+    },
+    {
+      "frame": 1,
+      "height": 647,
+      "path": "artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/final-y-attribution-frame-1.png",
+      "sha256": "dd28840ec7c8c0abb51516cb66c5bc558c12404d2a6f15f8641c9eb44026bcb7",
+      "width": 330
+    },
+    {
+      "frame": 2,
+      "height": 647,
+      "path": "artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/final-y-attribution-frame-2.png",
+      "sha256": "76e8a522c29fd2c4ef01a9bae6be3968ed7aa31d078a8c28c4d48a91808885c6",
+      "width": 330
+    }
+  ],
+  "attribution_archive_sha256": "26da859fdc5b42371e2f0a158bf1d201c2a12fe54ce1593ed2f87276131a91b6",
+  "completed_steps": 4,
+  "final_model_click": [
+    650,
+    450
+  ],
+  "final_projected_click": [
+    665,
+    324
+  ],
+  "final_y_frame_mass": [
+    0.08968687057495117,
+    0.0678553432226181,
+    0.07478227466344833
+  ],
+  "final_y_frame_share": [
+    0.38604139911837143,
+    0.2920714199011515,
+    0.3218871809804771
+  ],
+  "oracle_button_bbox_pixel": [
+    601,
+    290,
+    713,
+    348
+  ],
+  "oracle_hotel": "test-0035-lumen-harbor-rooms",
+  "oracle_name": "Lumen Harbor Rooms",
+  "oracle_price": 122,
+  "protocol": {
+    "attributed_span": "y = 450",
+    "attribution": "value_norm_rollout",
+    "coordinates": "normalized 0-1000",
+    "downsampled_before_model": false,
+    "generation": "free",
+    "grammar_constrained_decoding": false,
+    "input_resolution": [
+      1024,
+      720
+    ],
+    "max_pixels": 16777216,
+    "maximum_retained_screenshots": 3,
+    "patch_grid": [
+      22,
+      32
+    ],
+    "raw_vision_grid": [
+      44,
+      64
+    ],
+    "system_prompt": "repository_checked_in_hotel_prompt",
+    "teacher_forcing": false,
+    "tool_schema": "HoloDesktop runtime 0.1.10 structured tool set",
+    "tool_serialization": "structured_outputs JSON"
+  },
+  "retained_scroll_offsets": [
+    500,
+    1000,
+    1124
+  ],
+  "schema_version": 1,
+  "selected_hotel": "test-0035-lumen-harbor-rooms",
+  "selected_name": "Lumen Harbor Rooms",
+  "selected_price": 122,
+  "source_archive_sha256": "534832999ef9b4b5e06f81a79f4430af7ee3ff58ad262703f5c5fd24a3c48d5c",
+  "task_success": true,
+  "trace_id": "trace-20260922T060113Z-54ddd44b7a3c",
+  "trajectory_id": "traj-20260922T055823Z-397ab3c2af",
+  "visualization_crop_xyxy": [
+    455,
+    73,
+    785,
+    720
+  ]
+}

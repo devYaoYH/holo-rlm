@@ -25,9 +25,8 @@ from .renderer import render_fixture
 INITIAL_TASK = "Inspect the deterministic booking results, note the options, and scroll down. Do not open a details link yet."
 CHEAPEST_TASK = (
     "Find the hotel with the lowest nightly price across all search results. "
-    "You have not seen all results yet: your first action must scroll down, and you must not click any currently "
-    "visible hotel. Inspect every option using moderate native wheel increments near -500 so no price row is skipped, "
-    "then open the cheapest hotel's View details link. "
+    "Inspect every option, scrolling as needed so no price row is skipped, then open only the cheapest hotel's "
+    "View details link. "
     "Take exactly one desktop action per turn."
 )
 
@@ -47,8 +46,30 @@ def _native_action_history(action: dict[str, Any]) -> str:
     )
 
 
+def _assistant_history_content(response: dict[str, Any], applied_action: dict[str, Any]) -> str:
+    """Recover the parsed assistant output without replaying hidden reasoning."""
+
+    try:
+        content = response["choices"][0]["message"].get("content")
+        if isinstance(content, str):
+            parsed = json.loads(content)
+            if isinstance(parsed, dict) and isinstance(parsed.get("tool_calls"), list):
+                return json.dumps(parsed, separators=(",", ":"))
+    except (IndexError, KeyError, TypeError, ValueError):
+        pass
+
+    try:
+        arguments = response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"]
+        action = json.loads(arguments) if isinstance(arguments, str) else arguments
+        if isinstance(action, dict) and isinstance(action.get("action"), str):
+            return _native_action_history(action)
+    except (IndexError, KeyError, TypeError, ValueError):
+        pass
+    return _native_action_history(applied_action)
+
+
 def _action_for_model_history(response: dict[str, Any], applied_action: dict[str, Any]) -> dict[str, Any]:
-    """Recover the model-native action before coordinate/sign projection."""
+    """Recover one legacy native action for inspecting older trajectory bundles."""
 
     try:
         arguments = response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"]
@@ -58,6 +79,22 @@ def _action_for_model_history(response: dict[str, Any], applied_action: dict[str
     except (IndexError, KeyError, TypeError, ValueError):
         pass
     return applied_action
+
+
+def _model_tool_name(response: dict[str, Any], applied_action: dict[str, Any]) -> str:
+    """Return the model-facing tool name for a tool-output history message."""
+
+    try:
+        content = response["choices"][0]["message"].get("content")
+        parsed = json.loads(content) if isinstance(content, str) else None
+        calls = parsed.get("tool_calls") if isinstance(parsed, dict) else None
+        if isinstance(calls, list) and calls and isinstance(calls[0], dict):
+            tool_name = calls[0].get("tool_name")
+            if isinstance(tool_name, str):
+                return tool_name
+    except (IndexError, KeyError, TypeError, ValueError):
+        pass
+    return str(applied_action.get("action", "unknown"))
 
 
 def cheapest_progress_message(
@@ -72,29 +109,29 @@ def cheapest_progress_message(
 
     if all_results_seen and objective_visible:
         progress = (
-            "Every hotel price has appeared and the cheapest hotel's card is visible now. Do not scroll. "
-            "Immediately click View details for only the cheapest hotel."
+            "Every hotel price has appeared and the cheapest hotel's card is visible now. "
+            "Click View details for only the cheapest hotel."
         )
     elif all_results_seen:
         progress = (
-            "Every hotel price has appeared, but the cheapest card is in an earlier frame. Use a moderate "
-            "positive delta_y near 500 to scroll up toward it; click only when its card is visible."
+            "Every hotel price has appeared, but the cheapest card is in an earlier frame. Use scroll_desktop "
+            "with direction='up' and a moderate scroll_size; click only when its card is visible."
         )
     elif no_scroll_movement and action["delta_y"] > 0:
         progress = (
             "The last scroll did not move: you reached the bottom while skipping at least one price row. "
-            "Do not scroll down again. Use a moderate positive delta_y near 500 to inspect the missed rows above."
+            "Use scroll_desktop with direction='up' and a moderate scroll_size to inspect missed rows above."
         )
     elif no_scroll_movement:
         progress = (
-            "The last scroll did not move because you reached the top. Do not scroll up again. Use a "
-            "moderate negative delta_y near -500 to continue inspecting later results below."
+            "The last scroll did not move because you reached the top. Use scroll_desktop with direction='down' "
+            "and a moderate scroll_size to continue inspecting later results below."
         )
     else:
         progress = (
-            "Continue the same task. Inspect adjacent results with moderate wheel increments near 500 so no "
-            "price row is skipped. Use negative delta_y while moving down; if the viewport stops changing, "
-            "reverse with positive delta_y. Once every price is known, open only the cheapest hotel's details."
+            "Continue the same task. Inspect adjacent results with moderate scroll_desktop increments so no price "
+            "row is skipped. Use direction='down' for later results and direction='up' for earlier results. Once "
+            "every price is known, open only the cheapest hotel's details."
         )
     return f"The previous action was applied; the current scroll offset is {scroll_y}. {progress}"
 
@@ -262,10 +299,20 @@ def capture_run(
                         for ref in request_image_refs
                     ],
                     "tool_schema_hash": hashlib.sha256(
-                        canonical_json(request["tools"][0]["function"]["parameters"])
+                        canonical_json(
+                            request.get("structured_outputs", {}).get("json")
+                            or request["tools"][0]["function"]["parameters"]
+                        )
                     ).hexdigest(),
                     "sampling": {"temperature": request.get("temperature"), "max_tokens": request.get("max_tokens")},
-                    "generation": {"tool_choice": request.get("tool_choice")},
+                    "generation": {
+                        "tool_choice": request.get("tool_choice"),
+                        "output_format": (
+                            "structured_outputs"
+                            if isinstance(request.get("structured_outputs"), dict)
+                            else "function_calling"
+                        ),
+                    },
                     "coordinate_space": "normalized_0_1000" if backend.name == "local" else "viewport_pixels",
                     "model_id": backend.model_id,
                     "model_revision": backend.model_revision,
@@ -325,8 +372,7 @@ def capture_run(
             # while the final appended screenshot remains the current frame.
             messages.append(deepcopy(request["messages"][-1]))
             model_input_history.append(image_ref)
-            model_history_action = _action_for_model_history(response, action)
-            messages.append({"role": "assistant", "content": _native_action_history(model_history_action)})
+            messages.append({"role": "assistant", "content": _assistant_history_content(response, action)})
             if fixture_assertion:
                 success = True
                 terminal_reason = "fixture_success"
@@ -340,16 +386,18 @@ def capture_run(
                 all_results_seen = len(seen_hotel_ids) == len(config["hotels"])
                 no_scroll_movement = action["action"] == "scroll" and before["scroll_y"] == after["scroll_y"]
                 objective_visible = _target_visible(config, after, objective["id"])
+                progress = cheapest_progress_message(
+                    scroll_y=after["scroll_y"],
+                    action=action,
+                    all_results_seen=all_results_seen,
+                    objective_visible=objective_visible,
+                    no_scroll_movement=no_scroll_movement,
+                )
+                tool_name = _model_tool_name(response, action)
                 messages.append(
                     {
                         "role": "user",
-                        "content": cheapest_progress_message(
-                            scroll_y=after["scroll_y"],
-                            action=action,
-                            all_results_seen=all_results_seen,
-                            objective_visible=objective_visible,
-                            no_scroll_movement=no_scroll_movement,
-                        ),
+                        "content": f'<tool_output tool="{tool_name}">\n{progress}\n</tool_output>',
                     }
                 )
             if step == 0 and follow_up_task is not None:

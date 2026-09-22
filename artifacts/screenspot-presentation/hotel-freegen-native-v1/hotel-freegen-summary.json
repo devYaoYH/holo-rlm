@@ -64,6 +64,7 @@
     "coordinates": "normalized 0-1000",
     "downsampled_before_model": false,
     "generation": "free",
+    "grammar_constrained_decoding": false,
     "input_resolution": [
       1024,
       720
@@ -73,7 +74,10 @@
       22,
       32
     ],
-    "teacher_forcing": false
+    "system_prompt": "repository_checked_in_hotel_prompt",
+    "teacher_forcing": false,
+    "tool_schema": "desktop_action OpenAI function schema",
+    "tool_serialization": "checkpoint-native Holo/Qwen XML tool template"
   },
   "recall_stress_controls": {
     "completed_steps": [
@@ -94,5 +98,11 @@
   "source_archive_sha256": "32a18a4c053b60127f52e2ddc449351b00250c3a20c7e05be2f5fda410f84843",
   "task_success": false,
   "trace_id": "trace-20260922T035643Z-a6a081aa747b",
-  "trajectory_id": "traj-20260922T035615Z-0b7c877373"
+  "trajectory_id": "traj-20260922T035615Z-0b7c877373",
+  "visualization_crop_xyxy": [
+    455,
+    73,
+    785,
+    720
+  ]
 }

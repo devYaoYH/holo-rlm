@@ -20,6 +20,7 @@ from .activation_patching import (
     coordinate_tool_candidate,
     json_coordinate_candidate,
     native_tool_candidate,
+    structured_desktop_candidate,
     png_data_url,
     swap_equal_tiles,
     validate_box,
@@ -181,7 +182,10 @@ def _candidates(raw: list[dict[str, Any]]) -> tuple[CandidateSequence, Candidate
             scored_fields = candidate.get("scored_fields")
             if scored_fields is not None and not isinstance(scored_fields, list):
                 raise ValueError(f"candidate {label!r} scored_fields must be a list")
-            result.append(native_tool_candidate(label, action, scored_fields=scored_fields))
+            if isinstance(action.get("tool_name"), str):
+                result.append(structured_desktop_candidate(label, action, scored_fields=scored_fields))
+            else:
+                result.append(native_tool_candidate(label, action, scored_fields=scored_fields))
         else:
             spans = tuple(tuple(int(value) for value in span) for span in candidate["scored_spans"])
             text = str(candidate["text"])

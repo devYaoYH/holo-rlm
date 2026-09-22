@@ -235,6 +235,41 @@ def json_coordinate_candidate(label: str, coordinate: tuple[int, int]) -> Candid
     )
 
 
+def structured_desktop_candidate(
+    label: str,
+    tool_call: Mapping[str, Any],
+    *,
+    scored_fields: Sequence[str] | None = None,
+) -> CandidateSequence:
+    """Build one compact HoloDesktop structured-output step."""
+
+    if not tool_call or not isinstance(tool_call.get("tool_name"), str):
+        raise ValueError("structured desktop tool call must contain tool_name")
+    fields = tuple(scored_fields or tool_call.keys())
+    unknown = [field for field in fields if field not in tool_call]
+    if unknown:
+        raise ValueError(f"scored structured-tool fields are absent from the call: {unknown}")
+    text = json.dumps(
+        {"note": None, "thought": "", "tool_calls": [dict(tool_call)]},
+        separators=(",", ":"),
+    )
+    call_start = text.index("{", text.index('"tool_calls"'))
+    spans: dict[str, tuple[int, int]] = {}
+    cursor = call_start
+    for field, raw_value in tool_call.items():
+        key = json.dumps(str(field), separators=(",", ":"))
+        key_start = text.index(key, cursor)
+        value_start = text.index(":", key_start + len(key)) + 1
+        value = json.dumps(raw_value, separators=(",", ":"))
+        spans[str(field)] = (value_start, value_start + len(value))
+        cursor = value_start + len(value)
+    return CandidateSequence(
+        label=label,
+        text=text,
+        scored_spans=tuple(spans[field] for field in fields),
+    )
+
+
 def native_tool_candidate(
     label: str,
     action: Mapping[str, Any],

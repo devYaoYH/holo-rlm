@@ -114,8 +114,8 @@ def test_cheapest_task_targets_lowest_price(tmp_path: Path) -> None:
     second_request = json.loads((bundle / "requests/0001.json").read_text())
     assert "frame 0" in second_request["messages"][2]["content"][0]["text"]
     assert "<function=desktop_action>" in second_request["messages"][3]["content"]
-    assert "moderate wheel increments near 500" in second_request["messages"][4]["content"]
-    assert "reverse with positive delta_y" in second_request["messages"][4]["content"]
+    assert "moderate scroll_desktop increments" in second_request["messages"][4]["content"]
+    assert "direction='up' for earlier results" in second_request["messages"][4]["content"]
     assert "frame 1" in second_request["messages"][5]["content"][0]["text"]
     historical_images = [
         part["image_url"]["url"]
@@ -221,8 +221,8 @@ def test_repeated_downward_scroll_still_demands_visible_cheapest_click(tmp_path:
     fifth_request = json.loads((bundle / "requests/0004.json").read_text())
     prompt = json.dumps(fifth_request["messages"])
     assert "cheapest hotel's card is visible now" in prompt
-    assert "Do not scroll" in prompt
-    assert "Immediately click View details" in prompt
+    assert "Click View details for only the cheapest hotel" in prompt
+    assert "Click View details for only the cheapest hotel" in prompt
 
 
 def test_model_history_preserves_native_scroll_sign_before_fixture_projection() -> None:
@@ -265,5 +265,5 @@ def test_top_noop_prompts_downward_recovery(tmp_path: Path) -> None:
     second_request = json.loads((bundle / "requests/0001.json").read_text())
     prompt = json.dumps(second_request["messages"])
     assert "reached the top" in prompt
-    assert "negative delta_y near -500" in prompt
-    assert "Do not scroll up again" in prompt
+    assert "direction='down'" in prompt
+    assert "continue inspecting later results below" in prompt

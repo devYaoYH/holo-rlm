@@ -1,0 +1,541 @@
+{
+  "source": {
+    "product": "HoloDesktop CLI",
+    "runtime_version": "0.1.10",
+    "captured_on": "2026-09-22",
+    "method": "Captured the nonterminal model request against a localhost no-action stub; screenshots were not retained.",
+    "official_docs": [
+      "https://hub.hcompany.ai/models-api/build-an-agent/core-concepts",
+      "https://hub.hcompany.ai/models-api/build-an-agent/structured-outputs"
+    ]
+  },
+  "protocol": {
+    "output_format": "structured_outputs",
+    "temperature": 0.8,
+    "enable_thinking": true,
+    "coordinate_space": "normalized_0_1000",
+    "observation_wrapper": "<observation>...</observation>",
+    "max_live_screenshots": 3
+  },
+  "schema": {
+    "$defs": {
+      "Goal": {
+        "properties": {
+          "title": {
+            "description": "Clear, actionable goal description (start with verb)",
+            "title": "Title",
+            "type": "string"
+          },
+          "status": {
+            "default": "todo",
+            "description": "Current status (todo/running/done/failed)",
+            "enum": [
+              "todo",
+              "running",
+              "done",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Goal",
+        "type": "object"
+      },
+      "answer": {
+        "additionalProperties": false,
+        "description": "Provide a final answer",
+        "properties": {
+          "tool_name": {
+            "const": "answer",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "content": {
+            "description": "The answer content",
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_name",
+          "content"
+        ],
+        "title": "answer",
+        "type": "object"
+      },
+      "click_desktop": {
+        "additionalProperties": false,
+        "description": "Click at (x, y) coordinates",
+        "properties": {
+          "tool_name": {
+            "const": "click_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "element": {
+            "description": "Detailed description of the target UI element to click on",
+            "title": "Element",
+            "type": "string"
+          },
+          "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "title": "Y",
+            "type": "integer"
+          },
+          "button": {
+            "default": "left",
+            "description": "Mouse button to click (left, right, middle)",
+            "enum": [
+              "left",
+              "right",
+              "middle"
+            ],
+            "title": "Button",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_name",
+          "element",
+          "x",
+          "y"
+        ],
+        "title": "click_desktop",
+        "type": "object"
+      },
+      "double_click_desktop": {
+        "additionalProperties": false,
+        "description": "Double click at (x, y) coordinates",
+        "properties": {
+          "tool_name": {
+            "const": "double_click_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "element": {
+            "description": "Detailed description of the target UI element to double click on",
+            "title": "Element",
+            "type": "string"
+          },
+          "x": {
+            "description": "The x coordinate as integer in [0, 1000]",
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "The y coordinate as integer in [0, 1000]",
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tool_name",
+          "element",
+          "x",
+          "y"
+        ],
+        "title": "double_click_desktop",
+        "type": "object"
+      },
+      "drag_to_desktop": {
+        "additionalProperties": false,
+        "description": "Drag from current position to specific coordinates",
+        "properties": {
+          "tool_name": {
+            "const": "drag_to_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "element": {
+            "description": "Detailed description of the target UI element to drag to",
+            "title": "Element",
+            "type": "string"
+          },
+          "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tool_name",
+          "element",
+          "x",
+          "y"
+        ],
+        "title": "drag_to_desktop",
+        "type": "object"
+      },
+      "hold_and_tap_key_desktop": {
+        "additionalProperties": false,
+        "description": "Hold a list of key(s) and tap a list of key(s) in sequence. Adapt the keys depending on the operating system.",
+        "properties": {
+          "tool_name": {
+            "const": "hold_and_tap_key_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "hold_keys": {
+            "description": "List of 1 to 3 key(s) to hold down",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Hold Keys",
+            "type": "array"
+          },
+          "tap_keys": {
+            "description": "List of 1 to 5 key(s) to tap in sequence",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "title": "Tap Keys",
+            "type": "array"
+          }
+        },
+        "required": [
+          "tool_name",
+          "hold_keys",
+          "tap_keys"
+        ],
+        "title": "hold_and_tap_key_desktop",
+        "type": "object"
+      },
+      "hotkey_desktop": {
+        "additionalProperties": false,
+        "description": "Press multiple keys simultaneously (max 5). Adapt the keys depending on the operating system",
+        "properties": {
+          "tool_name": {
+            "const": "hotkey_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "keys": {
+            "description": "List of 1 to 5 key(s) to press simultaneously: e.g. ['ctrl', 'alt', 't'] for Ubuntu, ['cmd', 't'] for MacOS...",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "title": "Keys",
+            "type": "array"
+          },
+          "repeat_count": {
+            "default": 1,
+            "description": "Number of times to repeat the hotkey press",
+            "title": "Repeat Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tool_name",
+          "keys"
+        ],
+        "title": "hotkey_desktop",
+        "type": "object"
+      },
+      "key_down_desktop": {
+        "additionalProperties": false,
+        "description": "Press and hold a key on the keyboard",
+        "properties": {
+          "tool_name": {
+            "const": "key_down_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "key": {
+            "description": "Key to press",
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_name",
+          "key"
+        ],
+        "title": "key_down_desktop",
+        "type": "object"
+      },
+      "key_up_desktop": {
+        "additionalProperties": false,
+        "description": "Release a key on the keyboard",
+        "properties": {
+          "tool_name": {
+            "const": "key_up_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "key": {
+            "description": "Key to release",
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_name",
+          "key"
+        ],
+        "title": "key_up_desktop",
+        "type": "object"
+      },
+      "load_skill": {
+        "additionalProperties": false,
+        "description": "Load a skill into the conversation by name.",
+        "properties": {
+          "tool_name": {
+            "const": "load_skill",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Skill name (e.g. 'web-gmail').",
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_name",
+          "name"
+        ],
+        "title": "load_skill",
+        "type": "object"
+      },
+      "move_to_desktop": {
+        "additionalProperties": false,
+        "description": "Move mouse to (x, y) coordinates",
+        "properties": {
+          "tool_name": {
+            "const": "move_to_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "element": {
+            "description": "Detailed description of the target UI element to move the mouse to",
+            "title": "Element",
+            "type": "string"
+          },
+          "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tool_name",
+          "element",
+          "x",
+          "y"
+        ],
+        "title": "move_to_desktop",
+        "type": "object"
+      },
+      "scroll_desktop": {
+        "additionalProperties": false,
+        "description": "Scroll in a given direction, placing the cursor at (x, y) first",
+        "properties": {
+          "tool_name": {
+            "const": "scroll_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "element": {
+            "description": "Detailed description of the target UI element to scroll on",
+            "title": "Element",
+            "type": "string"
+          },
+          "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "title": "Y",
+            "type": "integer"
+          },
+          "direction": {
+            "description": "Direction to scroll in",
+            "enum": [
+              "up",
+              "down",
+              "left",
+              "right"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "scroll_size": {
+            "default": 10,
+            "description": "Scroll size in mouse wheel clicks (at most 100). Choose it carefully considering the OS and the objective of the scroll",
+            "title": "Scroll Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tool_name",
+          "element",
+          "x",
+          "y",
+          "direction"
+        ],
+        "title": "scroll_desktop",
+        "type": "object"
+      },
+      "update_plan": {
+        "additionalProperties": false,
+        "description": "Create and manage your task plan with hierarchical goals. Always provide the complete list of goals every time you call this tool. When creating an initial plan, include all goals with the first one as 'running' and others as 'todo'. When marking progress, include all goals with updated statuses (mark completed as 'done', set next as 'running'). When replanning after blockers, include your done/failed goals plus new goals. Maintain only one goal with status 'running' at any given time.",
+        "properties": {
+          "tool_name": {
+            "const": "update_plan",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "goals": {
+            "description": "Complete list of goals (include done/failed goals when replanning)",
+            "items": {
+              "$ref": "#/$defs/Goal"
+            },
+            "title": "Goals",
+            "type": "array"
+          }
+        },
+        "required": [
+          "tool_name",
+          "goals"
+        ],
+        "title": "update_plan",
+        "type": "object"
+      },
+      "write_desktop": {
+        "additionalProperties": false,
+        "description": "Type text into the currently focused element without clicking first",
+        "properties": {
+          "tool_name": {
+            "const": "write_desktop",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "content": {
+            "description": "Content to write",
+            "title": "Content",
+            "type": "string"
+          },
+          "press_enter": {
+            "default": false,
+            "description": "Whether to press Enter after typing",
+            "title": "Press Enter",
+            "type": "boolean"
+          },
+          "overwrite": {
+            "default": false,
+            "description": "Whether to clear existing text before typing",
+            "title": "Overwrite",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tool_name",
+          "content"
+        ],
+        "title": "write_desktop",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "note": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Task-relevant information extracted from the previous observation. Keep empty if no new info.",
+        "title": "Note"
+      },
+      "thought": {
+        "description": "Reasoning about next steps",
+        "title": "Thought",
+        "type": "string"
+      },
+      "tool_calls": {
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/update_plan"
+            },
+            {
+              "$ref": "#/$defs/write_desktop"
+            },
+            {
+              "$ref": "#/$defs/click_desktop"
+            },
+            {
+              "$ref": "#/$defs/double_click_desktop"
+            },
+            {
+              "$ref": "#/$defs/drag_to_desktop"
+            },
+            {
+              "$ref": "#/$defs/scroll_desktop"
+            },
+            {
+              "$ref": "#/$defs/move_to_desktop"
+            },
+            {
+              "$ref": "#/$defs/key_down_desktop"
+            },
+            {
+              "$ref": "#/$defs/key_up_desktop"
+            },
+            {
+              "$ref": "#/$defs/hotkey_desktop"
+            },
+            {
+              "$ref": "#/$defs/hold_and_tap_key_desktop"
+            },
+            {
+              "$ref": "#/$defs/answer"
+            },
+            {
+              "$ref": "#/$defs/load_skill"
+            }
+          ]
+        },
+        "title": "Tool Calls",
+        "type": "array"
+      }
+    },
+    "required": [
+      "thought",
+      "tool_calls"
+    ],
+    "title": "NoteMultiStructuredOutput",
+    "type": "object"
+  }
+}

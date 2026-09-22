@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 from pathlib import Path
 from typing import Any
 
-from src.demo.backends import MODEL_ACTION_SCHEMA, SYSTEM_PROMPT
+from src.demo.backends import HOLO_DESKTOP_STEP_SCHEMA, SYSTEM_PROMPT
 from src.demo.screenspot import SCREENSPOT_LOCALIZATION_SCHEMA
 
 
@@ -89,8 +88,32 @@ def _hotel_messages(instruction: str, output_dir: Path) -> list[dict[str, Any]]:
         _relative(trajectory / f"{index:04d}-model-input.png", output_dir)
         for index in range(3)
     ]
+    system_prompt = (
+        f"{SYSTEM_PROMPT}\n\n"
+        "The screenshot coordinates use the normalized 0-1000 space declared by the desktop tools. "
+        "The origin is the top-left. Preserve task-relevant facts in note and choose one tool call.\n\n"
+        f"<output_format>\n```json\n{json.dumps(HOLO_DESKTOP_STEP_SCHEMA, separators=(',', ':'))}\n```\n"
+        "</output_format>"
+    )
+    scroll = json.dumps(
+        {
+            "note": None,
+            "thought": "",
+            "tool_calls": [
+                {
+                    "tool_name": "scroll_desktop",
+                    "element": "hotel search results list",
+                    "x": 500,
+                    "y": 500,
+                    "direction": "down",
+                    "scroll_size": 10,
+                }
+            ],
+        },
+        separators=(",", ":"),
+    )
     return [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {
             "role": "user",
             "content": (
@@ -100,41 +123,44 @@ def _hotel_messages(instruction: str, output_dir: Path) -> list[dict[str, Any]]:
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": "Exact hotel-search screenshot for frame 0."},
+                {"type": "text", "text": "<observation>\nExact hotel-search screenshot for frame 0.\n"},
                 {"type": "image_path", "path": images[0]},
+                {"type": "text", "text": "\n</observation>"},
             ],
         },
+        {"role": "assistant", "content": scroll},
         {
-            "role": "assistant",
+            "role": "user",
             "content": (
-                "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n"
-                "<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+                '<tool_output tool="scroll_desktop">\nThe previous action was applied; the current scroll '
+                "offset is 500. Continue inspecting the adjacent results.\n</tool_output>"
             ),
         },
         {
             "role": "user",
-            "content": "The previous scroll was applied. Continue inspecting the adjacent results.",
-        },
-        {
-            "role": "user",
             "content": [
-                {"type": "text", "text": "Exact hotel-search screenshot for frame 1."},
+                {"type": "text", "text": "<observation>\nExact hotel-search screenshot for frame 1.\n"},
                 {"type": "image_path", "path": images[1]},
+                {"type": "text", "text": "\n</observation>"},
             ],
         },
+        {"role": "assistant", "content": scroll},
         {
-            "role": "assistant",
+            "role": "user",
             "content": (
-                "<tool_call>\n<function=desktop_action>\n<parameter=action>\nscroll\n</parameter>\n"
-                "<parameter=delta_y>\n-500\n</parameter>\n</function>\n</tool_call>"
+                '<tool_output tool="scroll_desktop">\nThe previous action was applied; the current scroll '
+                f"offset is 1000. {instruction}\n</tool_output>"
             ),
         },
-        {"role": "user", "content": instruction},
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": "Exact hotel-search screenshot for frame 2; this is the current frame."},
+                {
+                    "type": "text",
+                    "text": "<observation>\nExact hotel-search screenshot for frame 2; this is the current frame.\n",
+                },
                 {"type": "image_path", "path": images[2]},
+                {"type": "text", "text": "\n</observation>"},
             ],
         },
     ]
@@ -151,33 +177,36 @@ def _hotel_case(
     coordinate = _normalized_center(bbox, (1024, 720))
     return {
         "id": case_id,
-        "protocol": "holo_desktop_action_v1",
+        "protocol": "holo_desktop_structured_v0_1_10",
         "request": {
             "model": "Hcompany/Holo-3.1-4B",
             "messages": _hotel_messages(instruction, output_dir),
             "temperature": 0,
             "max_tokens": 256,
             "chat_template_kwargs": {"enable_thinking": False},
-            "tools": [
-                {
-                    "type": "function",
-                    "function": {
-                        "name": "desktop_action",
-                        "parameters": copy.deepcopy(MODEL_ACTION_SCHEMA),
-                    },
-                }
-            ],
-            "tool_choice": {"type": "function", "function": {"name": "desktop_action"}},
+            "structured_outputs": {"json": HOLO_DESKTOP_STEP_SCHEMA},
         },
         "candidates": [
             {
                 "label": "curated_oracle_click",
-                "tool_action": {"action": "click", "x": coordinate[0], "y": coordinate[1]},
+                "tool_action": {
+                    "tool_name": "click_desktop",
+                    "element": instruction,
+                    "x": coordinate[0],
+                    "y": coordinate[1],
+                    "button": "left",
+                },
                 "scored_fields": ["x", "y"],
             },
             {
                 "label": "target_anchor",
-                "tool_action": {"action": "click", "x": 642, "y": 616},
+                "tool_action": {
+                    "tool_name": "click_desktop",
+                    "element": "Lumen Harbor Rooms View details button",
+                    "x": 642,
+                    "y": 616,
+                    "button": "left",
+                },
                 "scored_fields": ["x", "y"],
             },
         ],

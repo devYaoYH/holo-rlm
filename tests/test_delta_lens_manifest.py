@@ -37,18 +37,26 @@ def test_delta_lens_manifest_uses_official_protocols_and_common_hotel_history(tm
         for case in hotel_cases
     ] == [1, 2, 3]
     assert hotel_cases[0]["candidates"][0]["tool_action"] == {
-        "action": "scroll",
-        "delta_y": -500,
+        "tool_name": "scroll_desktop",
+        "element": "hotel search results list",
+        "x": 500,
+        "y": 500,
+        "direction": "down",
+        "scroll_size": 10,
     }
     assert hotel_cases[2]["candidates"][0]["tool_action"] == {
-        "action": "click",
+        "tool_name": "click_desktop",
+        "element": "Lumen Harbor Rooms View details button",
         "x": 642,
         "y": 616,
+        "button": "left",
     }
     assert hotel_cases[2]["candidates"][1]["tool_action"] == {
-        "action": "click",
+        "tool_name": "click_desktop",
+        "element": "visible non-cheapest hotel View details button",
         "x": 642,
         "y": 257,
+        "button": "left",
     }
     assert hotel_cases[2]["case_metadata"]["coordinate_space"] == "normalized_0_1000"
     assert project_model_action(
@@ -57,6 +65,7 @@ def test_delta_lens_manifest_uses_official_protocols_and_common_hotel_history(tm
     ) == {"action": "click", "x": 657, "y": 443}
     assert hotel_cases[2]["case_metadata"]["oracle_click_pixel"] == [657, 443]
     for case in hotel_cases:
-        click = case["request"]["tools"][0]["function"]["parameters"]["oneOf"][0]
-        assert click["properties"]["x"]["maximum"] == 1000
-        assert click["properties"]["y"]["maximum"] == 1000
+        assert "tools" not in case["request"]
+        click = case["request"]["structured_outputs"]["json"]["$defs"]["click_desktop"]
+        assert "[0, 1000]" in click["properties"]["x"]["description"]
+        assert "[0, 1000]" in click["properties"]["y"]["description"]

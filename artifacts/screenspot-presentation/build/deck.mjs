@@ -4,9 +4,9 @@ import { pathToFileURL } from "node:url";
 import { Presentation, PresentationFile } from "@oai/artifact-tool";
 
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
-const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.909.61513/skills/presentations";
+const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v32.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v35.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -92,7 +92,7 @@ const slide7PromptDifference = path.join(
 );
 const hotelFreegenDir = path.join(
   workspaceDir,
-  "artifacts/screenspot-presentation/hotel-freegen-native-v1",
+  "artifacts/screenspot-presentation/hotel-freegen-official-tools-v1",
 );
 const hotelFreegen = JSON.parse(
   await fs.readFile(path.join(hotelFreegenDir, "hotel-freegen-summary.json"), "utf8"),
@@ -117,7 +117,7 @@ const screenMeanFinalDelta = screenFinalLayers.reduce((sum, row) => sum + row.de
 const screenPositiveFinalCount = screenFinalLayers.filter((row) => row.delta_margin_nats > 0).length;
 const screenBoundaryFlips = screenFinalLayers.filter((row) => row.base_margin_nats < 0 && row.tuned_margin_nats > 0).length;
 const hotelFinalDeltas = deltaCases
-  .filter((row) => row.protocol === "holo_desktop_action_v1")
+  .filter((row) => row.protocol.startsWith("holo_desktop_"))
   .map((row) => row.layers.at(-1).delta_margin_nats);
 const screenLayerRows = screenDeltaCases[0].layers.filter((row) => row.layer >= 0);
 const deltaLayerLabels = screenLayerRows.map((row) => `L${row.layer}`);
@@ -209,13 +209,13 @@ function pill(slide, label, left, top, width, fill, color = C.ink) {
   });
 }
 
-function clickMarker(slide, x, y, size = 18) {
-  const halo = 8;
+function clickMarker(slide, x, y, size = 18, color = C.orange) {
+  const halo = 7;
   slide.shapes.add({
     geometry: "ellipse",
     position: { left: x - size, top: y - size, width: size * 2, height: size * 2 },
     fill: "none",
-    line: { fill: C.ink, width: halo },
+    line: { fill: color, width: halo },
   });
   slide.shapes.add({
     geometry: "ellipse",
@@ -223,8 +223,8 @@ function clickMarker(slide, x, y, size = 18) {
     fill: "none",
     line: { fill: C.white, width: 3 },
   });
-  rect(slide, x - size - 6, y - 4, size * 2 + 12, 8, C.ink, true);
-  rect(slide, x - 4, y - size - 6, 8, size * 2 + 12, C.ink, true);
+  rect(slide, x - size - 6, y - 3.5, size * 2 + 12, 7, color, true);
+  rect(slide, x - 3.5, y - size - 6, 7, size * 2 + 12, color, true);
   rect(slide, x - size - 6, y - 1.5, size * 2 + 12, 3, C.white, true);
   rect(slide, x - 1.5, y - size - 6, 3, size * 2 + 12, C.white, true);
 }
@@ -655,15 +655,18 @@ function addHeadMatrix(slide, headCase, left, top, width) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Free multi-turn rollout", "Holo scans all three frames—then clicks the wrong hotel", 8);
-  textBox(slide, "Native 1024×720 · no teacher forcing · final y-coordinate value-norm rollout across retained frames", 64, 118, 950, 24, { fontSize: 15, color: C.muted });
-  pill(slide, "ORANGE = CLICK · GREEN = ORACLE", 948, 115, 268, C.deep, C.white);
+  slideTitle(slide, "Free multi-turn hotel rollout", "Four free actions recover the cheapest hotel and click its button", 8);
+  textBox(slide, "Native 1024×720, no teacher forcing, final y-coordinate value-norm rollout", 64, 118, 900, 24, { fontSize: 15, color: C.muted });
+  pill(slide, "ORANGE = MODEL CLICK, GREEN = ORACLE", 930, 115, 286, C.deep, C.white);
 
-  const labels = ["FRAME 0 · SCROLL −500", "FRAME 1 · SCROLL −500", "FRAME 2 · CLICK (634,225)"];
+  const labels = ["HISTORY 1, OFFSET 500", "HISTORY 2, OFFSET 1000", "CURRENT, OFFSET 1124"];
   const panelLefts = [64, 328, 592];
   for (let i = 0; i < hotelFreegenMaps.length; i += 1) {
-    textBox(slide, labels[i], panelLefts[i], 151, 240, 18, { fontSize: 11, bold: true, color: i === 2 ? C.orange : C.blue, alignment: "center" });
-    await image(slide, hotelFreegenMaps[i], panelLefts[i], 176, 240, 460, {
+    textBox(slide, labels[i], panelLefts[i], 147, 240, 18, { fontSize: 11, bold: true, color: i === 2 ? C.green : C.blue, alignment: "center" });
+    if (i === 2) {
+      textBox(slide, "normalized (650,450), pixel (665,324)", panelLefts[i], 162, 240, 16, { fontSize: 9, bold: true, color: C.muted, alignment: "center" });
+    }
+    await image(slide, hotelFreegenMaps[i], panelLefts[i], 180, 240, 456, {
       alt: `Final click y-coordinate value-norm attribution over retained hotel frame ${i}`,
       fit: "contain",
       geometry: "rect",
@@ -671,27 +674,45 @@ function addHeadMatrix(slide, headCase, left, top, width) {
     });
   }
 
+  const crop = hotelFreegen.visualization_crop_xyxy;
+  const sourceWidth = crop[2] - crop[0];
+  const sourceHeight = crop[3] - crop[1];
+  const panelScale = Math.min(240 / sourceWidth, 456 / sourceHeight);
+  const panelImageLeft = panelLefts[2] + (240 - sourceWidth * panelScale) / 2;
+  const panelImageTop = 180 + (456 - sourceHeight * panelScale) / 2;
+  const markerX = panelImageLeft + (hotelFreegen.final_projected_click[0] - crop[0]) * panelScale;
+  const markerY = panelImageTop + (hotelFreegen.final_projected_click[1] - crop[1]) * panelScale;
+  const oracleBox = hotelFreegen.oracle_button_bbox_pixel;
+  const oracleLeft = panelImageLeft + (oracleBox[0] - crop[0]) * panelScale;
+  const oracleTop = panelImageTop + (oracleBox[1] - crop[1]) * panelScale;
+  const oracleWidth = (oracleBox[2] - oracleBox[0]) * panelScale;
+  const oracleHeight = (oracleBox[3] - oracleBox[1]) * panelScale;
+  rect(slide, oracleLeft, oracleTop, oracleWidth, oracleHeight, "none", true, C.green);
+  clickMarker(slide, markerX, markerY, 7, C.orange);
+
   rect(slide, 864, 151, 352, 485, C.deep, true);
-  pill(slide, "FREE ROLLOUT · FAIL", 890, 177, 170, C.orange, C.white);
-  textBox(slide, "312", 890, 224, 100, 42, { fontSize: 34, bold: true, color: C.orange });
-  textBox(slide, "Juniper selected", 990, 228, 190, 24, { fontSize: 16, bold: true, color: C.white });
-  textBox(slide, "122", 890, 270, 100, 42, { fontSize: 34, bold: true, color: C.green });
-  textBox(slide, "Lumen oracle", 990, 274, 190, 24, { fontSize: 16, bold: true, color: C.white });
-  rect(slide, 890, 326, 300, 1, "#465563");
-  textBox(slide, "FINAL y-TOKEN ROUTING", 890, 346, 250, 18, { fontSize: 11, bold: true, color: C.gold });
+  pill(slide, "FREE ROLLOUT SUCCESS", 890, 174, 188, C.green, C.white);
+  textBox(slide, "SELECTED HOTEL = ORACLE", 890, 220, 200, 18, { fontSize: 10, bold: true, color: C.green });
+  textBox(slide, "Lumen Harbor Rooms", 890, 241, 250, 25, { fontSize: 20, bold: true, color: C.white });
+  textBox(slide, "£122 per night, fixture minimum", 890, 268, 280, 24, { fontSize: 16, bold: true, color: C.green });
+  textBox(slide, "FINAL ACTION", 890, 305, 140, 18, { fontSize: 10, bold: true, color: C.orange });
+  textBox(slide, "click_desktop (650,450)", 890, 326, 260, 25, { fontSize: 18, bold: true, color: C.white });
+  textBox(slide, "pixel (665,324), inside target", 890, 353, 260, 24, { fontSize: 15, bold: true, color: C.orange });
+  rect(slide, 890, 393, 300, 1, "#465563");
+  textBox(slide, "FINAL y-TOKEN ROUTING", 890, 410, 250, 18, { fontSize: 11, bold: true, color: C.gold });
   const frameShares = hotelFreegen.final_y_frame_share.map((value) => value * 100);
   frameShares.forEach((share, index) => {
-    const y = 378 + index * 38;
+    const y = 441 + index * 35;
     textBox(slide, `F${index}`, 890, y, 26, 20, { fontSize: 12, bold: true, color: C.white });
     rect(slide, 922, y + 2, 210, 16, "#465563", true);
     rect(slide, 922, y + 2, 210 * share / 45, 16, index === 2 ? C.orange : C.blue, true);
     textBox(slide, `${share.toFixed(1)}%`, 1140, y - 1, 50, 20, { fontSize: 12, bold: true, color: C.white, alignment: "right" });
   });
-  textBox(slide, "All three frames contribute to the coordinate decision; routing across history is present, but the final action is wrong.", 890, 500, 300, 60, { fontSize: 15, bold: true, color: C.white });
-  rect(slide, 890, 573, 300, 46, "#2A3845", true);
-  textBox(slide, "2/2 earlier-target controls emitted invalid ‘−delta_y’ before action.", 904, 581, 272, 32, { fontSize: 12, color: "#F2BDAF", alignment: "center", verticalAlignment: "middle" });
-  footer(slide, "Official Holo harness/system prompt · normalized 0–1000 click → 649×162 px · no pre-model downsampling");
-  slide.speakerNotes.textFrame.setText("6:00–7:10 — This is a genuine free Holo rollout, not the teacher-forced hotel probe used later in the delta lens. The official harness/system prompt is used unchanged. The model receives three native 1024x720 frames at the 16,777,216-pixel ceiling, each represented as a 22x32 merged-token grid, and generates scroll -500, scroll -500, then click (634,225) in normalized 0-1000 coordinates. That projects to pixel (649,162) and opens Juniper Signal Inn at 312, although Lumen Harbor Rooms at 122 is fully visible in the same final frame. The displayed maps are value-norm rollout for the generated y-coordinate tokens. Their positive mass is distributed 38.1%, 29.0%, and 32.8% across frames 0, 1, and 2, so the sequence is being routed into the action decision. This does not prove semantic understanding, but it localizes the observed failure downstream of simply ignoring the history. Two separate earlier-target recall cases independently emitted an invalid model-native tool argument, minus-delta_y, before taking any action, reinforcing the action-format weakness. Source: artifacts/screenspot-presentation/hotel-freegen-native-v1/hotel-freegen-summary.json and data/remote-results/hotel-freegen-native-20260922.");
+  textBox(slide, `${(frameShares[0] + frameShares[1]).toFixed(1)}% of final y-token image mass remains on the two history frames.`, 890, 547, 300, 45, { fontSize: 13, bold: true, color: C.white });
+  rect(slide, 890, 596, 300, 28, "#2A3845", true);
+  textBox(slide, "4 actions, 3 retained screenshots, 1 correct click", 900, 600, 280, 20, { fontSize: 10, color: "#D5DEE6", alignment: "center", verticalAlignment: "middle" });
+  footer(slide, "Our hotel prompt, official HoloDesktop 0.1.10 tools, normalized 0–1000 coordinates, native resolution");
+  slide.speakerNotes.textFrame.setText("6:00–7:10 — This is a genuine free Holo rollout, not the teacher-forced hotel probe used later in the delta lens. The run uses our revised hotel system prompt and the exact HoloDesktop runtime 0.1.10 structured tool schema captured from the official runtime. Decoding uses temperature 0.8 with thinking enabled. The model receives native 1024x720 screenshots under the 16,777,216-pixel ceiling and the official three-screenshot retention window. It freely emits three scroll_desktop calls with direction down and scroll_size 10, then click_desktop at normalized (650,450). The click projects to pixel (665,324), inside the fixture-defined View details button for Lumen Harbor Rooms at 122, and the fixture records task success. The displayed maps are value-norm rollout for the generated y-coordinate tokens at steps 252 through 254. Their positive image mass is distributed 38.6%, 29.2%, and 32.2% across retained scroll offsets 500, 1000, and 1124. The two history frames therefore carry 67.8% of the final y-token image mass. This is descriptive evidence that earlier visual observations reach action decoding, not proof that attention caused the correct click. The earlier Juniper failure used a custom desktop_action schema, signed delta_y convention, and unbounded screenshot history, so it should not support a model-level action claim. Source: artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/hotel-freegen-summary.json and data/remote-results/hotel-official-tools-native-20260922-rerun.");
 }
 
 // 9 - balanced multi-item layer/head aggregate
@@ -1071,7 +1092,7 @@ const requirements = {
 const fontPolicy = { basis: "design", families: [family] };
 const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v32.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v35.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({

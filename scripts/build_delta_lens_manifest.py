@@ -13,7 +13,7 @@ from PIL import Image
 
 from demo.backends import build_request
 from demo.renderer import hotel_click
-from demo.runner import CHEAPEST_TASK, _native_action_history, cheapest_progress_message
+from demo.runner import CHEAPEST_TASK, cheapest_progress_message
 from demo.screenspot import build_screenspot_request, load_screenspot_sample
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -114,6 +114,13 @@ def _pixel_to_normalized(point: tuple[int, int], size: tuple[int, int]) -> tuple
     return round(point[0] * 1000 / (width - 1)), round(point[1] * 1000 / (height - 1))
 
 
+def _structured_step(tool_call: dict[str, Any]) -> str:
+    return json.dumps(
+        {"note": None, "thought": "", "tool_calls": [tool_call]},
+        separators=(",", ":"),
+    )
+
+
 def _hotel_cases(output_dir: Path) -> list[dict[str, Any]]:
     manifest = json.loads((HOTEL_TRAJECTORY / "manifest.json").read_text())
     config = manifest["fixture"]["scenario_config"]
@@ -127,8 +134,21 @@ def _hotel_cases(output_dir: Path) -> list[dict[str, Any]]:
 
     messages: list[dict[str, Any]] = [{"role": "user", "content": CHEAPEST_TASK}]
     cases: list[dict[str, Any]] = []
-    scroll_native = {"action": "scroll", "delta_y": -500}
-    early_click = {"action": "click", "x": target_click[0], "y": target_click[1]}
+    scroll_native = {
+        "tool_name": "scroll_desktop",
+        "element": "hotel search results list",
+        "x": 500,
+        "y": 500,
+        "direction": "down",
+        "scroll_size": 10,
+    }
+    early_click = {
+        "tool_name": "click_desktop",
+        "element": "cheapest hotel's View details button",
+        "x": target_click[0],
+        "y": target_click[1],
+        "button": "left",
+    }
     for step in range(3):
         frame_path = HOTEL_TRAJECTORY / "frames" / f"{step:04d}-model-input.png"
         with Image.open(frame_path) as opened:
@@ -147,27 +167,35 @@ def _hotel_cases(output_dir: Path) -> list[dict[str, Any]]:
                 {
                     "label": "oracle_scroll_down",
                     "tool_action": scroll_native,
-                    "scored_fields": ["action"],
+                    "scored_fields": ["tool_name"],
                 },
                 {
                     "label": "premature_click",
                     "tool_action": early_click,
-                    "scored_fields": ["action"],
+                    "scored_fields": ["tool_name"],
                 },
             ]
         else:
             candidates = [
                 {
                     "label": "oracle_cheapest_click",
-                    "tool_action": {"action": "click", "x": target_click[0], "y": target_click[1]},
+                    "tool_action": {
+                        "tool_name": "click_desktop",
+                        "element": "Lumen Harbor Rooms View details button",
+                        "x": target_click[0],
+                        "y": target_click[1],
+                        "button": "left",
+                    },
                     "scored_fields": ["x", "y"],
                 },
                 {
                     "label": "visible_noncheapest_click",
                     "tool_action": {
-                        "action": "click",
+                        "tool_name": "click_desktop",
+                        "element": "visible non-cheapest hotel View details button",
                         "x": distractor_click[0],
                         "y": distractor_click[1],
+                        "button": "left",
                     },
                     "scored_fields": ["x", "y"],
                 },
@@ -175,7 +203,7 @@ def _hotel_cases(output_dir: Path) -> list[dict[str, Any]]:
         cases.append(
             {
                 "id": f"hotel_test_0035_large_ui_step_{step}",
-                "protocol": "holo_desktop_action_v1",
+                "protocol": "holo_desktop_structured_v0_1_10",
                 "score_reduction": "mean",
                 "image_min_pixels": 65_536,
                 "image_max_pixels": 16_777_216,
@@ -200,17 +228,18 @@ def _hotel_cases(output_dir: Path) -> list[dict[str, Any]]:
         if step == 2:
             continue
         messages.append(deepcopy(request["messages"][-1]))
-        messages.append({"role": "assistant", "content": _native_action_history(scroll_native)})
+        messages.append({"role": "assistant", "content": _structured_step(scroll_native)})
+        progress = cheapest_progress_message(
+            scroll_y=(step + 1) * 500,
+            action={"action": "scroll", "delta_y": 500},
+            all_results_seen=step == 1,
+            objective_visible=step == 1,
+            no_scroll_movement=False,
+        )
         messages.append(
             {
                 "role": "user",
-                "content": cheapest_progress_message(
-                    scroll_y=(step + 1) * 500,
-                    action={"action": "scroll", "delta_y": 500},
-                    all_results_seen=step == 1,
-                    objective_visible=step == 1,
-                    no_scroll_movement=False,
-                ),
+                "content": f'<tool_output tool="scroll_desktop">\n{progress}\n</tool_output>',
             }
         )
     return cases
@@ -240,7 +269,7 @@ def build_manifest(output: Path) -> dict[str, Any]:
             "model_loading": "sequential",
             "delta_sign": "Holo3.1-4B minus Qwen3.5-4B base",
             "screen_prompt": "H Company's official hcompany_element_localization_v1 image-first protocol",
-            "hotel_prompt": "checked-in Holo desktop-action harness prompt and tool schema",
+            "hotel_prompt": "checked-in hotel prompt with official HoloDesktop 0.1.10 structured tool schema",
             "thinking": False,
             "temperature": 0,
         },

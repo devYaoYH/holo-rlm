@@ -19,11 +19,11 @@ The manifest contains:
 
 The ScreenSpot distractor for `powerpoint_windows_59` is the adjacent matched theme tile from the existing causal intervention. The other four are prior Holo clicks from the same screenshots and therefore support exploratory diagnostics only. Do not describe their margins as pre-registered causal effects.
 
-The hotel history uses native Holo scroll direction. Its common oracle sequence is:
+The hotel history uses the exact HoloDesktop runtime tool schema. Its common oracle sequence is:
 
 ```text
-scroll(delta_y=-500)
-scroll(delta_y=-500)
+scroll_desktop(direction="down", scroll_size=10)
+scroll_desktop(direction="down", scroll_size=10)
 click(x=642, y=616)
 ```
 
