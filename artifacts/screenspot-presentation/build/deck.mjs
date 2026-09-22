@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v52.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v55.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -1199,7 +1199,7 @@ if (false) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Next tests", "The completed cohorts narrow the next experiments", 12);
+  slideTitle(slide, "Next tests", "Completed evidence narrows the next experiments", 12);
   const directions = [
     ["01", "TOKEN GRID VS RESAMPLING", "Hold the visual-token grid fixed while varying blur and resampling, then vary grid size with matched image content.", C.orangeSoft, C.orange],
     ["02", "HELD-OUT CAUSAL GENERALIZATION", "Repeat the Layer 15 clean-state patch on independent screenshots, applications, and layouts with a preregistered paired test.", C.blueSoft, C.blue],
@@ -1227,7 +1227,7 @@ if (false) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.ink;
-  slideTitle(slide, "Takeaways", "Grounding depends on resolution while action readout remains fragile", 13, true);
+  slideTitle(slide, "Key takeaways", "Resolution shapes grounding\nFine-tuning strengthens recoverable action state", 13, true);
   const takeaways = [
     ["01", "Resolution changes grounding", "Only 4 of 36 clicks survive; cohort target mass falls 24× at quarter resolution."],
     ["02", "Attention can outlive the click", "Across reduced-resolution runs, 7 of 29 misses still rank the oracle patch first."],
@@ -1253,16 +1253,16 @@ if (false) {
     textBox(slide, desc, 730, y + 31, 430, 38, { fontSize: 14, color: C.muted });
   });
   rect(slide, 64, 588, 1152, 50, "#202C38", true);
-  textBox(slide, "Current hypothesis: fine-tuning improves action-state formation more clearly than target-directed visual attention", 90, 598, 1098, 28, { fontSize: 19, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
-  footer(slide, "Attention is descriptive; the eight-prompt intervention is causal within one image", true);
-  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the balanced 18-case attribution cohort finds a 24-fold drop in median target-specific mass. Most reduced-resolution misses also lose target localization, but 7 of 29 still place the highest task-specific patch inside the annotated target. In the complete matched hotel case, both checkpoints record €166 as the lowest observed price. Holo terminates with the correct click after two scrolls, while Qwen spends all four actions scrolling. The separately traced Holo replicate carries value-weighted attention across all three retained frames. This one case motivates a stopping and action-readout hypothesis but does not estimate checkpoint accuracy. The causal panel adds a model-comparison result: Holo develops a more recoverable Layer 15 coordinate state than Qwen, but both models rely on the state and no single attention head explains it. The strongest current hypothesis is that fine-tuning improves action-state formation and coordinate extraction more clearly than it improves target-directed visual attention.");
+  textBox(slide, "Working interpretation: fine-tuning improves coordinate readout more clearly than value-weighted target grounding", 90, 598, 1098, 28, { fontSize: 19, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
+  footer(slide, "End of main deck. Attention is descriptive. The eight-prompt intervention is causal within one image.", true);
+  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close the main deck on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the balanced 18-case attribution cohort finds a 24-fold drop in median target-specific mass. Most reduced-resolution misses also lose target localization, but 7 of 29 still place the highest task-specific patch inside the annotated target. In the complete matched hotel case, both checkpoints record €166 as the lowest observed price. Holo terminates with the correct click after two scrolls, while Qwen spends all four actions scrolling. The separately traced Holo replicate carries value-weighted attention across all three retained frames. This one case motivates a stopping and action-readout hypothesis but does not estimate checkpoint accuracy. The causal panel adds the strongest model-comparison evidence: Holo develops a more recoverable Layer 15 coordinate state than Qwen, while both models rely on that state and no single attention head explains the effect. The current hypothesis is that fine-tuning strengthens action-state formation and coordinate extraction more clearly than value-weighted target grounding. Slides A1 and A2 are backup material for methods and benchmark taxonomy.");
 }
 
 // 14 - methods appendix
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Methods appendix", "From generated coordinate tokens back to image patches", 14);
+  slideTitle(slide, "Appendix · definitions", "From generated coordinate tokens back to image patches", "A1");
   textBox(slide, "A attention weights · V value vectors · R rolled-out token influence · M image-patch map for generated x/y value tokens", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
   const blocks = [
     ["1", "VALUE-NORM", "A′ = normalize(A ⊙ ‖V‖₂)", "Down-weight attention paths whose value vectors carry little magnitude", C.orangeSoft, C.orange],
@@ -1295,7 +1295,7 @@ if (false) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Appendix", "Examples for the 12 labeled UI × action cells", 15);
+  slideTitle(slide, "Appendix · benchmark taxonomy", "Examples for the 12 labeled UI × action cells", "A2");
   textBox(slide, "Rows use the benchmark's target-element label; columns use our instruction-verb taxonomy", 64, 118, 1152, 24, { fontSize: 14, color: C.muted });
 
   const labeledFamilies = benchmarkBreakdown.action_family_order.filter((name) => name !== "Other");
@@ -1383,9 +1383,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v52");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v55");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v52.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v55.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
