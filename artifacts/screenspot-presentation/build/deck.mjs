@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v40.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v43.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -62,6 +62,16 @@ const resolutionAblation = JSON.parse(
     path.join(workspaceDir, "artifacts/screenspot-presentation/screenspot-resolution-ablation-v1.json"),
     "utf8",
   ),
+);
+const resolutionSaliencyDir = path.join(
+  workspaceDir,
+  "artifacts/screenspot-presentation/resolution-saliency-pilot-v1",
+);
+const resolutionSaliency = JSON.parse(
+  await fs.readFile(path.join(resolutionSaliencyDir, "summary.json"), "utf8"),
+);
+const resolutionSaliencyMaps = [100, 75, 50, 25].map((scale) =>
+  path.join(resolutionSaliencyDir, `scale-${scale}.png`),
 );
 
 const successRaw = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_59/preview-raw.png");
@@ -617,53 +627,76 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   slide.speakerNotes.textFrame.setText("2:55–3:50 — This is a paired success-retention experiment, not a new unconditional ScreenSpot-Pro accuracy estimate. We froze 36 items that were strict hits in the full native-resolution run: six size-spread targets in each application-by-UI-type stratum across Photoshop, PowerPoint, and VS Code. Every item was rerun in one Holo model process at 100%, 75%, 50%, and 25% of its original width and height using Lanczos downsampling. The official localization prompt, VisualLocalizerOutput schema, temperature zero, thinking-disabled decoding, and normalized 0–1000 coordinates remain fixed. The server stays at image_max_pixels 16777216, so it cannot add a second hidden resize. The same-run native rerun is 36 of 36. Retention is 25 of 36 at 75%, 22 of 36 at 50%, and 4 of 36 at 25% linear resolution. Wilson 95% intervals are 53.1 to 82.0%, 44.9 to 75.2%, and 4.4 to 25.3%. At half resolution, text targets retain 15 of 18 clicks while icon targets retain 7 of 18. Retained targets have about 4.1 times the median normalized area of failures. All 144 completions are valid JSON. The cohort is selected on native success, so use this as evidence of resolution sensitivity, not as the benchmark's full accuracy curve. Sources: artifacts/screenspot-presentation/screenspot-resolution-ablation-v1.json, docs/screenspot-resolution-ablation.md, and benchmarks/resolution_ablation/screenspot_success_retention_v1.json.");
 }
 
-// 6 — next experiment: resolution and attention
+// 6 — resolution and attention pilot
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Next experiment", "Does downsampling erase the target signal before the click fails?", 6);
-  textBox(slide, "Planned paired attribution study on the same frozen ScreenSpot-Pro resolution cohort", 64, 118, 1152, 24, { fontSize: 15, color: C.muted });
+  slideTitle(slide, "Resolution and saliency", "Target-specific attribution falls 130× at quarter resolution", 6);
+  textBox(slide, "Six native-success ScreenSpot-Pro cases · value-norm rollout minus four same-image instruction controls", 64, 118, 1152, 24, { fontSize: 15, color: C.muted });
 
-  textBox(slide, "CONTROLLED INPUTS", 64, 162, 340, 20, { fontSize: 11, bold: true, color: C.blue });
-  const scales = [
-    ["100%", "100% area", C.green],
-    ["75%", "56% area", C.blue],
-    ["50%", "25% area", C.blue],
-    ["25%", "6.25% area", C.orange],
+  const scaleRows = [...resolutionSaliency.summary.scales].sort((a, b) => b.linear_scale - a.linear_scale);
+  const exampleRows = resolutionSaliency.results.filter((row) => row.sample_id === "photoshop_windows_10");
+  const scaleLabels = ["100%", "75%", "50%", "25%"];
+  const panelWidth = 270;
+  for (const [index, row] of scaleRows.entries()) {
+    const left = 64 + index * 288;
+    const example = exampleRows.find((item) => item.linear_scale === row.linear_scale);
+    const accent = example.strict_correct ? C.green : C.orange;
+    textBox(slide, scaleLabels[index], left, 158, 70, 24, { fontSize: 18, bold: true, color: accent });
+    textBox(slide, example.strict_correct ? "HIT" : "MISS", left + 190, 160, 80, 18, { fontSize: 11, bold: true, color: accent, alignment: "right" });
+    await image(slide, resolutionSaliencyMaps[index], left, 188, panelWidth, 170, {
+      alt: `Prompt-differential value-norm attribution at ${scaleLabels[index]} linear resolution`,
+    });
+    textBox(slide, `${(example.metrics.prompt_difference.target_mass * 100).toFixed(example.metrics.prompt_difference.target_mass < 0.01 ? 2 : 1)}% target mass`, left, 366, panelWidth, 20, { fontSize: 12, bold: true, color: accent, alignment: "center" });
+  }
+
+  textBox(slide, "SIX-CASE PILOT", 64, 408, 220, 20, { fontSize: 11, bold: true, color: C.blue });
+  const headers = ["", ...scaleLabels];
+  const values = [
+    headers,
+    ["Strict hits", ...scaleRows.map((row) => `${row.groups.retained.count}/6`)],
+    ["Median target mass", ...scaleRows.map((row) => `${(row.groups.all.median_target_mass * 100).toFixed(2)}%`)],
+    ["Median target lift", ...scaleRows.map((row) => `${row.groups.all.median_target_lift.toFixed(row.linear_scale === 0.25 ? 1 : 0)}×`)],
+    ["Median best-patch rank", ...scaleRows.map((row) => `${row.groups.all.median_best_target_patch_rank}`)],
   ];
-  scales.forEach(([scale, area, accent], index) => {
-    const left = 64 + index * 142;
-    rect(slide, left, 194, 124, 112, C.white, true, C.line);
-    textBox(slide, scale, left, 214, 124, 34, { fontSize: 27, bold: true, color: accent, alignment: "center" });
-    textBox(slide, area, left, 258, 124, 20, { fontSize: 13, color: C.muted, alignment: "center" });
+  const table = slide.tables.add({
+    rows: values.length,
+    columns: values[0].length,
+    left: 64,
+    top: 436,
+    width: 694,
+    height: 196,
+    values,
+    columnWidths: [190, 126, 126, 126, 126],
+    rowHeights: [34, 40, 40, 40, 40],
   });
-  textBox(slide, "Same item, instruction, prompt, coordinate contract, and decoding settings", 64, 324, 550, 42, { fontSize: 16, color: C.muted });
-
-  rect(slide, 650, 162, 566, 204, C.deep, true);
-  textBox(slide, "PRIMARY ATTRIBUTION", 678, 188, 260, 20, { fontSize: 11, bold: true, color: C.gold });
-  textBox(slide, "Value-norm rollout", 678, 224, 480, 30, { fontSize: 25, bold: true, color: C.white });
-  textBox(slide, "minus the mean of four visible same-image alternate instructions", 678, 262, 480, 48, { fontSize: 17, color: "#C4CED7" });
-  textBox(slide, "Compare retained clicks with clicks lost after downsampling", 678, 324, 480, 22, { fontSize: 14, bold: true, color: "#8FE0BF" });
-
-  textBox(slide, "MEASURE", 64, 400, 180, 20, { fontSize: 11, bold: true, color: C.blue });
-  const measures = [
-    ["01", "Target mass and lift", "Does instruction-specific attribution remain concentrated in the annotated box?"],
-    ["02", "Peak distance and patch rank", "Does the strongest patch move away before the generated coordinate drifts?"],
-    ["03", "Retained versus lost clicks", "Which failure mode separates the two groups as resolution falls?"],
-  ];
-  measures.forEach(([num, heading, body], index) => {
-    const left = 64 + index * 384;
-    rect(slide, left, 430, 354, 130, C.white, true, C.line);
-    pill(slide, num, left + 20, 450, 42, index === 2 ? C.orange : C.blue, C.white);
-    textBox(slide, heading, left + 78, 452, 250, 24, { fontSize: 17, bold: true });
-    textBox(slide, body, left + 22, 492, 310, 52, { fontSize: 14, color: C.muted });
+  table.cells.block({ row: 0, column: 0, rowCount: values.length, columnCount: values[0].length }).assign({
+    margins: { left: 10, right: 10, top: 6, bottom: 6 },
   });
+  table.borders.assign({ style: "solid", fill: C.paper, width: 2 });
+  for (let rowIndex = 0; rowIndex < values.length; rowIndex += 1) {
+    for (let columnIndex = 0; columnIndex < values[0].length; columnIndex += 1) {
+      const cell = table.getCell(rowIndex, columnIndex);
+      cell.fill = rowIndex === 0 || columnIndex === 0 ? C.deep : columnIndex === 4 ? C.orangeSoft : C.white;
+      cell.text.style = {
+        typeface: family,
+        fontSize: rowIndex === 0 ? 11 : 13,
+        bold: rowIndex === 0 || columnIndex === 0,
+        color: rowIndex === 0 || columnIndex === 0 ? C.white : columnIndex === 4 ? "#A33D29" : C.ink,
+        alignment: columnIndex === 0 ? "left" : "center",
+        verticalAlignment: "middle",
+        autoFit: "shrinkText",
+      };
+    }
+  }
 
-  rect(slide, 64, 588, 1152, 58, C.deep, true);
-  textBox(slide, "Signal collapses: improve visual encoding", 84, 603, 480, 28, { fontSize: 18, bold: true, color: C.orange, alignment: "center" });
-  textBox(slide, "Signal survives: improve coordinate readout", 696, 603, 480, 28, { fontSize: 18, bold: true, color: "#8FE0BF", alignment: "center" });
-  footer(slide, "Planned experiment · eager-attention rerun required · paired inference at every scale");
-  slide.speakerNotes.textFrame.setText("3:50–4:30 — Use the resolution result to motivate the next mechanistic experiment. Re-run the same frozen items at 100, 75, 50, and 25 percent linear resolution with eager attention enabled. At every scale, capture the target instruction plus four visible same-image alternate instructions. The primary map is value-norm rollout after subtracting the mean control map. Compare target mass, target lift, peak distance, and target-patch rank between retained and lost clicks. If target-specific attribution collapses before the click fails, the bottleneck is visual encoding. If the signal remains localized while coordinates drift, the bottleneck is action readout. The existing one-case pixel-budget pilot points toward the first pattern, but it is not the same intervention and stays in the notes rather than the headline.");
+  rect(slide, 790, 408, 426, 224, C.deep, true);
+  textBox(slide, "WHAT CHANGED", 818, 432, 210, 18, { fontSize: 11, bold: true, color: C.gold });
+  textBox(slide, "Lost clicks usually lose localization", 818, 466, 350, 52, { fontSize: 24, bold: true, color: C.white });
+  textBox(slide, "At 25%, lost cases have 1.1× median target lift versus 38.8× for the one retained click.", 818, 526, 350, 46, { fontSize: 15, color: "#C4CED7" });
+  textBox(slide, "One 50% failure still peaks inside the target, so coordinate readout remains a secondary failure mode.", 818, 580, 350, 40, { fontSize: 14, bold: true, color: "#8FE0BF" });
+  footer(slide, "120 deterministic requests · official localization prompt and 0–1000 contract · eager attention · n=6 mechanistic pilot");
+  slide.speakerNotes.textFrame.setText("3:50–4:30 — This runs the experiment proposed in the previous draft. We selected six native-resolution successes spanning Photoshop, PowerPoint, and VS Code, with icon and text targets represented. Each case runs at 100, 75, 50, and 25 percent linear resolution. At every scale, Holo receives the official localization prompt and VisualLocalizerOutput contract, then the eager-attention harness traces the generated coordinate tokens. The primary attribution is value-norm rollout after subtracting the mean of four visible same-image alternate instructions. Across the six cases, median target-specific mass falls from 5.22 percent at native resolution to 0.04 percent at quarter resolution, about a 129-fold reduction. Median target lift falls from 241.5 to 10.4, and median best-target-patch rank falls from first to twentieth. Strict hits fall from six of six to one of six. The Photoshop sequence illustrates the common pattern: target mass declines from 9.56 to 6.11 to 3.74 to 1.25 percent, and the click fails only at 25 percent. The aggregate split supports visual localization degradation as the dominant failure mode. The evidence is not purely perceptual: one VS Code click fails at 50 percent even though the highest prompt-differential patch remains inside the target. Treat coordinate readout as a secondary failure mode and keep the six-case sample-size caveat explicit. Source: artifacts/screenspot-presentation/resolution-saliency-pilot-v1/summary.json.");
 }
 
 // 7 — native-resolution baseline comparison on a free-generation success
@@ -1098,7 +1131,7 @@ if (false) {
   slide.background.fill = C.paper;
   slideTitle(slide, "Next tests", "Future research directions", 12);
   const directions = [
-    ["01", "DOWNSAMPLED ATTRIBUTION COHORT", "Trace the frozen resolution cohort at every scale and compare target-specific attention for retained and lost clicks.", C.orangeSoft, C.orange],
+    ["01", "FULL RESOLUTION-ATTRIBUTION COHORT", "Scale the six-case pilot to all 36 frozen cases and estimate uncertainty for retained-versus-lost attribution gaps.", C.orangeSoft, C.orange],
     ["02", "INDEPENDENT-IMAGE CAUSAL PANEL", "Repeat matched visual corruptions across applications and layouts, then report paired restoration distributions by item.", C.blueSoft, C.blue],
     ["03", "LONG-HORIZON VISUAL MEMORY", "Remove, shuffle, and patch historical frames to separate context retrieval from final coordinate binding.", C.greenSoft, C.green],
     ["04", "ACTION-READOUT TRAINING", "Target coordinate precision with oracle trajectories and verifiable environment reward while holding out a frozen diagnostic split.", "#F3EBDD", C.gold],
@@ -1117,7 +1150,7 @@ if (false) {
   textBox(slide, "Use attribution to choose causal tests, then evaluate interventions on held-out behavior", 284, 566, 870, 30, { fontSize: 20, bold: true, color: C.white, alignment: "center" });
   textBox(slide, "Heatmaps guide hypotheses; task outcomes determine whether the model improved.", 284, 602, 870, 20, { fontSize: 14, color: "#B9C3CD", alignment: "center" });
   footer(slide, "Scale across items before making a population-level mechanism claim");
-  slide.speakerNotes.textFrame.setText("9:20–10:10 — Four directions follow directly from the evidence. First, trace the existing downsampling cohort to distinguish lost visual signal from coordinate readout failure. Second, repeat the causal panel across independent images and applications. Third, intervene on historical frames to test context retrieval causally. Fourth, train coordinate precision with oracle trajectories and verifiable environment reward while keeping a frozen diagnostic split. Attribution should select hypotheses and intervention sites; behavior remains the evaluation target.");
+  slide.speakerNotes.textFrame.setText("9:20–10:10 — Four directions follow directly from the evidence. First, scale the completed six-case resolution-attribution pilot to all 36 frozen cases and estimate uncertainty for retained-versus-lost attribution gaps. Second, repeat the causal panel across independent images and applications. Third, intervene on historical frames to test context retrieval causally. Fourth, train coordinate precision with oracle trajectories and verifiable environment reward while keeping a frozen diagnostic split. Attribution should select hypotheses and intervention sites; behavior remains the evaluation target.");
 }
 
 // 13 - takeaways
@@ -1126,7 +1159,7 @@ if (false) {
   slide.background.fill = C.ink;
   slideTitle(slide, "Takeaways", "The evidence points to visual resolution and coordinate readout", 13, true);
   const takeaways = [
-    ["01", "Resolution changes grounding", "Only 4 of 36 native-success clicks survive at quarter resolution."],
+    ["01", "Resolution changes grounding", "Only 4 of 36 clicks survive; pilot target mass falls 130× at quarter resolution."],
     ["02", "Attention can outlive the click", "A strict miss still places its task-specific peak inside the annotated target."],
     ["03", "Context reaches later actions", "The successful hotel click draws value-weighted attention from all three retained frames."],
   ];
@@ -1152,7 +1185,7 @@ if (false) {
   rect(slide, 64, 588, 1152, 50, "#202C38", true);
   textBox(slide, "Current hypothesis: fine-tuning improves action-state formation more clearly than target-directed visual attention", 90, 598, 1098, 28, { fontSize: 19, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
   footer(slide, "Attention is descriptive; the eight-prompt intervention is causal within one image", true);
-  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. The strict-miss example shows that target-specific attention may remain aligned when the final coordinate falls outside. The successful hotel rollout shows that evidence from multiple retained frames reaches the final action. The causal panel adds a model-comparison result: Holo develops a more recoverable Layer 15 coordinate state than Qwen, but both models rely on the state and no single head explains it. The strongest current hypothesis is that fine-tuning improves action-state formation and coordinate extraction more clearly than it improves target-directed visual attention.");
+  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the six-case attribution pilot finds a roughly 130-fold drop in median target-specific mass. The strict-miss examples show that target-specific attention can remain aligned when the final coordinate falls outside, so readout remains a secondary failure mode. The successful hotel rollout shows that evidence from multiple retained frames reaches the final action. The causal panel adds a model-comparison result: Holo develops a more recoverable Layer 15 coordinate state than Qwen, but both models rely on the state and no single head explains it. The strongest current hypothesis is that fine-tuning improves action-state formation and coordinate extraction more clearly than it improves target-directed visual attention.");
 }
 
 // 14 - methods appendix
@@ -1275,14 +1308,14 @@ if (false) {
 
 const requirements = {
   explicitTotalSlideCount: 15,
-  requiredNativeTableOwnerSlides: [3, 15],
+  requiredNativeTableOwnerSlides: [3, 6, 15],
   requiredNativeChartOwnerSlides: [3, 4, 5],
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v40");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v43");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v40.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v43.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
@@ -1298,9 +1331,10 @@ const result = await finalizePresentation({
     "--validate-bullet-geometry",
     "--validate-heading-fit",
     "--require-native-table-slide", "3",
+    "--require-native-table-slide", "6",
     "--require-native-table-slide", "15",
   ],
-  requiredNativeTableOwnerSlides: [3, 15],
+  requiredNativeTableOwnerSlides: [3, 6, 15],
   requiredNativeChartOwnerSlides: [3, 4, 5],
   fontPolicy,
   verifyArtifactToolImport: true,

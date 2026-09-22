@@ -1,0 +1,1976 @@
+{
+  "case_count": 6,
+  "case_offset": 0,
+  "experiment": "screenspot_resolution_saliency_pilot_v1",
+  "interpolation": "PIL.Image.Resampling.LANCZOS",
+  "linear_scales": [
+    1.0,
+    0.75,
+    0.5,
+    0.25
+  ],
+  "manifest": "/workspace/holo-rlm-saliency-9444a6a/benchmarks/attention_attribution/screenspot_resolution_saliency_v1.json",
+  "manifest_sha256": "16426df52f31597485b5a6b53590f97ec9751afabdc1455490fcc45f73461765",
+  "model_id": "Hcompany/Holo-3.1-4B",
+  "prompt_count_per_condition": 5,
+  "request_count": 120,
+  "results": [
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_10/scale-1/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        373.0,
+        264.0,
+        480.0,
+        286.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 166,
+          "y": 188
+        },
+        "pixel": {
+          "x": 424.96,
+          "y": 270.72
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2560,
+        1440
+      ],
+      "linear_scale": 1.0,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6593590259603872,
+          "peak_distance_diagonal": 0.009079798414244857,
+          "peak_inside_target": true,
+          "peak_patch": [
+            12,
+            8
+          ],
+          "positive_mass": 0.3180555458802701,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 149.63530177163196,
+          "target_mass": 0.09555162227930274,
+          "target_patch_count": 4
+        },
+        "raw": {
+          "best_target_patch_rank": 3,
+          "normalized_entropy": 0.7224853870868504,
+          "peak_distance_diagonal": 0.16525120885209024,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999419075891,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 48.79943355830937,
+          "target_mass": 0.03116153065219733,
+          "target_patch_count": 4
+        }
+      },
+      "sample_id": "photoshop_windows_10",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.986681342124939,
+        "minimum_leave_one_out_cosine": 0.9768239855766296
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T103631Z-212462c7de28",
+          "trace-20260922T103647Z-1f2140209238",
+          "trace-20260922T103703Z-fac2e8803f40",
+          "trace-20260922T103719Z-f9b33618bad7"
+        ],
+        "target": "trace-20260922T103615Z-8f8286e4f014"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_10/scale-0p75/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        279.75,
+        198.0,
+        360.0,
+        214.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 164,
+          "y": 190
+        },
+        "pixel": {
+          "x": 314.88,
+          "y": 205.2
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1920,
+        1080
+      ],
+      "linear_scale": 0.75,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6518075532033926,
+          "peak_distance_diagonal": 0.0072070819478544145,
+          "peak_inside_target": true,
+          "peak_patch": [
+            9,
+            6
+          ],
+          "positive_mass": 0.297922480764214,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 95.6079406410165,
+          "target_mass": 0.061051728588583126,
+          "target_patch_count": 4
+        },
+        "raw": {
+          "best_target_patch_rank": 5,
+          "normalized_entropy": 0.7201496448283035,
+          "peak_distance_diagonal": 0.16277596255618684,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999558017407,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 29.24814449710919,
+          "target_mass": 0.018676793659449607,
+          "target_patch_count": 4
+        }
+      },
+      "sample_id": "photoshop_windows_10",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9850677847862244,
+        "minimum_leave_one_out_cosine": 0.9792489409446716
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T104639Z-52e4313b6b88",
+          "trace-20260922T104646Z-a5bf03c39544",
+          "trace-20260922T104653Z-0e03b6ccd8d8",
+          "trace-20260922T104700Z-a88935c90bee"
+        ],
+        "target": "trace-20260922T104632Z-e19459c438d2"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_10/scale-0p5/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        186.5,
+        132.0,
+        240.0,
+        143.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 162,
+          "y": 190
+        },
+        "pixel": {
+          "x": 207.36,
+          "y": 136.8
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1280,
+        720
+      ],
+      "linear_scale": 0.5,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6432441890282242,
+          "peak_distance_diagonal": 0.007553858863467443,
+          "peak_inside_target": true,
+          "peak_patch": [
+            6,
+            4
+          ],
+          "positive_mass": 0.28988685970989536,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 58.549519578424366,
+          "target_mass": 0.03738757842003335,
+          "target_patch_count": 3
+        },
+        "raw": {
+          "best_target_patch_rank": 6,
+          "normalized_entropy": 0.7318565478935567,
+          "peak_distance_diagonal": 0.15761691573218412,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000506197466,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 17.484742566608972,
+          "target_mass": 0.011165116102918163,
+          "target_patch_count": 3
+        }
+      },
+      "sample_id": "photoshop_windows_10",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9851329922676086,
+        "minimum_leave_one_out_cosine": 0.9749228954315186
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T104723Z-0700165679d8",
+          "trace-20260922T104726Z-3ec6803dfe6b",
+          "trace-20260922T104729Z-d55295043222",
+          "trace-20260922T104732Z-c1cbd0dd5503"
+        ],
+        "target": "trace-20260922T104720Z-79f8ac228d46"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_10/scale-0p25/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        93.25,
+        66.0,
+        120.0,
+        71.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 100,
+          "y": 200
+        },
+        "pixel": {
+          "x": 64.0,
+          "y": 72.0
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        640,
+        360
+      ],
+      "linear_scale": 0.25,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 3,
+          "normalized_entropy": 0.606386322199221,
+          "peak_distance_diagonal": 0.027755104870763075,
+          "peak_inside_target": false,
+          "peak_patch": [
+            3,
+            1
+          ],
+          "positive_mass": 0.12328362981497776,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 19.639481287502935,
+          "target_mass": 0.012541053317811933,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 12,
+          "normalized_entropy": 0.7055023956545833,
+          "peak_distance_diagonal": 0.14255264606167936,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.000000032691787,
+          "target_area_fraction": 0.0006385633680555555,
+          "target_lift": 3.8799068013778837,
+          "target_mass": 0.0024775663548295187,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "photoshop_windows_10",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9642758518457413,
+        "minimum_leave_one_out_cosine": 0.9132876992225647
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T104741Z-cc019c00e5bf",
+          "trace-20260922T104742Z-655838725c6d",
+          "trace-20260922T104744Z-eedb65caf602",
+          "trace-20260922T104746Z-a6f376fa8daf"
+        ],
+        "target": "trace-20260922T104739Z-0293f73ced98"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_21/scale-1/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        2488.0,
+        1375.0,
+        2513.0,
+        1397.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 976,
+          "y": 963
+        },
+        "pixel": {
+          "x": 2498.56,
+          "y": 1386.72
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2560,
+        1440
+      ],
+      "linear_scale": 1.0,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 3,
+          "normalized_entropy": 0.7253594097528479,
+          "peak_distance_diagonal": 0.46666415867300665,
+          "peak_inside_target": false,
+          "peak_patch": [
+            79,
+            0
+          ],
+          "positive_mass": 0.3881652170281882,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 51.30164343229652,
+          "target_mass": 0.007654053788998234,
+          "target_patch_count": 4
+        },
+        "raw": {
+          "best_target_patch_rank": 5,
+          "normalized_entropy": 0.7776435976576732,
+          "peak_distance_diagonal": 0.965947010400138,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000380402412,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 20.245466814776403,
+          "target_mass": 0.0030205638965188322,
+          "target_patch_count": 4
+        }
+      },
+      "sample_id": "photoshop_windows_21",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9908395707607269,
+        "minimum_leave_one_out_cosine": 0.9840243458747864
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105007Z-6d8070e5e775",
+          "trace-20260922T105021Z-1fae8fb296ad",
+          "trace-20260922T105036Z-bbc72ebba745",
+          "trace-20260922T105051Z-b55b8b4d32ee"
+        ],
+        "target": "trace-20260922T104952Z-ebfad8ef5bd3"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_21/scale-0p75/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        1866.0,
+        1031.25,
+        1884.75,
+        1047.75
+      ],
+      "click": {
+        "normalized": {
+          "x": 926,
+          "y": 356
+        },
+        "pixel": {
+          "x": 1777.92,
+          "y": 384.48
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1920,
+        1080
+      ],
+      "linear_scale": 0.75,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 5,
+          "normalized_entropy": 0.7161512717631588,
+          "peak_distance_diagonal": 0.3093594956764387,
+          "peak_inside_target": false,
+          "peak_patch": [
+            55,
+            11
+          ],
+          "positive_mass": 0.3598396005623954,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 39.971224620819385,
+          "target_mass": 0.005963588742798031,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 17,
+          "normalized_entropy": 0.7762129369905849,
+          "peak_distance_diagonal": 0.9635061739788832,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999753781026,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 14.59662356031977,
+          "target_mass": 0.002177773154887119,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "photoshop_windows_21",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.989794984459877,
+        "minimum_leave_one_out_cosine": 0.9839192032814026
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105211Z-4576963b76f4",
+          "trace-20260922T105217Z-87521e6ccc4f",
+          "trace-20260922T105223Z-5e242c325212",
+          "trace-20260922T105229Z-56848cb7c300"
+        ],
+        "target": "trace-20260922T105204Z-5262a10bcb70"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_21/scale-0p5/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        1244.0,
+        687.5,
+        1256.5,
+        698.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 883,
+          "y": 396
+        },
+        "pixel": {
+          "x": 1130.24,
+          "y": 285.12
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1280,
+        720
+      ],
+      "linear_scale": 0.5,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 491,
+          "normalized_entropy": 0.7089800886096966,
+          "peak_distance_diagonal": 0.3098455484628028,
+          "peak_inside_target": false,
+          "peak_patch": [
+            36,
+            7
+          ],
+          "positive_mass": 0.3505783050027276,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 0.0,
+          "target_mass": 0.0,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 319,
+          "normalized_entropy": 0.7832588960252537,
+          "peak_distance_diagonal": 0.9584297805468952,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000167060534,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 0.2628258650986782,
+          "target_mass": 3.921284337138483e-05,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "photoshop_windows_21",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9821344614028931,
+        "minimum_leave_one_out_cosine": 0.9574881792068481
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105247Z-479331e3a807",
+          "trace-20260922T105249Z-2581c19769f0",
+          "trace-20260922T105252Z-38f451a744b3",
+          "trace-20260922T105255Z-15d96483251a"
+        ],
+        "target": "trace-20260922T105244Z-96ec566bca7c"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/photoshop_windows_21/scale-0p25/contrast/analysis.json",
+      "application": "photoshop",
+      "bbox": [
+        622.0,
+        343.75,
+        628.25,
+        349.25
+      ],
+      "click": {
+        "normalized": {
+          "x": 986,
+          "y": 48
+        },
+        "pixel": {
+          "x": 631.04,
+          "y": 17.28
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        640,
+        360
+      ],
+      "linear_scale": 0.25,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 44,
+          "normalized_entropy": 0.6558222112282821,
+          "peak_distance_diagonal": 0.4582561210883204,
+          "peak_inside_target": false,
+          "peak_patch": [
+            17,
+            0
+          ],
+          "positive_mass": 0.2679233084381849,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 0.4782271764094916,
+          "target_mass": 7.135008328592133e-05,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 49,
+          "normalized_entropy": 0.74956996272207,
+          "peak_distance_diagonal": 0.9435310795274319,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999615638444,
+          "target_area_fraction": 0.00014919704861111112,
+          "target_lift": 0.8705820570973339,
+          "target_mass": 0.00012988827349271205,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "photoshop_windows_21",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9973496645689011,
+        "minimum_leave_one_out_cosine": 0.9938768148422241
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105301Z-7abc7d092825",
+          "trace-20260922T105303Z-d826fe5b04d6",
+          "trace-20260922T105304Z-60afb581206f",
+          "trace-20260922T105306Z-d7f4d2179b94"
+        ],
+        "target": "trace-20260922T105300Z-50e9291d9320"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_12/scale-1/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        1962.0,
+        1291.0,
+        1974.0,
+        1301.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 683,
+          "y": 720
+        },
+        "pixel": {
+          "x": 1967.04,
+          "y": 1296.0
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2880,
+        1800
+      ],
+      "linear_scale": 1.0,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6960037366225638,
+          "peak_distance_diagonal": 0.0017035680214387736,
+          "peak_inside_target": true,
+          "peak_patch": [
+            61,
+            40
+          ],
+          "positive_mass": 0.41187916639137256,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 210.7454726543409,
+          "target_mass": 0.004878367422554187,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 4,
+          "normalized_entropy": 0.7828602792658399,
+          "peak_distance_diagonal": 0.6872928348991139,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000227509105,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 87.14038635723479,
+          "target_mass": 0.0020171385730841387,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "powerpoint_windows_12",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.983867883682251,
+        "minimum_leave_one_out_cosine": 0.9739357829093933
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105336Z-100ab6bc9cc7",
+          "trace-20260922T105402Z-33a63b2c694b",
+          "trace-20260922T105430Z-140ba8fcaafc",
+          "trace-20260922T105457Z-3bb39d398a2a"
+        ],
+        "target": "trace-20260922T105310Z-cd44911becf7"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_12/scale-0p75/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        1471.5,
+        968.25,
+        1480.5,
+        975.75
+      ],
+      "click": {
+        "normalized": {
+          "x": 680,
+          "y": 719
+        },
+        "pixel": {
+          "x": 1468.8,
+          "y": 970.65
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2160,
+        1350
+      ],
+      "linear_scale": 0.75,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 2,
+          "normalized_entropy": 0.6816615192436523,
+          "peak_distance_diagonal": 0.012493385668883241,
+          "peak_inside_target": false,
+          "peak_patch": [
+            45,
+            30
+          ],
+          "positive_mass": 0.4140171871332541,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 131.4830053082949,
+          "target_mass": 0.0030435880858401595,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 4,
+          "normalized_entropy": 0.7817264825465385,
+          "peak_distance_diagonal": 0.6851534647454001,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.000000098852297,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 54.6897030054908,
+          "target_mass": 0.001265965347349324,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "powerpoint_windows_12",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9795826226472855,
+        "minimum_leave_one_out_cosine": 0.9723930358886719
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105643Z-4d966c858da1",
+          "trace-20260922T105654Z-434f334ba184",
+          "trace-20260922T105704Z-5142b87b7d4f",
+          "trace-20260922T105715Z-3edbc5b300c5"
+        ],
+        "target": "trace-20260922T105633Z-66d9171b4aeb"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_12/scale-0p5/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        981.0,
+        645.5,
+        987.0,
+        650.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 718,
+          "y": 718
+        },
+        "pixel": {
+          "x": 1033.92,
+          "y": 646.2
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1440,
+        900
+      ],
+      "linear_scale": 0.5,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 8,
+          "normalized_entropy": 0.7103583753772943,
+          "peak_distance_diagonal": 0.033599817406303294,
+          "peak_inside_target": false,
+          "peak_patch": [
+            32,
+            20
+          ],
+          "positive_mass": 0.37542058191206706,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 18.82433304975873,
+          "target_mass": 0.00043574845022589657,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 33,
+          "normalized_entropy": 0.8173800164156487,
+          "peak_distance_diagonal": 0.6807597261543129,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999948495315,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 7.315454390325083,
+          "target_mass": 0.0001693392219982658,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "powerpoint_windows_12",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9902905225753784,
+        "minimum_leave_one_out_cosine": 0.9888117909431458
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105745Z-7c2ec69644e4",
+          "trace-20260922T105749Z-ac8663f60c28",
+          "trace-20260922T105753Z-9247aad6d7d1",
+          "trace-20260922T105756Z-0b15276a7c3e"
+        ],
+        "target": "trace-20260922T105741Z-caea0f854161"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_12/scale-0p25/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        490.5,
+        322.75,
+        493.5,
+        325.25
+      ],
+      "click": {
+        "normalized": {
+          "x": 708,
+          "y": 708
+        },
+        "pixel": {
+          "x": 509.76,
+          "y": 318.6
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        720,
+        450
+      ],
+      "linear_scale": 0.25,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 2,
+          "normalized_entropy": 0.649137347216246,
+          "peak_distance_diagonal": 0.02838444438472713,
+          "peak_inside_target": false,
+          "peak_patch": [
+            15,
+            9
+          ],
+          "positive_mass": 0.34289463208187954,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 28.04976321725501,
+          "target_mass": 0.0006493000744734955,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 3,
+          "normalized_entropy": 0.8259760549141872,
+          "peak_distance_diagonal": 0.6673425158429572,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999710180418,
+          "target_area_fraction": 2.3148148148148147e-05,
+          "target_lift": 9.939218406844853,
+          "target_mass": 0.00023007450015844565,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "powerpoint_windows_12",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9933743923902512,
+        "minimum_leave_one_out_cosine": 0.9819893836975098
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105808Z-5b5b975817c0",
+          "trace-20260922T105809Z-2fd1f83ef566",
+          "trace-20260922T105811Z-4b5c3988d4f9",
+          "trace-20260922T105813Z-1a9605d2e816"
+        ],
+        "target": "trace-20260922T105806Z-c9d0b237fb4f"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_45/scale-1/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        688.0,
+        261.0,
+        712.0,
+        286.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 243,
+          "y": 154
+        },
+        "pixel": {
+          "x": 699.84,
+          "y": 277.2
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2880,
+        1800
+      ],
+      "linear_scale": 1.0,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.5926470978364878,
+          "peak_distance_diagonal": 0.0035343276345035464,
+          "peak_inside_target": true,
+          "peak_patch": [
+            21,
+            8
+          ],
+          "positive_mass": 0.33929809270814815,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 542.3874105864779,
+          "target_mass": 0.06277632066973124,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.7038378109443679,
+          "peak_distance_diagonal": 0.0035343276345035464,
+          "peak_inside_target": true,
+          "peak_patch": [
+            21,
+            8
+          ],
+          "positive_mass": 0.999999953501856,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 184.78297746336094,
+          "target_mass": 0.021386918687888997,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "powerpoint_windows_45",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9844886362552643,
+        "minimum_leave_one_out_cosine": 0.9775829911231995
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T105846Z-d6aed126efe7",
+          "trace-20260922T105913Z-7ac88dd9c4df",
+          "trace-20260922T105940Z-691268f10809",
+          "trace-20260922T110008Z-bbbf18ac6b7a"
+        ],
+        "target": "trace-20260922T105819Z-d2d667ef0b02"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_45/scale-0p75/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        516.0,
+        195.75,
+        534.0,
+        214.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 242,
+          "y": 153
+        },
+        "pixel": {
+          "x": 522.72,
+          "y": 206.55
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2160,
+        1350
+      ],
+      "linear_scale": 0.75,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.5921216756945236,
+          "peak_distance_diagonal": 0.0015329039751526574,
+          "peak_inside_target": true,
+          "peak_patch": [
+            16,
+            6
+          ],
+          "positive_mass": 0.3291148808385458,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 316.5248030445363,
+          "target_mass": 0.036634815167191706,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 3,
+          "normalized_entropy": 0.7109850320703659,
+          "peak_distance_diagonal": 0.21321097986867948,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000510112983,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 104.60658487527371,
+          "target_mass": 0.012107243619823347,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "powerpoint_windows_45",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9784767478704453,
+        "minimum_leave_one_out_cosine": 0.972994327545166
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110216Z-779e479ebb1b",
+          "trace-20260922T110226Z-d9dfbfaf85c5",
+          "trace-20260922T110237Z-7300d9923641",
+          "trace-20260922T110248Z-cefe356cc616"
+        ],
+        "target": "trace-20260922T110205Z-18389cfc5310"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_45/scale-0p5/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        344.0,
+        130.5,
+        356.0,
+        143.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 242,
+          "y": 151
+        },
+        "pixel": {
+          "x": 348.48,
+          "y": 135.9
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1440,
+        900
+      ],
+      "linear_scale": 0.5,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 2,
+          "normalized_entropy": 0.6242643472828204,
+          "peak_distance_diagonal": 0.4212091436625996,
+          "peak_inside_target": false,
+          "peak_patch": [
+            11,
+            26
+          ],
+          "positive_mass": 0.28064441270430507,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 33.24793669878882,
+          "target_mass": 0.0038481408216190765,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 6,
+          "normalized_entropy": 0.7389381794609658,
+          "peak_distance_diagonal": 0.20913335165502123,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000098085593,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 10.259734952771945,
+          "target_mass": 0.0011874693232374937,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "powerpoint_windows_45",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9895443916320801,
+        "minimum_leave_one_out_cosine": 0.9801633358001709
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110321Z-a733de61467c",
+          "trace-20260922T110325Z-192db7ec005b",
+          "trace-20260922T110328Z-4eb388a97e84",
+          "trace-20260922T110332Z-5f6f5ad1ad97"
+        ],
+        "target": "trace-20260922T110317Z-9a5014010350"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/powerpoint_windows_45/scale-0p25/contrast/analysis.json",
+      "application": "powerpoint",
+      "bbox": [
+        172.0,
+        65.25,
+        178.0,
+        71.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 220,
+          "y": 138
+        },
+        "pixel": {
+          "x": 158.4,
+          "y": 62.1
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        720,
+        450
+      ],
+      "linear_scale": 0.25,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 37,
+          "normalized_entropy": 0.47045684859267906,
+          "peak_distance_diagonal": 0.024464139169388627,
+          "peak_inside_target": false,
+          "peak_patch": [
+            5,
+            1
+          ],
+          "positive_mass": 0.13154951313299534,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 0.7575180372141808,
+          "target_mass": 8.76756987516413e-05,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 56,
+          "normalized_entropy": 0.712025502380041,
+          "peak_distance_diagonal": 0.1967313683955744,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000369509507,
+          "target_area_fraction": 0.00011574074074074075,
+          "target_lift": 0.7936221915412875,
+          "target_mass": 9.185442031727865e-05,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "powerpoint_windows_45",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9982979148626328,
+        "minimum_leave_one_out_cosine": 0.9973632097244263
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110345Z-9797edc01421",
+          "trace-20260922T110346Z-7ac314b37ed6",
+          "trace-20260922T110348Z-735072b13971",
+          "trace-20260922T110349Z-b628532bd41d"
+        ],
+        "target": "trace-20260922T110343Z-7100e1134eff"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_27/scale-1/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        2479.0,
+        123.0,
+        2504.0,
+        149.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 972,
+          "y": 80
+        },
+        "pixel": {
+          "x": 2488.32,
+          "y": 133.12
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2560,
+        1664
+      ],
+      "linear_scale": 1.0,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.5225447106086937,
+          "peak_distance_diagonal": 0.004588161854022138,
+          "peak_inside_target": true,
+          "peak_patch": [
+            77,
+            4
+          ],
+          "positive_mass": 0.34914976429524813,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 272.31451869599334,
+          "target_mass": 0.04155189799438375,
+          "target_patch_count": 4
+        },
+        "raw": {
+          "best_target_patch_rank": 3,
+          "normalized_entropy": 0.6752674949762614,
+          "peak_distance_diagonal": 0.8117204520708113,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000058767284,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 98.4052953599522,
+          "target_mass": 0.015015456445305208,
+          "target_patch_count": 4
+        }
+      },
+      "sample_id": "vscode_macos_27",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9927971363067627,
+        "minimum_leave_one_out_cosine": 0.990704357624054
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110413Z-719a702f384a",
+          "trace-20260922T110431Z-c68acbbab6ae",
+          "trace-20260922T110450Z-e38106ce2b17",
+          "trace-20260922T110508Z-b3a441669b99"
+        ],
+        "target": "trace-20260922T110354Z-2e26bdafca97"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_27/scale-0p75/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        1859.25,
+        92.25,
+        1878.0,
+        111.75
+      ],
+      "click": {
+        "normalized": {
+          "x": 971,
+          "y": 80
+        },
+        "pixel": {
+          "x": 1864.32,
+          "y": 99.84
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1920,
+        1248
+      ],
+      "linear_scale": 0.75,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.5178090211226117,
+          "peak_distance_diagonal": 0.004608896485749779,
+          "peak_inside_target": true,
+          "peak_patch": [
+            58,
+            3
+          ],
+          "positive_mass": 0.3573785289705711,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 310.9160953145814,
+          "target_mass": 0.04744203114541342,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6794548083210351,
+          "peak_distance_diagonal": 0.004608896485749779,
+          "peak_inside_target": true,
+          "peak_patch": [
+            58,
+            3
+          ],
+          "positive_mass": 1.0000001927887467,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 114.14699480958511,
+          "target_mass": 0.017417449159177416,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "vscode_macos_27",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9954359233379364,
+        "minimum_leave_one_out_cosine": 0.9943081140518188
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110616Z-cf40ac7def3f",
+          "trace-20260922T110624Z-150702c92403",
+          "trace-20260922T110632Z-7e01c3516c28",
+          "trace-20260922T110640Z-03d491efc963"
+        ],
+        "target": "trace-20260922T110609Z-e035737bbb98"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_27/scale-0p5/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        1239.5,
+        61.5,
+        1252.0,
+        74.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 971,
+          "y": 81
+        },
+        "pixel": {
+          "x": 1242.88,
+          "y": 67.392
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1280,
+        832
+      ],
+      "linear_scale": 0.5,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.5102051476413398,
+          "peak_distance_diagonal": 0.011954371873036426,
+          "peak_inside_target": true,
+          "peak_patch": [
+            38,
+            2
+          ],
+          "positive_mass": 0.3346532732874721,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 128.61108117517273,
+          "target_mass": 0.01962449358752025,
+          "target_patch_count": 4
+        },
+        "raw": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6818980111592764,
+          "peak_distance_diagonal": 0.011954371873036426,
+          "peak_inside_target": true,
+          "peak_patch": [
+            38,
+            2
+          ],
+          "positive_mass": 1.0000000564365337,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 45.35273556458097,
+          "target_mass": 0.006920278253872828,
+          "target_patch_count": 4
+        }
+      },
+      "sample_id": "vscode_macos_27",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9952966272830963,
+        "minimum_leave_one_out_cosine": 0.9936500787734985
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110704Z-85caab8cee55",
+          "trace-20260922T110707Z-4258a788b007",
+          "trace-20260922T110710Z-a9f2f3ea98de",
+          "trace-20260922T110713Z-f8f6622ee8a0"
+        ],
+        "target": "trace-20260922T110701Z-f1d4bd7d7a88"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_27/scale-0p25/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        619.75,
+        30.75,
+        626.0,
+        37.25
+      ],
+      "click": {
+        "normalized": {
+          "x": 978,
+          "y": 77
+        },
+        "pixel": {
+          "x": 625.92,
+          "y": 32.032
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        640,
+        416
+      ],
+      "linear_scale": 0.25,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.5600479617164172,
+          "peak_distance_diagonal": 0.01840007507024413,
+          "peak_inside_target": true,
+          "peak_patch": [
+            19,
+            1
+          ],
+          "positive_mass": 0.272627731218563,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 38.83819715283919,
+          "target_mass": 0.005926238579229613,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 5,
+          "normalized_entropy": 0.6970023043421665,
+          "peak_distance_diagonal": 0.7953972432298433,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999366864358,
+          "target_area_fraction": 0.000152587890625,
+          "target_lift": 12.613904604244777,
+          "target_mass": 0.0019247290961066858,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "vscode_macos_27",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9990163594484329,
+        "minimum_leave_one_out_cosine": 0.998807966709137
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110722Z-e85405dd1704",
+          "trace-20260922T110724Z-f356807ff563",
+          "trace-20260922T110725Z-1f62b7a02669",
+          "trace-20260922T110727Z-055712cbcc25"
+        ],
+        "target": "trace-20260922T110721Z-0671716bcbf5"
+      },
+      "ui_type": "icon"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_34/scale-1/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        2768.0,
+        851.0,
+        2813.0,
+        869.0
+      ],
+      "click": {
+        "normalized": {
+          "x": 933,
+          "y": 460
+        },
+        "pixel": {
+          "x": 2791.536,
+          "y": 860.2
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2992,
+        1870
+      ],
+      "linear_scale": 1.0,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6253522088418355,
+          "peak_distance_diagonal": 0.0022043179803793085,
+          "peak_inside_target": true,
+          "peak_patch": [
+            87,
+            26
+          ],
+          "positive_mass": 0.2762779980642449,
+          "target_area_fraction": 0.00014477108295919244,
+          "target_lift": 506.00146986972214,
+          "target_mass": 0.07325438077198286,
+          "target_patch_count": 3
+        },
+        "raw": {
+          "best_target_patch_rank": 2,
+          "normalized_entropy": 0.7596340533938625,
+          "peak_distance_diagonal": 0.8219457138758519,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.000000007580411,
+          "target_area_fraction": 0.00014477108295919244,
+          "target_lift": 140.5424736571603,
+          "target_mass": 0.020346486113110872,
+          "target_patch_count": 3
+        }
+      },
+      "sample_id": "vscode_macos_34",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9796177595853806,
+        "minimum_leave_one_out_cosine": 0.9710850715637207
+      },
+      "strict_correct": true,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T110805Z-ec54be068643",
+          "trace-20260922T110836Z-1d91fb7b10d3",
+          "trace-20260922T110907Z-46835f60ca75",
+          "trace-20260922T110938Z-8c5cac490779"
+        ],
+        "target": "trace-20260922T110734Z-4051e45b9bde"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_34/scale-0p75/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        2076.0,
+        638.25,
+        2109.75,
+        651.75
+      ],
+      "click": {
+        "normalized": {
+          "x": 837,
+          "y": 461
+        },
+        "pixel": {
+          "x": 1878.228,
+          "y": 646.322
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        2244,
+        1402
+      ],
+      "linear_scale": 0.75,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 13,
+          "normalized_entropy": 0.6712149685714333,
+          "peak_distance_diagonal": 0.25155938490331575,
+          "peak_inside_target": false,
+          "peak_patch": [
+            58,
+            0
+          ],
+          "positive_mass": 0.24910217289004777,
+          "target_area_fraction": 0.00014482271315996247,
+          "target_lift": 29.836487860282425,
+          "target_mass": 0.004321001123090384,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 93,
+          "normalized_entropy": 0.7475373914031945,
+          "peak_distance_diagonal": 0.8201263920819142,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999585417072,
+          "target_area_fraction": 0.00014482271315996247,
+          "target_lift": 7.924961565792219,
+          "target_mass": 0.0011477144356464536,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "vscode_macos_34",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9803485870361328,
+        "minimum_leave_one_out_cosine": 0.9710457921028137
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T111153Z-24ce374bd678",
+          "trace-20260922T111205Z-0f40ed9c2e2f",
+          "trace-20260922T111218Z-c48f368539a1",
+          "trace-20260922T111230Z-e4997aecfbe3"
+        ],
+        "target": "trace-20260922T111141Z-3bbea1e388bf"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_34/scale-0p5/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        1384.0,
+        425.5,
+        1406.5,
+        434.5
+      ],
+      "click": {
+        "normalized": {
+          "x": 951,
+          "y": 460
+        },
+        "pixel": {
+          "x": 1422.696,
+          "y": 430.1
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        1496,
+        935
+      ],
+      "linear_scale": 0.5,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 1,
+          "normalized_entropy": 0.6216432964883062,
+          "peak_distance_diagonal": 0.012367801968655966,
+          "peak_inside_target": true,
+          "peak_patch": [
+            44,
+            13
+          ],
+          "positive_mass": 0.22503153020258537,
+          "target_area_fraction": 0.00014477108295919244,
+          "target_lift": 65.46737581693522,
+          "target_mass": 0.009477782895514156,
+          "target_patch_count": 2
+        },
+        "raw": {
+          "best_target_patch_rank": 4,
+          "normalized_entropy": 0.7662973996960695,
+          "peak_distance_diagonal": 0.8163065030936312,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 1.0000000361350772,
+          "target_area_fraction": 0.00014477108295919244,
+          "target_lift": 16.448804126816086,
+          "target_mass": 0.0023813111868227987,
+          "target_patch_count": 2
+        }
+      },
+      "sample_id": "vscode_macos_34",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9710390269756317,
+        "minimum_leave_one_out_cosine": 0.9312936663627625
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T111309Z-34263731c79c",
+          "trace-20260922T111314Z-e30ab76ed661",
+          "trace-20260922T111318Z-d45b18a509b8",
+          "trace-20260922T111323Z-3be7b0356e5c"
+        ],
+        "target": "trace-20260922T111305Z-2d0b20c2c616"
+      },
+      "ui_type": "text"
+    },
+    {
+      "analysis": "/workspace/holo-results/resolution-saliency-v1/run/items/vscode_macos_34/scale-0p25/contrast/analysis.json",
+      "application": "vscode",
+      "bbox": [
+        692.0,
+        212.75,
+        703.25,
+        217.25
+      ],
+      "click": {
+        "normalized": {
+          "x": 896,
+          "y": 21
+        },
+        "pixel": {
+          "x": 670.208,
+          "y": 9.828
+        }
+      },
+      "control_count": 4,
+      "excluded_controls": [],
+      "format_valid": true,
+      "input_image_size": [
+        748,
+        468
+      ],
+      "linear_scale": 0.25,
+      "metrics": {
+        "prompt_difference": {
+          "best_target_patch_rank": 44,
+          "normalized_entropy": 0.6013266298695955,
+          "peak_distance_diagonal": 0.22869184871204987,
+          "peak_inside_target": false,
+          "peak_patch": [
+            20,
+            0
+          ],
+          "positive_mass": 0.15310251597475144,
+          "target_area_fraction": 0.00014461641299876594,
+          "target_lift": 1.094669754007073,
+          "target_mass": 0.00015830721324274437,
+          "target_patch_count": 1
+        },
+        "raw": {
+          "best_target_patch_rank": 175,
+          "normalized_entropy": 0.7844667236641204,
+          "peak_distance_diagonal": 0.804610439296025,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999999342289811,
+          "target_area_fraction": 0.00014461641299876594,
+          "target_lift": 0.27879150031466104,
+          "target_mass": 4.03178267500506e-05,
+          "target_patch_count": 1
+        }
+      },
+      "sample_id": "vscode_macos_34",
+      "stability": {
+        "mean_leave_one_out_cosine": 0.9874756038188934,
+        "minimum_leave_one_out_cosine": 0.9805934429168701
+      },
+      "strict_correct": false,
+      "trace_ids": {
+        "controls": [
+          "trace-20260922T111337Z-c873778bc613",
+          "trace-20260922T111339Z-b749c32ca3e2",
+          "trace-20260922T111341Z-d2ede3a66e93",
+          "trace-20260922T111342Z-1641b692a338"
+        ],
+        "target": "trace-20260922T111335Z-807446a82876"
+      },
+      "ui_type": "text"
+    }
+  ],
+  "runtime_seconds": 1435.5172364711761,
+  "schema_version": 1,
+  "server_model": {
+    "capabilities": {
+      "activation_tracing": true,
+      "function_calling": true,
+      "generated_token_logprobs": true,
+      "structured_output": "prompted-json-with-native-turn-stop",
+      "vision": true
+    },
+    "created": 0,
+    "id": "Hcompany/Holo-3.1-4B",
+    "inference_configuration": {
+      "device": "cuda",
+      "dtype": "bfloat16",
+      "eager_attention": true,
+      "image_max_pixels": 16777216,
+      "image_min_pixels": 65536
+    },
+    "object": "model",
+    "owned_by": "local",
+    "revision": "8c88265a5a159bfd1492db9243733dd2e6e04a6e"
+  },
+  "summary": {
+    "scales": [
+      {
+        "groups": {
+          "all": {
+            "count": 6,
+            "median_best_target_patch_rank": 1.0,
+            "median_peak_distance_diagonal": 0.004061244744262843,
+            "median_target_lift": 241.52999567516713,
+            "median_target_mass": 0.05216410933205749
+          },
+          "lost": {
+            "count": 0,
+            "median_best_target_patch_rank": null,
+            "median_peak_distance_diagonal": null,
+            "median_target_lift": null,
+            "median_target_mass": null
+          },
+          "retained": {
+            "count": 6,
+            "median_best_target_patch_rank": 1.0,
+            "median_peak_distance_diagonal": 0.004061244744262843,
+            "median_target_lift": 241.52999567516713,
+            "median_target_mass": 0.05216410933205749
+          }
+        },
+        "linear_scale": 1.0
+      },
+      {
+        "groups": {
+          "all": {
+            "count": 6,
+            "median_best_target_patch_rank": 1.5,
+            "median_peak_distance_diagonal": 0.009850233808368828,
+            "median_target_lift": 113.5454729746557,
+            "median_target_mass": 0.021299201954994868
+          },
+          "lost": {
+            "count": 3,
+            "median_best_target_patch_rank": 5,
+            "median_peak_distance_diagonal": 0.25155938490331575,
+            "median_target_lift": 39.971224620819385,
+            "median_target_mass": 0.004321001123090384
+          },
+          "retained": {
+            "count": 3,
+            "median_best_target_patch_rank": 1,
+            "median_peak_distance_diagonal": 0.004608896485749779,
+            "median_target_lift": 310.9160953145814,
+            "median_target_mass": 0.04744203114541342
+          }
+        },
+        "linear_scale": 0.75
+      },
+      {
+        "groups": {
+          "all": {
+            "count": 6,
+            "median_best_target_patch_rank": 1.5,
+            "median_peak_distance_diagonal": 0.02298380968747963,
+            "median_target_lift": 45.89872813860659,
+            "median_target_mass": 0.0066629618585666165
+          },
+          "lost": {
+            "count": 3,
+            "median_best_target_patch_rank": 8,
+            "median_peak_distance_diagonal": 0.033599817406303294,
+            "median_target_lift": 18.82433304975873,
+            "median_target_mass": 0.00043574845022589657
+          },
+          "retained": {
+            "count": 3,
+            "median_best_target_patch_rank": 1,
+            "median_peak_distance_diagonal": 0.011954371873036426,
+            "median_target_lift": 58.549519578424366,
+            "median_target_mass": 0.01962449358752025
+          }
+        },
+        "linear_scale": 0.5
+      },
+      {
+        "groups": {
+          "all": {
+            "count": 6,
+            "median_best_target_patch_rank": 20.0,
+            "median_peak_distance_diagonal": 0.028069774627745105,
+            "median_target_lift": 10.367075520755003,
+            "median_target_mass": 0.0004038036438581199
+          },
+          "lost": {
+            "count": 5,
+            "median_best_target_patch_rank": 37,
+            "median_peak_distance_diagonal": 0.02838444438472713,
+            "median_target_lift": 1.094669754007073,
+            "median_target_mass": 0.00015830721324274437
+          },
+          "retained": {
+            "count": 1,
+            "median_best_target_patch_rank": 1,
+            "median_peak_distance_diagonal": 0.01840007507024413,
+            "median_target_lift": 38.83819715283919,
+            "median_target_mass": 0.005926238579229613
+          }
+        },
+        "linear_scale": 0.25
+      }
+    ]
+  },
+  "trace_generation_steps": 64,
+  "trace_profile": "attribution"
+}
