@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v47.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v48.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -1143,12 +1143,12 @@ if (false) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Next tests", "Future research directions", 12);
+  slideTitle(slide, "Next tests", "The completed cohorts narrow the next experiments", 12);
   const directions = [
-    ["01", "FULL RESOLUTION-ATTRIBUTION COHORT", "Complete the remaining 18 frozen cases and estimate how often localization survives a missed click.", C.orangeSoft, C.orange],
-    ["02", "INDEPENDENT-IMAGE CAUSAL PANEL", "Repeat matched visual corruptions across applications and layouts, then report paired restoration distributions by item.", C.blueSoft, C.blue],
-    ["03", "LONG-HORIZON VISUAL MEMORY", "Remove, shuffle, and patch historical frames to separate context retrieval from final coordinate binding.", C.greenSoft, C.green],
-    ["04", "ACTION-READOUT TRAINING", "Target coordinate precision with oracle trajectories and verifiable environment reward while holding out a frozen diagnostic split.", "#F3EBDD", C.gold],
+    ["01", "TOKEN GRID VS RESAMPLING", "Hold the visual-token grid fixed while varying blur and resampling, then vary grid size with matched image content.", C.orangeSoft, C.orange],
+    ["02", "HELD-OUT CAUSAL GENERALIZATION", "Repeat the Layer 15 clean-state patch on independent screenshots, applications, and layouts with a preregistered paired test.", C.blueSoft, C.blue],
+    ["03", "CONTROL-CORRECTED VISUAL MEMORY", "Add same-image alternate-instruction controls to paired hotel histories, then remove or patch retained frames at the final click.", C.greenSoft, C.green],
+    ["04", "ACTION-CONTRACT ABLATION", "Cross checkpoint, tool-call contract, and decoding budget to separate coordinate policy from malformed JSON, extra scrolling, and premature clicks.", "#F3EBDD", C.gold],
   ];
   directions.forEach(([num, title, desc, fill, accent], i) => {
     const left = i % 2 === 0 ? 64 : 650;
@@ -1160,11 +1160,11 @@ if (false) {
     textBox(slide, desc, left + 26, top + 76, 512, 78, { fontSize: 16, color: C.ink });
   });
   rect(slide, 64, 550, 1152, 88, C.deep, true);
-  textBox(slide, "RESEARCH PRINCIPLE", 90, 570, 180, 20, { fontSize: 13, bold: true, color: C.gold });
-  textBox(slide, "Use attribution to choose causal tests, then evaluate interventions on held-out behavior", 284, 566, 870, 30, { fontSize: 20, bold: true, color: C.white, alignment: "center" });
-  textBox(slide, "Heatmaps guide hypotheses; task outcomes determine whether the model improved.", 284, 602, 870, 20, { fontSize: 14, color: "#B9C3CD", alignment: "center" });
-  footer(slide, "Scale across items before making a population-level mechanism claim");
-  slide.speakerNotes.textFrame.setText("9:20–10:10 — Four directions follow directly from the evidence. First, complete the remaining 18 cases in the frozen resolution cohort and estimate the frequency of localization-versus-readout failures with tighter uncertainty. Second, repeat the causal panel across independent images and applications. Third, intervene on historical frames to test context retrieval causally. Fourth, train coordinate precision with oracle trajectories and verifiable environment reward while keeping a frozen diagnostic split. Attribution should select hypotheses and intervention sites; behavior remains the evaluation target.");
+  textBox(slide, "COMPLETED EVIDENCE", 90, 570, 190, 20, { fontSize: 13, bold: true, color: C.gold });
+  textBox(slide, "Resolution attribution, paired hotel free generation, and the Layer 15 causal panel", 286, 564, 850, 30, { fontSize: 19, bold: true, color: C.white, alignment: "center" });
+  textBox(slide, "The next experiments isolate image sampling, output contracts, visual memory, and held-out generalization.", 286, 601, 850, 20, { fontSize: 13, color: "#B9C3CD", alignment: "center" });
+  footer(slide, "Mechanism claims now require controlled interventions beyond the completed cohorts");
+  slide.speakerNotes.textFrame.setText("9:20–10:10 — The 18-case resolution-attribution cohort is complete, so it is no longer listed as future work. The next resolution experiment should separate reduced spatial sampling from resampling artifacts by independently controlling image blur and visual-grid size. The hotel pilot motivates two tests: add same-image alternate-instruction controls to the multi-frame traces, then intervene on retained frames; and cross checkpoint with the tool-call contract and decoding budget because Holo and Qwen fail in different action-interface modes. The Layer 15 panel has a paired effect across eight mirrored prompts, but it still needs independent screenshots and applications before a broad mechanism claim. Sources: artifacts/screenspot-presentation/resolution-saliency-cohort18-v1/summary.json; artifacts/screenspot-presentation/hotel-freegen-paired-v1-summary.json; artifacts/screenspot-presentation/causal-panel-statistics-v1.json; docs/hotel-freegen-paired-v1.md.");
 }
 
 // 13 - takeaways
@@ -1327,9 +1327,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v47");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v48");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v47.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v48.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
