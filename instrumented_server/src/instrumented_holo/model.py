@@ -27,6 +27,18 @@ _JSON_COORDINATE_RE = re.compile(r'"(?P<parameter>x|y)"\s*:\s*(?P<value>-?\d+)')
 logger = logging.getLogger(__name__)
 
 
+def attention_implementation_profile(eager_attention: bool) -> dict[str, str] | None:
+    """Use eager attention only where language-token attribution consumes it."""
+
+    if not eager_attention:
+        return None
+    return {
+        "": "eager",
+        "text_config": "eager",
+        "vision_config": "sdpa",
+    }
+
+
 def unexpected_missing_checkpoint_keys(
     model_keys: set[str],
     loaded_keys: set[str],
@@ -250,8 +262,13 @@ class InstrumentedHolo:
                 "HOLO_ALLOW_DTYPE_CONVERSION=1 if the extra memory is intentional."
             )
         model_kwargs: dict[str, Any] = {}
-        if self.settings.eager_attention:
-            model_kwargs["attn_implementation"] = "eager"
+        attention_profile = attention_implementation_profile(self.settings.eager_attention)
+        if attention_profile is not None:
+            # Full eager attention is required for the language-layer matrices
+            # used by attribution. The vision encoder's attention is never
+            # consumed, so keep it on SDPA to avoid materializing a quadratic
+            # 2880x1800 vision-attention matrix.
+            model_kwargs["attn_implementation"] = attention_profile
         # Parameters are meta tensors, but small runtime buffers (for example
         # rotary inv_freq) must be real CPU tensors. Putting buffers on meta can
         # leave non-persistent Qwen buffers as unallocated MPS placeholders.
@@ -373,6 +390,9 @@ class InstrumentedHolo:
             "dtype": str(self.dtype).replace("torch.", "") if self.dtype else None,
             "load_strategy": self.settings.load_strategy,
             "eager_attention": self.settings.eager_attention,
+            "attention_implementation_profile": attention_implementation_profile(
+                self.settings.eager_attention
+            ),
             "image_min_pixels": self.settings.image_min_pixels,
             "image_max_pixels": self.settings.image_max_pixels,
             "torch_version": version("torch"),

@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from instrumented_holo.app import create_app
 from instrumented_holo.model import (
     InstrumentedHolo,
+    attention_implementation_profile,
     generated_parameter_token_spans,
     generation_stop_strings,
     parse_assistant_output,
@@ -15,6 +16,15 @@ from instrumented_holo.model import (
 )
 from instrumented_holo.settings import Settings
 from instrumented_holo.traces import TraceOptions, TraceWriter, append_trace_response
+
+
+def test_eager_attribution_keeps_vision_attention_memory_efficient() -> None:
+    assert attention_implementation_profile(True) == {
+        "": "eager",
+        "text_config": "eager",
+        "vision_config": "sdpa",
+    }
+    assert attention_implementation_profile(False) is None
 
 
 def test_tied_lm_head_may_be_omitted_but_other_missing_weights_are_rejected() -> None:
