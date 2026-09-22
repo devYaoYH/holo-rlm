@@ -6,6 +6,7 @@ from demo.screenspot_resolution import (
     scaled_size,
     summarize_resolution_results,
 )
+from scripts.analyze_screenspot_resolution_ablation import wilson_interval
 
 
 def test_build_native_success_cohort_balances_and_spreads_target_sizes() -> None:
@@ -52,3 +53,9 @@ def test_resolution_geometry_and_paired_summary() -> None:
     half = next(row for row in summary["scales"] if row["linear_scale"] == 0.5)
     assert half["selection_retention"] == 0.5
     assert half["paired_native_rerun_retention"] == 0.0
+
+
+def test_wilson_interval_handles_extreme_retention() -> None:
+    lower, upper = wilson_interval(36, 36)
+    assert 0.90 < lower < 1
+    assert upper == 1

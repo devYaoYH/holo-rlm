@@ -1,0 +1,290 @@
+{
+  "estimand": "paired success retention under controlled downsampling, not unconditional benchmark accuracy",
+  "experiment": "screenspot_success_retention_resolution_ablation_v1",
+  "inference_configuration": {
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "eager_attention": false,
+    "image_max_pixels": 16777216,
+    "image_min_pixels": 65536
+  },
+  "model_id": "Hcompany/Holo-3.1-4B",
+  "model_revision": "8c88265a5a159bfd1492db9243733dd2e6e04a6e",
+  "monotone_items": 34,
+  "nonmonotone_items": 2,
+  "request_count": 144,
+  "runtime_seconds": 296.1033000946045,
+  "scales": [
+    {
+      "area_fraction": 1.0,
+      "by_application": {
+        "photoshop": {
+          "count": 12,
+          "retention": 1.0,
+          "strict_correct": 12,
+          "wilson_95": [
+            0.7575059933447592,
+            1.0
+          ]
+        },
+        "powerpoint": {
+          "count": 12,
+          "retention": 1.0,
+          "strict_correct": 12,
+          "wilson_95": [
+            0.7575059933447592,
+            1.0
+          ]
+        },
+        "vscode": {
+          "count": 12,
+          "retention": 1.0,
+          "strict_correct": 12,
+          "wilson_95": [
+            0.7575059933447592,
+            1.0
+          ]
+        }
+      },
+      "by_ui_type": {
+        "icon": {
+          "count": 18,
+          "retention": 1.0,
+          "strict_correct": 18,
+          "wilson_95": [
+            0.8241207763533425,
+            1.0
+          ]
+        },
+        "text": {
+          "count": 18,
+          "retention": 1.0,
+          "strict_correct": 18,
+          "wilson_95": [
+            0.8241207763533425,
+            1.0
+          ]
+        }
+      },
+      "count": 36,
+      "format_valid": 36,
+      "linear_scale": 1.0,
+      "median_drift_from_native_normalized": 0.0,
+      "median_point_to_box_distance_normalized": 0.0,
+      "median_target_area_failed": null,
+      "median_target_area_retained": 0.0002777256109775641,
+      "p90_drift_from_native_normalized": 0.0,
+      "p90_point_to_box_distance_normalized": 0.0,
+      "retention": 1.0,
+      "strict_correct": 36,
+      "wilson_95": [
+        0.9035813714055363,
+        1.0
+      ]
+    },
+    {
+      "area_fraction": 0.5625,
+      "by_application": {
+        "photoshop": {
+          "count": 12,
+          "retention": 0.5,
+          "strict_correct": 6,
+          "wilson_95": [
+            0.2537815976337061,
+            0.7462184023662939
+          ]
+        },
+        "powerpoint": {
+          "count": 12,
+          "retention": 0.75,
+          "strict_correct": 9,
+          "wilson_95": [
+            0.46769466506643426,
+            0.9110583316059453
+          ]
+        },
+        "vscode": {
+          "count": 12,
+          "retention": 0.8333333333333334,
+          "strict_correct": 10,
+          "wilson_95": [
+            0.5519691377470266,
+            0.9530348578161463
+          ]
+        }
+      },
+      "by_ui_type": {
+        "icon": {
+          "count": 18,
+          "retention": 0.5555555555555556,
+          "strict_correct": 10,
+          "wilson_95": [
+            0.33716415642042774,
+            0.7544048187299437
+          ]
+        },
+        "text": {
+          "count": 18,
+          "retention": 0.8333333333333334,
+          "strict_correct": 15,
+          "wilson_95": [
+            0.6077796189608428,
+            0.9416342319413856
+          ]
+        }
+      },
+      "count": 36,
+      "format_valid": 36,
+      "linear_scale": 0.75,
+      "median_drift_from_native_normalized": 2.914213562373095,
+      "median_point_to_box_distance_normalized": 0.0,
+      "median_target_area_failed": 0.00014477108295919244,
+      "median_target_area_retained": 0.0005625,
+      "p90_drift_from_native_normalized": 187.5,
+      "p90_point_to_box_distance_normalized": 178.94444444444443,
+      "retention": 0.6944444444444444,
+      "strict_correct": 25,
+      "wilson_95": [
+        0.5314372714948966,
+        0.8199554840517008
+      ]
+    },
+    {
+      "area_fraction": 0.25,
+      "by_application": {
+        "photoshop": {
+          "count": 12,
+          "retention": 0.4166666666666667,
+          "strict_correct": 5,
+          "wilson_95": [
+            0.19326031365875665,
+            0.6804886874504503
+          ]
+        },
+        "powerpoint": {
+          "count": 12,
+          "retention": 0.6666666666666666,
+          "strict_correct": 8,
+          "wilson_95": [
+            0.39062208887279953,
+            0.8618799089087867
+          ]
+        },
+        "vscode": {
+          "count": 12,
+          "retention": 0.75,
+          "strict_correct": 9,
+          "wilson_95": [
+            0.46769466506643426,
+            0.9110583316059453
+          ]
+        }
+      },
+      "by_ui_type": {
+        "icon": {
+          "count": 18,
+          "retention": 0.3888888888888889,
+          "strict_correct": 7,
+          "wilson_95": [
+            0.2030524657216362,
+            0.613809583977621
+          ]
+        },
+        "text": {
+          "count": 18,
+          "retention": 0.8333333333333334,
+          "strict_correct": 15,
+          "wilson_95": [
+            0.6077796189608428,
+            0.9416342319413856
+          ]
+        }
+      },
+      "count": 36,
+      "format_valid": 36,
+      "linear_scale": 0.5,
+      "median_drift_from_native_normalized": 6.701562118716424,
+      "median_point_to_box_distance_normalized": 0.0,
+      "median_target_area_failed": 0.00014698406578515178,
+      "median_target_area_retained": 0.0006084944244123931,
+      "p90_drift_from_native_normalized": 134.0,
+      "p90_point_to_box_distance_normalized": 83.66666666666666,
+      "retention": 0.6111111111111112,
+      "strict_correct": 22,
+      "wilson_95": [
+        0.44864459096605147,
+        0.75215126934629
+      ]
+    },
+    {
+      "area_fraction": 0.0625,
+      "by_application": {
+        "photoshop": {
+          "count": 12,
+          "retention": 0.0,
+          "strict_correct": 0,
+          "wilson_95": [
+            2.7755575615628914e-17,
+            0.24249400665524085
+          ]
+        },
+        "powerpoint": {
+          "count": 12,
+          "retention": 0.16666666666666666,
+          "strict_correct": 2,
+          "wilson_95": [
+            0.04696514218385378,
+            0.4480308622529734
+          ]
+        },
+        "vscode": {
+          "count": 12,
+          "retention": 0.16666666666666666,
+          "strict_correct": 2,
+          "wilson_95": [
+            0.04696514218385378,
+            0.4480308622529734
+          ]
+        }
+      },
+      "by_ui_type": {
+        "icon": {
+          "count": 18,
+          "retention": 0.05555555555555555,
+          "strict_correct": 1,
+          "wilson_95": [
+            0.009875190978303097,
+            0.25757300781872594
+          ]
+        },
+        "text": {
+          "count": 18,
+          "retention": 0.16666666666666666,
+          "strict_correct": 3,
+          "wilson_95": [
+            0.05836576805861446,
+            0.39222038103915724
+          ]
+        }
+      },
+      "count": 36,
+      "format_valid": 36,
+      "linear_scale": 0.25,
+      "median_drift_from_native_normalized": 84.8260192045899,
+      "median_point_to_box_distance_normalized": 54.44115697700884,
+      "median_target_area_failed": 0.00024029071514423077,
+      "median_target_area_retained": 0.002962577160493827,
+      "p90_drift_from_native_normalized": 777.6490299303998,
+      "p90_point_to_box_distance_normalized": 664.2214126784372,
+      "retention": 0.1111111111111111,
+      "strict_correct": 4,
+      "wilson_95": [
+        0.04406640300315648,
+        0.25314808590364857
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "selected_count": 36,
+  "selection_condition": "native successes from the reference run; native rerun was 36/36"
+}
