@@ -37,6 +37,7 @@ from .runner import capture_run
 from .screenspot import TRACE_PROFILES, load_screenspot_sample, run_screenspot_case
 from .screenspot_benchmark import run_screenspot_benchmark
 from .screenspot_resolution import run_resolution_ablation
+from .screenspot_resolution_attribution import run_resolution_attribution
 from .trajectory_contrast import run_multiframe_prompt_case
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -161,6 +162,25 @@ def parser() -> argparse.ArgumentParser:
         default=PROJECT_ROOT / "data" / "screenspot-pro" / "resolution-ablation-runs" / "success-retention-v1",
     )
     resolution.add_argument("--no-resume", action="store_true")
+    resolution_attribution = sub.add_parser("screenspot-resolution-attribution")
+    resolution_attribution.add_argument("manifest", type=Path)
+    resolution_attribution.add_argument(
+        "--annotations", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "annotations"
+    )
+    resolution_attribution.add_argument(
+        "--images",
+        type=Path,
+        default=PROJECT_ROOT / "data" / "screenspot-pro" / "resolution-ablation-images",
+    )
+    resolution_attribution.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
+    resolution_attribution.add_argument(
+        "--output",
+        type=Path,
+        default=PROJECT_ROOT / "data" / "screenspot-pro" / "resolution-attribution-runs" / "pilot-v1",
+    )
+    resolution_attribution.add_argument("--offset", type=int, default=0)
+    resolution_attribution.add_argument("--count", type=int)
+    resolution_attribution.add_argument("--no-resume", action="store_true")
     contrast = sub.add_parser("screenspot-contrast")
     contrast.add_argument("case", type=Path, help="case.json written by screenspot-case")
     contrast.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
@@ -418,6 +438,21 @@ def main(argv: list[str] | None = None) -> None:
                 base_url=base_url,
                 model_id=model_id,
                 output_dir=args.output,
+                resume=not args.no_resume,
+            )
+        )
+    elif args.command == "screenspot-resolution-attribution":
+        _print(
+            run_resolution_attribution(
+                manifest_path=args.manifest,
+                annotation_root=args.annotations,
+                image_root=args.images,
+                base_url=base_url,
+                model_id=model_id,
+                trace_root=args.trace_root,
+                output_dir=args.output,
+                offset=args.offset,
+                count=args.count,
                 resume=not args.no_resume,
             )
         )

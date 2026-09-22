@@ -142,6 +142,12 @@ def spatial_metrics(
     distribution = positive / total if total > 0 else np.zeros_like(positive)
     overlap = _bbox_patch_overlap(values.shape, bbox, image_size)
     target_mass = float(np.sum(distribution * overlap))
+    target_patches = overlap > 0
+    if np.any(target_patches):
+        best_target_score = float(np.max(distribution[target_patches]))
+        best_target_patch_rank: int | None = 1 + int(np.sum(distribution > best_target_score))
+    else:
+        best_target_patch_rank = None
     width, height = image_size
     x1, y1, x2, y2 = bbox
     area_fraction = max(0.0, x2 - x1) * max(0.0, y2 - y1) / (width * height)
@@ -160,6 +166,8 @@ def spatial_metrics(
         "target_mass": target_mass,
         "target_area_fraction": area_fraction,
         "target_lift": lift,
+        "best_target_patch_rank": best_target_patch_rank,
+        "target_patch_count": int(np.sum(target_patches)),
         "peak_patch": [peak_column, peak_row],
         "peak_inside_target": bool(overlap[peak_row, peak_column] > 0),
         "peak_distance_diagonal": peak_distance,

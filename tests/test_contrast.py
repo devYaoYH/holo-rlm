@@ -134,6 +134,8 @@ def test_prompt_ensemble_difference_is_normalized_and_signed(tmp_path: Path) -> 
     assert metrics["target_mass"] == pytest.approx(1.0)
     assert metrics["target_lift"] == pytest.approx(2.0)
     assert metrics["peak_inside_target"] is True
+    assert metrics["best_target_patch_rank"] == 1
+    assert metrics["target_patch_count"] == 1
 
     output = tmp_path / "viewer"
     result = write_prompt_contrast_viewer(

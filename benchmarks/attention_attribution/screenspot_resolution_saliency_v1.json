@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "experiment": "screenspot_resolution_saliency_pilot_v1",
+  "source_cohort": "benchmarks/resolution_ablation/screenspot_success_retention_v1.json",
+  "description": "Six-item application/UI/outcome-balanced pilot from the frozen native-success cohort. Each target is traced at four linear resolutions against four visible same-image alternate instructions.",
+  "linear_scales": [1.0, 0.75, 0.5, 0.25],
+  "controls_by_application": {
+    "photoshop": [
+      "Open the File menu",
+      "Open the Edit menu",
+      "Select the Move tool",
+      "Open the Window menu"
+    ],
+    "powerpoint": [
+      "Open the Home tab",
+      "Open the Insert tab",
+      "Open the Design tab",
+      "Open the Review tab"
+    ],
+    "vscode": [
+      "Open the Explorer view",
+      "Open Search",
+      "Open Source Control",
+      "Open Extensions"
+    ]
+  },
+  "cases": [
+    {"id": "photoshop_windows_10", "selection_group": "text_retained_through_50_percent"},
+    {"id": "photoshop_windows_21", "selection_group": "icon_lost_at_75_percent"},
+    {"id": "powerpoint_windows_12", "selection_group": "text_lost_at_75_percent"},
+    {"id": "powerpoint_windows_45", "selection_group": "icon_retained_through_50_percent"},
+    {"id": "vscode_macos_27", "selection_group": "icon_retained_through_25_percent"},
+    {"id": "vscode_macos_34", "selection_group": "text_lost_at_75_percent"}
+  ]
+}
