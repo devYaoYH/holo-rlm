@@ -10,9 +10,9 @@ import math
 import random
 import statistics
 from collections import defaultdict
+from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import Any, Callable, Iterable
-
+from typing import Any
 
 METRICS = (
     "target_mass",
@@ -235,11 +235,40 @@ def markdown(result: dict[str, Any]) -> str:
         peak = disagreement["peak_inside_count"]
         lines.append(
             f"| {scale['linear_scale'] * 100:.0f}% | {group['strict_correct_count']}/{group['count']} | "
-            f"{group['median_target_mass'] * 100:.2f}% | {group['median_target_lift']:.1f}× | "
+            f"{group['median_target_mass'] * 100:.2f}% | {group['median_target_lift']:.1f}x | "
             f"{group['median_best_target_patch_rank']:.1f} | {peak}/{lost} |"
         )
+    quarter = min(result["scales"], key=lambda row: row["linear_scale"])
+    half = next((row for row in result["scales"] if row["linear_scale"] == 0.5), None)
+    paired_mass = quarter["paired_to_native"]["target_mass"]
+    paired_interval = paired_mass["median_ratio_bootstrap_95"]
+    disagreement = result["nonnative_lost_click_map_disagreement"]
+    lost_count = disagreement["lost_click_count"]
+    rank_one_count = disagreement["rank_one_count"]
     lines.extend(
         [
+            "",
+            "## Key comparisons",
+            "",
+            f"At quarter resolution, the median within-case target-mass ratio is "
+            f"{paired_mass['median_ratio'] * 100:.2f}% of native "
+            f"(bootstrap 95% interval {paired_interval[0] * 100:.2f}% to "
+            f"{paired_interval[1] * 100:.2f}%).",
+            "",
+            f"Across {lost_count} non-native missed clicks, {rank_one_count} "
+            f"({rank_one_count / lost_count * 100:.1f}%) still rank an oracle-overlapping "
+            "patch first after diverse-instruction subtraction."
+            + (
+                f" At half resolution this occurs in "
+                f"{half['lost_click_map_disagreement']['rank_one_count']}/"
+                f"{half['lost_click_map_disagreement']['lost_click_count']} misses; at quarter "
+                f"resolution it occurs in {quarter['lost_click_map_disagreement']['rank_one_count']}/"
+                f"{quarter['lost_click_map_disagreement']['lost_click_count']}."
+                if half
+                else ""
+            ),
+            "",
+            "Most resolution-induced misses coincide with weaker target localization, while a repeatable minority retain a top-ranked target patch and fail at coordinate readout.",
             "",
             "The cohort is selected on native success, so these are paired resolution-sensitivity diagnostics rather than unconditional benchmark estimates.",
             "",

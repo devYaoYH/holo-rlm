@@ -4,7 +4,6 @@ import importlib.util
 import math
 from pathlib import Path
 
-
 SCRIPT = Path(__file__).parents[1] / "scripts" / "analyze_resolution_saliency_cohort.py"
 SPEC = importlib.util.spec_from_file_location("resolution_saliency_analysis", SCRIPT)
 assert SPEC and SPEC.loader
