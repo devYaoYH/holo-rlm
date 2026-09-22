@@ -27,6 +27,7 @@ def write_prompt_contrast_viewer(
     source_label: str = "ScreenSpot-Pro",
     frame_bboxes: tuple[tuple[float, float, float, float] | None, ...] | None = None,
     excluded_controls: tuple[dict[str, str], ...] = (),
+    include_layer_head_statistics: bool = True,
 ) -> dict[str, Any]:
     """Write one portable live-demo viewer and its machine-readable analysis."""
 
@@ -75,10 +76,14 @@ def write_prompt_contrast_viewer(
                 "maps": {name: encode_signed_map(values) for name, values in maps.items()},
             }
         )
-    head_stats = layer_head_statistics(
-        contrast,
-        bbox,
-        frame_index=contrast.target.frame_count - 1,
+    head_stats = (
+        layer_head_statistics(
+            contrast,
+            bbox,
+            frame_index=contrast.target.frame_count - 1,
+        )
+        if include_layer_head_statistics
+        else {"heads": [], "layers": []}
     )
     summary = {
         "schema_version": 1,
@@ -102,6 +107,7 @@ def write_prompt_contrast_viewer(
         "stability": contrast.stability,
         "metrics": mode_metrics,
         "layer_head_statistics": head_stats,
+        "layer_head_statistics_included": include_layer_head_statistics,
         "interpretation": {
             "raw": "L1-normalized value-norm cross-layer rollout for x and y value tokens.",
             "causal": "Target coordinate map minus the mean of generated-token maps strictly before x begins.",

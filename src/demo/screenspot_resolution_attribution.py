@@ -105,6 +105,7 @@ def _render_contrast(case: dict[str, Any], trace_root: Path, output_dir: Path) -
         correct=bool(target_run.get("grounding_correct", target_run.get("correct", False))),
         format_valid=bool(target_run.get("format_valid", True)),
         excluded_controls=tuple(excluded),
+        include_layer_head_statistics=False,
     )
 
 

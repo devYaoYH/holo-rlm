@@ -167,6 +167,31 @@ def test_official_json_coordinate_fields_are_parameter_spans(tmp_path: Path) -> 
     assert parameter_steps(attribution, ("x", "y")) == (3, 4, 5, 9, 10, 11)
 
 
+def test_viewer_can_skip_optional_layer_head_statistics(tmp_path: Path) -> None:
+    target = load_attribution(_coordinate_trace(tmp_path, "target", (0.9, 0.1)))
+    control = load_attribution(_coordinate_trace(tmp_path, "control", (0.1, 0.9)))
+    contrast = build_prompt_contrast(
+        target,
+        (control,),
+        method="value_norm",
+        control_instructions=("control",),
+    )
+    output = tmp_path / "viewer-without-head-table"
+    write_prompt_contrast_viewer(
+        contrast,
+        output,
+        sample_id="fixture-skip-heads",
+        target_instruction="Click target",
+        bbox=(0, 0, 50, 50),
+        predicted_click=(25, 25),
+        correct=True,
+        include_layer_head_statistics=False,
+    )
+    analysis = json.loads((output / "analysis.json").read_text())
+    assert analysis["layer_head_statistics_included"] is False
+    assert analysis["layer_head_statistics"] == {"heads": [], "layers": []}
+
+
 def test_prompt_ensemble_rejects_a_different_image(tmp_path: Path) -> None:
     target = load_attribution(_coordinate_trace(tmp_path, "target", (0.9, 0.1)))
     mismatch = load_attribution(_coordinate_trace(tmp_path, "mismatch", (0.1, 0.9), color="black"))
