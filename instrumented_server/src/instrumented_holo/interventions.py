@@ -153,6 +153,8 @@ class InterventionEffect:
     """Paired patching and clean-run ablation result for one component."""
 
     config: InterventionConfig
+    clean: MarginScore
+    corrupted: MarginScore
     patched_corrupted: MarginScore
     ablated_clean: MarginScore
     restoration_nats: float
@@ -307,6 +309,8 @@ class IntervenableHolo:
             effects.append(
                 InterventionEffect(
                     config=item,
+                    clean=clean_score,
+                    corrupted=corrupted_score,
                     patched_corrupted=patched,
                     ablated_clean=ablated,
                     restoration_nats=restoration,

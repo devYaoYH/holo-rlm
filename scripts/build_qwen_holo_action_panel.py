@@ -116,6 +116,35 @@ def _interventions() -> list[dict[str, Any]]:
     return items
 
 
+def _head_interventions(layer: int) -> list[dict[str, Any]]:
+    """Exhaustive, x-only head screen for a Phase-A-selected action layer."""
+
+    return [
+        {
+            "name": f"layer_{layer:02d}_coordinate_x_residuals",
+            "representation": {
+                "layer": layer,
+                "component": "residual_output",
+                "unit": "scored_token_predictions",
+            },
+            "ablation": "zero",
+        },
+        *[
+        {
+            "name": f"layer_{layer:02d}_head_{head:02d}_x_prediction",
+            "representation": {
+                "layer": layer,
+                "component": "attention_head_output",
+                "unit": "scored_token_predictions",
+                "head": head,
+            },
+            "ablation": "zero",
+        }
+        for head in range(16)
+        ],
+    ]
+
+
 def _manifest(pair_id: str, first: str, second: str, target: str, output_dir: Path) -> dict[str, Any]:
     distractor = second if target == first else first
     return {
@@ -191,11 +220,59 @@ def build(output_dir: Path) -> list[Path]:
     return paths
 
 
+def build_phase_b_head_sweep(output_dir: Path, layer: int) -> list[Path]:
+    """Freeze Phase-A cases and sweep every attention head at one selected layer."""
+
+    if layer not in ACTION_LAYERS:
+        raise ValueError(f"Phase-B layer {layer} is not in the preregistered action sweep")
+    if not IMAGE_PATH.is_file():
+        raise FileNotFoundError(f"missing public ScreenSpot-Pro image: {IMAGE_PATH}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+    for pair_id, first, second in PAIRS:
+        for target in (first, second):
+            manifest = _manifest(pair_id, first, second, target, output_dir)
+            manifest["name"] = f"qwen_holo_action_panel_v1_{pair_id}_{target}_layer_{layer:02d}_x_head_sweep"
+            manifest["phase"] = "B_x_only_attention_head_sweep"
+            # The full JSON candidate strings remain teacher-forced.  Only x
+            # digit-token positions are scored and patched, because y is held
+            # constant by construction in this horizontal-swap panel.
+            for candidate in manifest["candidates"]:
+                candidate["scored_fields"] = ["x"]
+            manifest["interventions"] = _head_interventions(layer)
+            manifest["phase_b_selection"] = {
+                "selected_layer": layer,
+                "phase_a_gate": manifest["preregistration"]["phase_b_gate"],
+                "target_checkpoint_gate_result": (
+                    "Holo layer 15 passed: positive full-coordinate restoration in 8/8 conditions, "
+                    "positive clean ablation drop in 8/8, median restoration 1.254 nats."
+                    if layer == 15
+                    else "Selected only if the frozen Phase-A gate was met."
+                ),
+                "estimand": "x-token teacher-forced target-minus-distractor margin; patch and zero-ablate one attention head at the same x prediction positions.",
+                "reporting_rule": "Report all 16 heads for both checkpoints; a head is circuit-like only if its effect is material and directionally replicated across the eight mirrored conditions.",
+            }
+            path = output_dir / f"{pair_id}_{target}.json"
+            path.write_text(json.dumps(manifest, indent=2) + "\n")
+            paths.append(path)
+    return paths
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--phase-b-head-sweep-layer",
+        type=int,
+        help="write x-only all-16-head manifests for a Phase-A-selected action layer",
+    )
     args = parser.parse_args()
-    for path in build(args.output.expanduser().resolve()):
+    paths = (
+        build_phase_b_head_sweep(args.output.expanduser().resolve(), args.phase_b_head_sweep_layer)
+        if args.phase_b_head_sweep_layer is not None
+        else build(args.output.expanduser().resolve())
+    )
+    for path in paths:
         print(path)
 
 

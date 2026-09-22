@@ -1,0 +1,339 @@
+{
+  "schema_version": 1,
+  "name": "qwen_holo_action_panel_v1_quadratic_statistics_statistics_focus_layer_15_x_head_sweep",
+  "protocol": "hcompany_element_localization_v1",
+  "phase": "B_x_only_attention_head_sweep",
+  "score_reduction": "sum",
+  "image_min_pixels": 65536,
+  "image_max_pixels": 16777216,
+  "clean_request": {
+    "model": "Hcompany/Holo-3.1-4B",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "image_path",
+            "path": "../../../data/screenspot-pro/images/powerpoint_windows_59.png"
+          },
+          {
+            "type": "text",
+            "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate a \"Statistics focus\" presentation"
+          }
+        ]
+      }
+    ],
+    "temperature": 0,
+    "max_tokens": 64,
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "structured_outputs": {
+      "json": {
+        "properties": {
+          "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "VisualLocalizerOutput",
+        "type": "object"
+      }
+    }
+  },
+  "corruption": {
+    "type": "swap_equal_tiles",
+    "image_index": 0,
+    "first_box": [
+      1949,
+      563,
+      2149,
+      735
+    ],
+    "second_box": [
+      2169,
+      563,
+      2369,
+      735
+    ]
+  },
+  "candidates": [
+    {
+      "label": "clean_instruction_target_slot",
+      "json_coordinate": [
+        788,
+        351
+      ],
+      "scored_fields": [
+        "x"
+      ]
+    },
+    {
+      "label": "other_swapped_slot",
+      "json_coordinate": [
+        711,
+        351
+      ],
+      "scored_fields": [
+        "x"
+      ]
+    }
+  ],
+  "regions": {
+    "target": {
+      "image_index": 0,
+      "box": [
+        2169,
+        563,
+        2369,
+        702
+      ],
+      "limit": 4
+    },
+    "distractor": {
+      "image_index": 0,
+      "box": [
+        1949,
+        563,
+        2149,
+        702
+      ],
+      "limit": 4
+    }
+  },
+  "interventions": [
+    {
+      "name": "layer_15_coordinate_x_residuals",
+      "representation": {
+        "layer": 15,
+        "component": "residual_output",
+        "unit": "scored_token_predictions"
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_00_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 0
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_01_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 1
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_02_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 2
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_03_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 3
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_04_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 4
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_05_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 5
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_06_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 6
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_07_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 7
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_08_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 8
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_09_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 9
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_10_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 10
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_11_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 11
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_12_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 12
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_13_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 13
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_14_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 14
+      },
+      "ablation": "zero"
+    },
+    {
+      "name": "layer_15_head_15_x_prediction",
+      "representation": {
+        "layer": 15,
+        "component": "attention_head_output",
+        "unit": "scored_token_predictions",
+        "head": 15
+      },
+      "ablation": "zero"
+    }
+  ],
+  "preregistration": {
+    "checkpoints": [
+      "Qwen3.5-4B base",
+      "Holo3.1-4B fine-tuned"
+    ],
+    "processor_and_template": "Holo3.1-4B processor and official H Company VisualLocalizerOutput request for both checkpoints",
+    "input_order": "image tokens precede instruction tokens",
+    "corruption": "Complete equal-size target/distractor tile swap with no resampling; prompt, candidate syntax, and coordinates otherwise fixed.",
+    "coordinate_estimands": {
+      "primary": "joint sum log p(target x,y) minus sum log p(other x,y)",
+      "x": "same teacher-forced margin restricted to x digit tokens",
+      "y": "conditional y-token diagnostic only; the paired y coordinate is identical in this horizontal panel"
+    },
+    "phase_a_sites": {
+      "visual_controls": {
+        "layers": [
+          3,
+          15,
+          27
+        ],
+        "regions": [
+          "target",
+          "distractor"
+        ]
+      },
+      "action_residuals": {
+        "layers": [
+          3,
+          7,
+          11,
+          15,
+          19,
+          23,
+          27,
+          31
+        ],
+        "positions": "all x and y coordinate-token prediction positions"
+      }
+    },
+    "phase_b_gate": "Advance a layer to x-only residual patches and an all-head sweep only if, in at least 6 of 8 conditions for Holo, the full-coordinate action residual has positive restoration and positive clean ablation drop, with median restoration at least 0.10 nats; report all Phase-A rows regardless.",
+    "fine_tuning_hypothesis": "Holo shows larger normalized action-residual recovery and paired ablation than Qwen, while visual-region effects follow the mirrored instruction rather than a fixed screen location.",
+    "scope_limit": "Eight within-image prompt/swap conditions are a causal panel, not an independent-image benchmark estimate."
+  },
+  "phase_b_selection": {
+    "selected_layer": 15,
+    "phase_a_gate": "Advance a layer to x-only residual patches and an all-head sweep only if, in at least 6 of 8 conditions for Holo, the full-coordinate action residual has positive restoration and positive clean ablation drop, with median restoration at least 0.10 nats; report all Phase-A rows regardless.",
+    "target_checkpoint_gate_result": "Holo layer 15 passed: positive full-coordinate restoration in 8/8 conditions, positive clean ablation drop in 8/8, median restoration 1.254 nats.",
+    "estimand": "x-token teacher-forced target-minus-distractor margin; patch and zero-ablate one attention head at the same x prediction positions.",
+    "reporting_rule": "Report all 16 heads for both checkpoints; a head is circuit-like only if its effect is material and directionally replicated across the eight mirrored conditions."
+  }
+}
