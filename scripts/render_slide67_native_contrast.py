@@ -48,6 +48,7 @@ def main() -> None:
     summary: dict[str, object] = {
         "schema_version": 1,
         "definition": {
+            "raw": "value-norm rollout over the generated x/y coordinate tokens",
             "causal": "value-norm rollout minus mean captured generated-token map strictly before the x/y value span",
             "prompt_difference": "L1-normalized target-instruction value-norm rollout minus the mean of four same-image diverse-instruction maps",
         },
@@ -62,6 +63,7 @@ def main() -> None:
         case_dir.mkdir(parents=True, exist_ok=True)
         outputs: dict[str, str] = {}
         for method, source_name in (
+            ("raw", "preview-raw.png"),
             ("causal", "preview-causal.png"),
             ("prompt_difference", "preview-target-minus-prompt-baseline.png"),
         ):
@@ -84,7 +86,7 @@ def main() -> None:
             "stability": analysis["stability"],
             "metrics": {
                 method: analysis["metrics"][method][0]
-                for method in ("causal", "prompt_difference")
+                for method in ("raw", "causal", "prompt_difference")
             },
             "outputs": outputs,
         }

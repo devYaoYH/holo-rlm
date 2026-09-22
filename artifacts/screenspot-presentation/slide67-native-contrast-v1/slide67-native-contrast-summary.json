@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "definition": {
+    "raw": "value-norm rollout over the generated x/y coordinate tokens",
     "causal": "value-norm rollout minus mean captured generated-token map strictly before the x/y value span",
     "prompt_difference": "L1-normalized target-instruction value-norm rollout minus the mean of four same-image diverse-instruction maps"
   },
@@ -29,6 +30,19 @@
         "minimum_leave_one_out_cosine": 0.9907669425010681
       },
       "metrics": {
+        "raw": {
+          "normalized_entropy": 0.7241491851892081,
+          "peak_distance_diagonal": 0.005448956923156445,
+          "peak_inside_target": true,
+          "peak_patch": [
+            18,
+            13
+          ],
+          "positive_mass": 1.0000000348054243,
+          "target_area_fraction": 0.00040007716049382714,
+          "target_lift": 110.68636037090647,
+          "target_mass": 0.044283084762588736
+        },
         "causal": {
           "normalized_entropy": 0.60751279678699,
           "peak_distance_diagonal": 0.005448956923156445,
@@ -57,6 +71,8 @@
         }
       },
       "outputs": {
+        "raw": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/raw-context.png",
+        "raw_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/raw-tight.png",
         "causal": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/causal-context.png",
         "causal_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/causal-tight.png",
         "prompt_difference": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/prompt_difference-context.png",
@@ -87,6 +103,19 @@
         "minimum_leave_one_out_cosine": 0.9506300687789917
       },
       "metrics": {
+        "raw": {
+          "normalized_entropy": 0.6957952679738773,
+          "peak_distance_diagonal": 0.10459379972349522,
+          "peak_inside_target": false,
+          "peak_patch": [
+            0,
+            0
+          ],
+          "positive_mass": 0.9999998956324134,
+          "target_area_fraction": 0.000615354938271605,
+          "target_lift": 48.10329600369922,
+          "target_mass": 0.029600600743017076
+        },
         "causal": {
           "normalized_entropy": 0.5480406487791599,
           "peak_distance_diagonal": 0.00507086551435422,
@@ -115,6 +144,8 @@
         }
       },
       "outputs": {
+        "raw": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/raw-context.png",
+        "raw_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/raw-tight.png",
         "causal": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/causal-context.png",
         "causal_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/causal-tight.png",
         "prompt_difference": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/prompt_difference-context.png",

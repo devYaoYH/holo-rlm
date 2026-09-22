@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v36.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v40.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -28,6 +28,7 @@ const C = {
   blue: "#2D84D3",
   blueSoft: "#DDECF9",
   green: "#18A875",
+  greenSoft: "#DDEFE7",
   gold: "#E5B249",
   deep: "#1C2733",
 };
@@ -87,7 +88,8 @@ const slide67Native = JSON.parse(
 );
 const slide6Hit = slide67Native.cases.powerpoint_windows_63;
 const slide7Miss = slide67Native.cases.powerpoint_windows_54;
-const slide6Causal = path.join(slide67NativeDir, "powerpoint_windows_63/causal-tight.png");
+const slide6Raw = path.join(slide67NativeDir, "powerpoint_windows_63/raw-tight.png");
+const slide6RawMetrics = slide6Hit.metrics.raw;
 const slide6PromptDifference = path.join(
   slide67NativeDir,
   "powerpoint_windows_63/prompt_difference-tight.png",
@@ -369,17 +371,15 @@ function addHeadMatrix(slide, headCase, left, top, width) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Evaluation", "Two case-study settings reveal different failure modes", 2);
+  slideTitle(slide, "Evaluation", "Two settings test complementary GUI capabilities", 2);
   rect(slide, 64, 144, 548, 460, C.white, true, C.line);
   pill(slide, "STATIC", 90, 170, 86, C.blue, C.white);
   textBox(slide, "ScreenSpot-Pro", 90, 216, 300, 34, { fontSize: 27, bold: true });
   textBox(slide, "One screenshot, one instruction, one click", 90, 258, 420, 28, { fontSize: 18, color: C.muted });
-  textBox(slide, "Visual hit", 90, 330, 150, 22, { fontSize: 14, bold: true, color: C.green });
-  textBox(slide, "Psychedelic vibrant", 90, 358, 210, 30, { fontSize: 20, bold: true });
-  textBox(slide, "Grounding miss", 326, 330, 160, 22, { fontSize: 14, bold: true, color: C.orange });
-  textBox(slide, "Create new slide", 326, 358, 190, 30, { fontSize: 20, bold: true });
+  textBox(slide, "CAPABILITY", 90, 330, 150, 22, { fontSize: 12, bold: true, color: C.blue });
+  textBox(slide, "UI localization", 90, 358, 300, 30, { fontSize: 23, bold: true });
   rect(slide, 90, 420, 462, 1, C.line);
-  textBox(slide, "These examples share PowerPoint on Windows, but use different images and prompts. They illustrate failure modes rather than form a matched causal pair.", 90, 448, 462, 96, { fontSize: 16, color: C.muted });
+  textBox(slide, "Can the model map one instruction to the correct clickable region in a dense, high-resolution interface?", 90, 448, 462, 80, { fontSize: 17, color: C.muted });
 
   rect(slide, 650, 144, 566, 460, C.deep, true);
   pill(slide, "MULTI-TURN", 680, 170, 120, C.orange, C.white);
@@ -397,9 +397,10 @@ function addHeadMatrix(slide, headCase, left, top, width) {
     textBox(slide, action, 744, y + 2, 128, 22, { fontSize: 14, bold: true, color: C.white });
     textBox(slide, detail, 1010, y + 2, 130, 22, { fontSize: 15, bold: true, color: i === 3 ? C.green : "#B9C3CD", alignment: "right" });
   });
-  textBox(slide, "Selected: Lumen Harbor Rooms at £122", 680, 555, 458, 24, { fontSize: 15, bold: true, color: "#8FE0BF" });
-  footer(slide, "ScreenSpot-Pro supplies real GUI cases · the deterministic hotel fixture supplies replayable trajectories");
-  slide.speakerNotes.textFrame.setText("0:35–1:15 — Separate the two settings. ScreenSpot gives real high-resolution grounding examples. The synthetic hotel task gives exact replay and multi-frame memory. The two PowerPoint examples are not a same-image success/failure pair, so use them to motivate hypotheses rather than causal claims. Under the exact HoloDesktop 0.1.10 tool schema and three-screenshot retention window, the free hotel rollout succeeds after three scrolls and one click. Sources: docs/screenspot-case-study.md and artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/hotel-freegen-summary.json.");
+  textBox(slide, "CAPABILITY", 680, 555, 120, 18, { fontSize: 11, bold: true, color: C.gold });
+  textBox(slide, "Context retrieval across frames", 808, 551, 370, 26, { fontSize: 18, bold: true, color: "#8FE0BF" });
+  footer(slide, "Static evaluation isolates localization · the hotel environment tests whether earlier visual evidence reaches a later action");
+  slide.speakerNotes.textFrame.setText("0:35–1:15 — Introduce two complementary capabilities rather than two failures. ScreenSpot-Pro isolates static UI localization from one screenshot and instruction. The hotel environment tests context retrieval across a sequence of screenshots and actions. The current official-tool free rollout succeeds: Holo scrolls three times, retains the three latest screenshots, selects Lumen Harbor Rooms at £122, and clicks its button. Sources: docs/screenspot-case-study.md and artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/hotel-freegen-summary.json.");
 }
 
 // 3 - full ScreenSpot-Pro replication
@@ -616,37 +617,53 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   slide.speakerNotes.textFrame.setText("2:55–3:50 — This is a paired success-retention experiment, not a new unconditional ScreenSpot-Pro accuracy estimate. We froze 36 items that were strict hits in the full native-resolution run: six size-spread targets in each application-by-UI-type stratum across Photoshop, PowerPoint, and VS Code. Every item was rerun in one Holo model process at 100%, 75%, 50%, and 25% of its original width and height using Lanczos downsampling. The official localization prompt, VisualLocalizerOutput schema, temperature zero, thinking-disabled decoding, and normalized 0–1000 coordinates remain fixed. The server stays at image_max_pixels 16777216, so it cannot add a second hidden resize. The same-run native rerun is 36 of 36. Retention is 25 of 36 at 75%, 22 of 36 at 50%, and 4 of 36 at 25% linear resolution. Wilson 95% intervals are 53.1 to 82.0%, 44.9 to 75.2%, and 4.4 to 25.3%. At half resolution, text targets retain 15 of 18 clicks while icon targets retain 7 of 18. Retained targets have about 4.1 times the median normalized area of failures. All 144 completions are valid JSON. The cohort is selected on native success, so use this as evidence of resolution sensitivity, not as the benchmark's full accuracy curve. Sources: artifacts/screenspot-presentation/screenspot-resolution-ablation-v1.json, docs/screenspot-resolution-ablation.md, and benchmarks/resolution_ablation/screenspot_success_retention_v1.json.");
 }
 
-// 6 — method
+// 6 — next experiment: resolution and attention
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Calculation", "From generated coordinate tokens back to image patches", 6);
-  textBox(slide, "A attention weights · V value vectors · R rolled-out token influence · M image-patch map for generated x/y value tokens", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
-  const blocks = [
-    ["1", "VALUE-NORM", "A′ = normalize(A ⊙ ‖V‖₂)", "Suppress high attention paths carrying little value signal", C.orangeSoft, C.orange],
-    ["2", "CROSS-LAYER ROLLOUT", "Rₗ = ½I + ½A′ₗ\nR = Rₗ ··· R₁", "Compose all 8 captured full-attention blocks with residual flow", C.blueSoft, C.blue],
-    ["3", "TOKEN → PARAMETER", "M(x,y) = meanₛ Rₛ", "Average x/y value-token maps; token length cannot inflate a parameter", "#E4F4EE", C.green],
+  slideTitle(slide, "Next experiment", "Does downsampling erase the target signal before the click fails?", 6);
+  textBox(slide, "Planned paired attribution study on the same frozen ScreenSpot-Pro resolution cohort", 64, 118, 1152, 24, { fontSize: 15, color: C.muted });
+
+  textBox(slide, "CONTROLLED INPUTS", 64, 162, 340, 20, { fontSize: 11, bold: true, color: C.blue });
+  const scales = [
+    ["100%", "100% area", C.green],
+    ["75%", "56% area", C.blue],
+    ["50%", "25% area", C.blue],
+    ["25%", "6.25% area", C.orange],
   ];
-  blocks.forEach(([num, label, equation, desc, fill, accent], i) => {
-    const x = 64 + i * 395;
-    rect(slide, x, 154, 356, 230, C.white, true, C.line);
-    pill(slide, num, x + 22, 175, 46, accent, C.white);
-    textBox(slide, label, x + 84, 179, 230, 22, { fontSize: 13, bold: true, color: accent });
-    rect(slide, x + 22, 220, 312, 72, fill, true);
-    textBox(slide, equation, x + 36, 232, 284, 48, { fontSize: 20, bold: true, alignment: "center", verticalAlignment: "middle" });
-    textBox(slide, desc, x + 25, 316, 304, 52, { fontSize: 15, color: C.muted, alignment: "center" });
+  scales.forEach(([scale, area, accent], index) => {
+    const left = 64 + index * 142;
+    rect(slide, left, 194, 124, 112, C.white, true, C.line);
+    textBox(slide, scale, left, 214, 124, 34, { fontSize: 27, bold: true, color: accent, alignment: "center" });
+    textBox(slide, area, left, 258, 124, 20, { fontSize: 13, color: C.muted, alignment: "center" });
   });
-  textBox(slide, "Two baselines ask different questions", 64, 422, 500, 30, { fontSize: 22, bold: true });
-  rect(slide, 64, 468, 548, 156, C.deep, true);
-  textBox(slide, "CAUSAL PREVIOUS-TOKEN", 88, 490, 260, 20, { fontSize: 13, bold: true, color: "#9FC8F0" });
-  textBox(slide, "Dtoken = M(x,y) − mean(M(s < start(x)))", 88, 526, 472, 28, { fontSize: 19, bold: true, color: C.white });
-  textBox(slide, "What is above the generation state already present before the coordinate sequence?", 88, 567, 470, 38, { fontSize: 14, color: "#B9C3CD" });
-  rect(slide, 650, 468, 566, 156, C.white, true, C.line);
-  textBox(slide, "SAME-IMAGE INSTRUCTION ENSEMBLE", 676, 490, 330, 20, { fontSize: 13, bold: true, color: C.orange });
-  textBox(slide, "Dprompt = Mtarget − mean(Mcontrol,k)", 676, 526, 470, 28, { fontSize: 19, bold: true });
-  textBox(slide, "What is specific to this instruction after subtracting inherent image saliency?", 676, 567, 470, 38, { fontSize: 14, color: C.muted });
-  footer(slide, "Target lift = positive target-minus-control mass inside the target box ÷ target-box area fraction. 1× means spatially uniform residual mass.");
-  slide.speakerNotes.textFrame.setText("3:50–5:00 — Define the symbols once. A is the attention-weight matrix. V contains the value vectors. R is the residual-aware rollout across the eight captured full-attention blocks. M is the resulting image-patch map traced from the generated x/y coordinate-value tokens. Value-norm changes the routing matrix before rollout. Rollout mixes attention and identity 50/50 and multiplies the captured layers in model order. Then average only the generated x/y value-token maps. Target lift is the positive target-minus-control mass inside the target box divided by the target-box area fraction; 1× means spatially uniform positive residual mass. Hybrid linear-attention blocks are omitted because they expose no equivalent square softmax matrix.");
+  textBox(slide, "Same item, instruction, prompt, coordinate contract, and decoding settings", 64, 324, 550, 42, { fontSize: 16, color: C.muted });
+
+  rect(slide, 650, 162, 566, 204, C.deep, true);
+  textBox(slide, "PRIMARY ATTRIBUTION", 678, 188, 260, 20, { fontSize: 11, bold: true, color: C.gold });
+  textBox(slide, "Value-norm rollout", 678, 224, 480, 30, { fontSize: 25, bold: true, color: C.white });
+  textBox(slide, "minus the mean of four visible same-image alternate instructions", 678, 262, 480, 48, { fontSize: 17, color: "#C4CED7" });
+  textBox(slide, "Compare retained clicks with clicks lost after downsampling", 678, 324, 480, 22, { fontSize: 14, bold: true, color: "#8FE0BF" });
+
+  textBox(slide, "MEASURE", 64, 400, 180, 20, { fontSize: 11, bold: true, color: C.blue });
+  const measures = [
+    ["01", "Target mass and lift", "Does instruction-specific attribution remain concentrated in the annotated box?"],
+    ["02", "Peak distance and patch rank", "Does the strongest patch move away before the generated coordinate drifts?"],
+    ["03", "Retained versus lost clicks", "Which failure mode separates the two groups as resolution falls?"],
+  ];
+  measures.forEach(([num, heading, body], index) => {
+    const left = 64 + index * 384;
+    rect(slide, left, 430, 354, 130, C.white, true, C.line);
+    pill(slide, num, left + 20, 450, 42, index === 2 ? C.orange : C.blue, C.white);
+    textBox(slide, heading, left + 78, 452, 250, 24, { fontSize: 17, bold: true });
+    textBox(slide, body, left + 22, 492, 310, 52, { fontSize: 14, color: C.muted });
+  });
+
+  rect(slide, 64, 588, 1152, 58, C.deep, true);
+  textBox(slide, "Signal collapses: improve visual encoding", 84, 603, 480, 28, { fontSize: 18, bold: true, color: C.orange, alignment: "center" });
+  textBox(slide, "Signal survives: improve coordinate readout", 696, 603, 480, 28, { fontSize: 18, bold: true, color: "#8FE0BF", alignment: "center" });
+  footer(slide, "Planned experiment · eager-attention rerun required · paired inference at every scale");
+  slide.speakerNotes.textFrame.setText("3:50–4:30 — Use the resolution result to motivate the next mechanistic experiment. Re-run the same frozen items at 100, 75, 50, and 25 percent linear resolution with eager attention enabled. At every scale, capture the target instruction plus four visible same-image alternate instructions. The primary map is value-norm rollout after subtracting the mean control map. Compare target mass, target lift, peak distance, and target-patch rank between retained and lost clicks. If target-specific attribution collapses before the click fails, the bottleneck is visual encoding. If the signal remains localized while coordinates drift, the bottleneck is action readout. The existing one-case pixel-budget pilot points toward the first pattern, but it is not the same intervention and stays in the notes rather than the headline.");
 }
 
 // 7 — native-resolution baseline comparison on a free-generation success
@@ -659,29 +676,29 @@ function addHeadMatrix(slide, headCase, left, top, width) {
 
   const panelWidth = 544;
   const panelHeight = 400;
-  textBox(slide, "CAUSAL PRIOR-TOKEN SUBTRACTION", 64, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.orange });
-  textBox(slide, "DIVERSE-INSTRUCTION SUBTRACTION", 672, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.green });
-  await image(slide, slide6Causal, 64, 180, panelWidth, panelHeight, { alt: "Native-resolution value-norm rollout after subtracting prior generated-token state" });
+  textBox(slide, "VALUE-NORM ROLLOUT", 64, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "VALUE-NORM + DIVERSE-INSTRUCTION SUBTRACTION", 672, 153, panelWidth, 20, { fontSize: 11, bold: true, color: C.green });
+  await image(slide, slide6Raw, 64, 180, panelWidth, panelHeight, { alt: "Native-resolution value-norm rollout for the generated x and y coordinate tokens" });
   await image(slide, slide6PromptDifference, 672, 180, panelWidth, panelHeight, { alt: "Native-resolution value-norm rollout after subtracting four same-image diverse instructions" });
 
   rect(slide, 64, 594, panelWidth, 58, C.deep, true);
-  textBox(slide, `${slide6Hit.metrics.causal.target_lift.toFixed(0)}× target lift`, 84, 603, 200, 26, { fontSize: 21, bold: true, color: C.orange });
-  textBox(slide, `${(slide6Hit.metrics.causal.target_mass * 100).toFixed(1)}% of positive residual mass`, 292, 607, 292, 20, { fontSize: 13, color: "#D5DEE6", alignment: "right" });
+  textBox(slide, `${slide6RawMetrics.target_lift.toFixed(0)}× target lift`, 84, 603, 200, 26, { fontSize: 21, bold: true, color: C.orange });
+  textBox(slide, `${(slide6RawMetrics.target_mass * 100).toFixed(1)}% of positive mass`, 292, 607, 292, 20, { fontSize: 13, color: "#D5DEE6", alignment: "right" });
   rect(slide, 672, 594, panelWidth, 58, C.deep, true);
   textBox(slide, `${slide6Hit.metrics.prompt_difference.target_lift.toFixed(0)}× target lift`, 692, 603, 220, 26, { fontSize: 21, bold: true, color: C.green });
   textBox(slide, `${(slide6Hit.metrics.prompt_difference.target_mass * 100).toFixed(1)}% · LOO ≥${slide6Hit.stability.minimum_leave_one_out_cosine.toFixed(3)}`, 918, 607, 274, 20, { fontSize: 13, color: "#D5DEE6", alignment: "right" });
-  footer(slide, "Value-norm rollout first · native 2880×1800 → 56×90 merged grid · only the baseline changes");
-  slide.speakerNotes.textFrame.setText("5:00–6:00 — Treat subtraction as the analysis choice, analogous to choosing a resting-state baseline in fMRI. Both panels use the same native 2880x1800 screenshot, official localization prompt, Holo free-generation output (209,243), x/y coordinate-token aggregation, and value-norm rollout. The left panel subtracts the mean map from generated tokens strictly before the x/y value span. It removes completion state already present before the action and leaves 6.75% of positive residual mass in the oracle, a 168.8x lift. The right panel subtracts the mean of four separately measured same-image instructions: Cut, Copy, Send backward, and Add comment. It leaves 18.58% in the tiny oracle, a 464.4x lift, with minimum leave-one-control-out cosine 0.991. The diverse ensemble removes generic image saliency and highlights what is specific to Fill color; the causal baseline asks what changed within this completion. Neither map is a causal feature explanation. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
+  footer(slide, "Same native screenshot, official prompt, generated click, coordinate tokens, and value-norm rollout · only the baseline changes");
+  slide.speakerNotes.textFrame.setText("4:30–5:30 — The left panel is the value-norm rollout for Holo's freely generated x/y coordinate tokens. It places 4.43% of its positive mass in the tiny oracle, a 110.7x lift. The right panel subtracts the mean of four separately measured same-image instructions: Cut, Copy, Send backward, and Add comment. That baseline raises the target-specific concentration to 18.58% and 464.4x lift, with minimum leave-one-control-out cosine 0.991. Both panels use the same native 2880x1800 screenshot, official localization prompt, Holo output (209,243), and x/y token aggregation. The comparison shows how a resting-state-like control removes generic image saliency. Neither map by itself proves a causal mechanism. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
 }
 
 // 8 — native-resolution free-generation failure after diverse-instruction subtraction
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Free generation · strict miss", "Grounding signal reaches the target; pointer readout falls outside", 8);
+  slideTitle(slide, "Free generation · strict miss", "Target-specific attention survives a 7.4-pixel click miss", 8);
   textBox(slide, "Instruction: Choose the language for proofing tools", 64, 120, 700, 24, { fontSize: 17, bold: true, color: C.muted });
-  pill(slide, "TARGET − 4 SAME-IMAGE CONTROLS", 856, 116, 360, C.deep, C.white);
-  textBox(slide, "VALUE-NORM · DIVERSE-INSTRUCTION BASELINE", 64, 154, 480, 18, { fontSize: 11, bold: true, color: C.green });
+  pill(slide, "TARGET − 4 SAME-IMAGE INSTRUCTIONS", 834, 116, 382, C.deep, C.white);
+  textBox(slide, "DIVERSE-INSTRUCTION SUBTRACTION", 64, 154, 480, 18, { fontSize: 11, bold: true, color: C.green });
   await image(slide, slide7PromptDifference, 64, 178, 790, 298, { alt: "Readable native-resolution crop of prompt-differential value-norm attribution for the proofing-language failure" });
 
   rect(slide, 890, 178, 326, 438, C.deep, true);
@@ -696,20 +713,19 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   textBox(slide, "peak patch", 916, 482, 175, 20, { fontSize: 12, color: "#9EABB7" });
   textBox(slide, "inside", 1092, 478, 74, 26, { fontSize: 18, bold: true, color: C.green, alignment: "right" });
   textBox(slide, `control stability ≥${slide7Miss.stability.minimum_leave_one_out_cosine.toFixed(3)}`, 916, 532, 250, 20, { fontSize: 13, bold: true, color: C.gold });
-  textBox(slide, "The routing map and final action disagree at the benchmark boundary.", 916, 562, 250, 42, { fontSize: 13, color: "#D5DEE6" });
 
   rect(slide, 64, 500, 790, 116, C.white, true, C.line);
   textBox(slide, "ACTION-PRECISION FAILURE", 88, 520, 240, 18, { fontSize: 11, bold: true, color: C.orange });
   textBox(slide, "The target-specific peak is inside the proofing-language control, but the generated y coordinate crosses the strict point-in-box boundary.", 88, 548, 734, 48, { fontSize: 18, bold: true, color: C.ink });
   footer(slide, "Official free generation · normalized 0–1000 output · native 2880×1800 input · no downsampling");
-  slide.speakerNotes.textFrame.setText("6:00–6:55 — This is the failure case under the same full-resolution official protocol and the same four-control baseline design. Holo freely emits (124,73), projecting to (357.1,131.4) pixels. The x coordinate is inside the annotated proofing-language control, while y falls 7.4 pixels below its bottom edge. After value-norm rollout and subtraction of four same-image controls—Check accessibility, Translate, Add comment, and Show comments—the peak patch is still inside the oracle. The tiny box receives 17.15% of positive residual mass, a 278.6x lift, and the leave-one-control-out floor is 0.951. This is consistent with a localized visual route but an imprecise action readout. It does not prove that attention caused the miss. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
+  slide.speakerNotes.textFrame.setText("5:30–6:20 — This failure uses the same full-resolution official protocol and a four-instruction same-image baseline. Holo freely emits (124,73), projecting to (357.1,131.4) pixels. The x coordinate falls inside the annotated proofing-language control, while y lands 7.4 pixels below its bottom edge. After value-norm rollout and subtraction of Check accessibility, Translate, Add comment, and Show comments, the peak patch remains inside the oracle. The tiny box receives 17.15% of positive residual mass, a 278.6x lift, with a 0.951 leave-one-control-out floor. This pattern is consistent with localized visual evidence followed by imprecise coordinate extraction. Attention remains descriptive rather than causal. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
 }
 
 // 9 - native-resolution free multi-turn trajectory
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Free multi-turn hotel rollout", "Four free actions recover the cheapest hotel and click its button", 9);
+  slideTitle(slide, "Free multi-turn hotel rollout", "All three retained frames contribute to the correct final click", 9);
   textBox(slide, "Native 1024×720, no teacher forcing, final y-coordinate value-norm rollout", 64, 118, 900, 24, { fontSize: 15, color: C.muted });
   pill(slide, "ORANGE = MODEL CLICK, GREEN = ORACLE", 930, 115, 286, C.deep, C.white);
 
@@ -757,18 +773,104 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   const frameShares = hotelFreegen.final_y_frame_share.map((value) => value * 100);
   frameShares.forEach((share, index) => {
     const y = 441 + index * 35;
-    textBox(slide, `F${index}`, 890, y, 26, 20, { fontSize: 12, bold: true, color: C.white });
+    textBox(slide, ["H1", "H2", "NOW"][index], 890, y, 34, 20, { fontSize: 11, bold: true, color: C.white });
     rect(slide, 922, y + 2, 210, 16, "#465563", true);
     rect(slide, 922, y + 2, 210 * share / 45, 16, index === 2 ? C.orange : C.blue, true);
     textBox(slide, `${share.toFixed(1)}%`, 1140, y - 1, 50, 20, { fontSize: 12, bold: true, color: C.white, alignment: "right" });
   });
-  textBox(slide, `${(frameShares[0] + frameShares[1]).toFixed(1)}% of final y-token image mass remains on the two history frames.`, 890, 547, 300, 45, { fontSize: 13, bold: true, color: C.white });
+  textBox(slide, "No single frame dominates the final y-coordinate route.", 890, 547, 300, 45, { fontSize: 14, bold: true, color: C.white });
   rect(slide, 890, 596, 300, 28, "#2A3845", true);
   textBox(slide, "4 actions, 3 retained screenshots, 1 correct click", 900, 600, 280, 20, { fontSize: 10, color: "#D5DEE6", alignment: "center", verticalAlignment: "middle" });
   footer(slide, "Our hotel prompt, official HoloDesktop 0.1.10 tools, normalized 0–1000 coordinates, native resolution");
-  slide.speakerNotes.textFrame.setText("6:55–8:05 — This is a genuine free Holo rollout, not the teacher-forced hotel probe used later in the delta lens. The run uses our revised hotel system prompt and the exact HoloDesktop runtime 0.1.10 structured tool schema captured from the official runtime. Decoding uses temperature 0.8 with thinking enabled. The model receives native 1024x720 screenshots under the 16,777,216-pixel ceiling and the official three-screenshot retention window. It freely emits three scroll_desktop calls with direction down and scroll_size 10, then click_desktop at normalized (650,450). The click projects to pixel (665,324), inside the fixture-defined View details button for Lumen Harbor Rooms at 122, and the fixture records task success. The displayed maps are value-norm rollout for the generated y-coordinate tokens at steps 252 through 254. Their positive image mass is distributed 38.6%, 29.2%, and 32.2% across retained scroll offsets 500, 1000, and 1124. The two history frames therefore carry 67.8% of the final y-token image mass. This is descriptive evidence that earlier visual observations reach action decoding, not proof that attention caused the correct click. The earlier Juniper failure used a custom desktop_action schema, signed delta_y convention, and unbounded screenshot history, so it should not support a model-level action claim. Source: artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/hotel-freegen-summary.json and data/remote-results/hotel-official-tools-native-20260922-rerun.");
+  slide.speakerNotes.textFrame.setText("6:20–7:20 — This is a genuine free Holo rollout. The run uses our revised hotel prompt and the exact HoloDesktop runtime 0.1.10 tool schema. Holo receives native 1024x720 screenshots under the official three-screenshot retention window, freely emits three scrolls, then clicks normalized (650,450). The projected pixel click (665,324) lands inside the fixture-defined button for Lumen Harbor Rooms at £122. Value-norm rollout for the generated y-coordinate tokens allocates 38.6%, 29.2%, and 32.2% of image mass across scroll offsets 500, 1000, and 1124. All three frames contribute and no single frame dominates. Do not call this a recency preference: the separate teacher-forced Qwen-to-Holo comparison uses a different run and attribution contrast. This slide supports cross-frame context retrieval, not a causal memory mechanism. Source: artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/hotel-freegen-summary.json and data/remote-results/hotel-official-tools-native-20260922-rerun.");
 }
 
+// 10 - causal protocol across eight mirrored prompts
+{
+  const slide = presentation.slides.add();
+  slide.background.fill = C.paper;
+  slideTitle(slide, "Causal experiment", "Where visual evidence becomes a coordinate action", 10);
+  textBox(slide, "Eight mirrored prompts hold the official request, native image, and teacher-forced coordinate strings fixed", 64, 118, 1090, 24, { fontSize: 14, color: C.muted });
+
+  pill(slide, "CLEAN", 64, 160, 84, C.green, C.white);
+  await image(slide, causalClean, 64, 198, 250, 166, { alt: "Original PowerPoint template row with the target and distractor tiles" });
+  textBox(slide, "Original tile positions", 64, 374, 250, 22, { fontSize: 15, bold: true });
+  pill(slide, "CORRUPTED", 64, 430, 116, C.orange, C.white);
+  await image(slide, causalCorrupted, 64, 468, 250, 166, { alt: "PowerPoint row after an equal-size target and distractor tile swap" });
+  textBox(slide, "Two equal-size tiles swap", 64, 644, 250, 18, { fontSize: 13, bold: true });
+
+  rect(slide, 344, 160, 872, 474, C.white, true, C.line);
+  textBox(slide, "TEACHER-FORCED ACTION SEQUENCE", 372, 186, 330, 18, { fontSize: 11, bold: true, color: C.blue });
+  textBox(slide, "Image evidence and instruction tokens precede the scored x-coordinate digits", 372, 210, 730, 24, { fontSize: 15, color: C.muted });
+  const stages = [
+    ["IMAGE", "patch residuals", C.blueSoft, C.blue, 150],
+    ["INSTRUCTION", "target name", "#E9EDF1", C.deep, 170],
+    ["JSON", "{ x:", C.orangeSoft, C.orange, 90],
+    ["X DIGITS", "scored action", C.orangeSoft, C.orange, 150],
+    ["Y DIGITS", "held matched", C.greenSoft, C.green, 140],
+  ];
+  let stageLeft = 372;
+  stages.forEach(([heading, body, fill, accent, width], index) => {
+    rect(slide, stageLeft, 258, width, 82, fill, true, accent);
+    textBox(slide, heading, stageLeft + 10, 271, width - 20, 18, { fontSize: 11, bold: true, color: accent, alignment: "center" });
+    textBox(slide, body, stageLeft + 10, 298, width - 20, 24, { fontSize: 13, bold: heading === "X DIGITS", alignment: "center" });
+    stageLeft += width + (index < stages.length - 1 ? 14 : 0);
+  });
+
+  textBox(slide, "Replace one internal state in the corrupted run with its clean-run counterpart", 372, 380, 760, 24, { fontSize: 17, bold: true });
+  rect(slide, 372, 422, 346, 154, C.blueSoft, true, C.blue);
+  pill(slide, "1 · VISUAL REGION", 392, 442, 168, C.blue, C.white);
+  textBox(slide, "Patch target or distractor image-region residuals to test whether localized visual evidence restores the coordinate preference.", 392, 486, 304, 68, { fontSize: 14 });
+  rect(slide, 746, 422, 414, 154, C.orangeSoft, true, C.orange);
+  pill(slide, "2 · COORDINATE STATE", 766, 442, 194, C.orange, C.white);
+  textBox(slide, "Patch coordinate-token residuals across layers. Then test the selected Layer 15 state and each attention head at x-token positions.", 766, 486, 370, 68, { fontSize: 14 });
+
+  textBox(slide, "Metric: log p(target x digits) − log p(distractor x digits)", 372, 594, 788, 24, { fontSize: 16, bold: true, color: C.deep, alignment: "center" });
+  footer(slide, "Four equal-tile pairs × two mirrored instructions · native 2880×1800 · official VisualLocalizerOutput contract");
+  slide.speakerNotes.textFrame.setText("7:20–8:20 — Define the causal panel without phase labels. Four equal-size tile pairs produce eight mirrored instructions. The corruption swaps the target and distractor tiles without resizing or changing the prompt. Both checkpoints receive the Holo processor and official VisualLocalizerOutput request. The model is teacher-forced through equal-length coordinate candidates. The metric is the x-digit log-probability margin because the paired y coordinate stays fixed in this horizontal panel. First screen visual-region residuals and coordinate states across layers. Then test the selected Layer 15 coordinate state and all sixteen attention heads. Sources: benchmarks/activation_patching/qwen_holo_action_panel_v1 and benchmarks/activation_patching/qwen_holo_action_panel_v1_phase_b_layer15.");
+}
+
+// 11 - causal result across eight mirrored prompts
+{
+  const slide = presentation.slides.add();
+  slide.background.fill = C.paper;
+  slideTitle(slide, "Causal result · Layer 15", "Fine-tuning makes the coordinate state more recoverable", 11);
+  textBox(slide, "Eight mirrored prompts · x-coordinate teacher forcing · same processor, prompt, image bytes, and candidate syntax", 64, 118, 1120, 24, { fontSize: 14, color: C.muted });
+
+  rect(slide, 64, 160, 550, 166, C.greenSoft, true, C.green);
+  textBox(slide, "PATCH CLEAN STATE INTO THE CORRUPTED RUN", 86, 184, 470, 20, { fontSize: 11, bold: true, color: C.green });
+  textBox(slide, "Holo  +1.01 nats", 86, 222, 230, 32, { fontSize: 25, bold: true, color: C.green });
+  textBox(slide, "Qwen  +0.10 nats", 332, 222, 220, 32, { fontSize: 25, bold: true, color: C.deep });
+  textBox(slide, "Median gain in target-over-distractor coordinate margin", 86, 272, 470, 28, { fontSize: 14, color: C.muted });
+
+  rect(slide, 638, 160, 578, 166, C.white, true, C.line);
+  textBox(slide, "ZERO THE SAME STATE IN THE CLEAN RUN", 660, 184, 480, 20, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "Holo  4.51 nats lost", 660, 222, 230, 32, { fontSize: 21, bold: true, color: C.orange });
+  textBox(slide, "Qwen  6.27 nats lost", 930, 222, 230, 32, { fontSize: 21, bold: true, color: C.deep });
+  textBox(slide, "Zero-ablation sets the Layer 15 coordinate residual to zero and measures the clean-margin drop", 660, 270, 510, 42, { fontSize: 14, color: C.muted });
+
+  textBox(slide, "WHAT THE INTERVENTIONS SHOW", 64, 356, 520, 18, { fontSize: 11, bold: true, color: C.blue });
+  const findings = [
+    ["1", "Reliable Holo restoration", "Holo's clean Layer 15 state improves the corrupted margin in 7 of 8 prompts; the paired Holo-minus-Qwen median is +0.72 nats.", C.greenSoft, C.green],
+    ["2", "Shared necessity", "Zeroing the state harms both checkpoints. Holo gains recoverability after fine-tuning, but the underlying coordinate state is not unique to Holo.", "#E9EDF1", C.deep],
+    ["3", "Distributed across heads", "All 16 heads were tested. Holo head 1 restores +0.54 nats, while Qwen also uses it at +0.36; no single head explains the effect.", C.orangeSoft, C.orange],
+  ];
+  findings.forEach(([num, heading, body, fill, accent], index) => {
+    const top = 384 + index * 72;
+    rect(slide, 64, top, 1152, 56, fill, true, accent);
+    pill(slide, num, 82, top + 13, 30, accent, C.white);
+    textBox(slide, heading, 132, top + 10, 250, 22, { fontSize: 15, bold: true, color: accent });
+    textBox(slide, body, 394, top + 8, 796, 40, { fontSize: 14, verticalAlignment: "middle" });
+  });
+
+  rect(slide, 64, 612, 1152, 42, C.deep, true);
+  textBox(slide, "The causal gain sits in a distributed coordinate state, not in one specialized attention head.", 84, 622, 1112, 20, { fontSize: 16, bold: true, color: C.white, alignment: "center" });
+  footer(slide, "Within-image causal panel · not an independent-image benchmark or a single-head circuit claim");
+  slide.speakerNotes.textFrame.setText("8:20–9:20 — Lead with the directly interpretable intervention. Replacing the corrupted-run Layer 15 x-coordinate residual with the clean-run state raises Holo's target-over-distractor margin by a median 1.01 nats, versus 0.10 for Qwen. Holo restoration is positive in seven of eight prompts, and the paired Holo-minus-Qwen median is +0.72 nats. Zero-ablation means setting that same coordinate residual to zero in the clean run; the median clean-margin drop is 4.51 nats for Holo and 6.27 for Qwen. Both models therefore rely on this state. Fine-tuning increases its recoverability rather than creating a Holo-exclusive necessity. The all-head sweep also rejects a single-head explanation: Holo head 1 restores 0.54 nats, but Qwen uses the same head at 0.36. Sources: data/remote-results/qwen-holo-action-panel-v1-20260922 and data/remote-results/qwen-holo-action-panel-v1-20260922-phase-b-layer15.");
+}
+
+// Legacy exploratory slides omitted from the presentation flow.
+if (false) {
 // 10 - balanced multi-item layer/head aggregate
 {
   const slide = presentation.slides.add();
@@ -988,16 +1090,18 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   slide.speakerNotes.textFrame.setText("10:55–12:00 — This is the standalone fine-tuning comparison. The layer chart teacher-forces identical oracle and distractor action tokens through the official Qwen3.5-4B base and Holo3.1-4B, using the same Holo processor, prompts, image order, and action suffixes. All five ScreenSpot probes end with a positive Holo-minus-Qwen oracle-margin shift, averaging 1.14 nats per scored token; three cross from a negative base margin to a positive Holo margin. The hotel final click ends at +0.37 nats per token, while earlier hotel steps are mixed. The top triptych is a separate paired instruction-control diagnostic on powerpoint_windows_59. Each checkpoint sees the same native-resolution screenshot and official localization prompt for the target plus four visible alternate tasks: blank presentation, Scientific discovery, Animal magnetism, and the template search box. Every task uses an independently image-derived oracle coordinate, so neither model's rollout selects a control target. We separately L1-normalize the five value-norm maps, subtract the mean control map from the target map within each checkpoint, then subtract Qwen from Holo. The target-minus-control mass is 13.15 percentage points for Qwen and 12.37 for Holo, so the paired Holo-minus-Qwen change is −0.78 point. Leave-one-control-out cosine remains at least 0.949 for Qwen and 0.950 for Holo. Raw attention again moves in the opposite direction at +1.36 points. This one case supports a fine-tuning shift in action preference, but not stronger value-weighted target grounding. In the three-frame hotel prompt, Holo moves value-norm image attention away from the earliest frame and toward the middle and current frames. The ScreenSpot processor grid is 56 by 90 from a 2880 by 1800 source, retaining 99.6% of source area; each hotel frame uses a 22 by 32 grid from 1024 by 720, retaining 97.8%. Attention is descriptive; the layerwise logit lens also includes each checkpoint's own final norm and unembedding. Sources: data/remote-results/delta-lens-qwen35-vs-holo31-20260921-dcd8c5e5, data/local-results/attention-delta-ppt59-controls-v1, artifacts/screenspot-presentation/delta-lens-paired-controls-v1/paired-control-attention-summary.json, and data/local-results/attention-delta-hotel-step2-native-v1.");
 }
 
-// 14 - research directions
+}
+
+// 12 - future research directions
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Research directions", "From one intervention to a causal evaluation set", 14);
+  slideTitle(slide, "Next tests", "Future research directions", 12);
   const directions = [
-    ["01", "MATCHED INTERVENTION SPLIT", "Freeze a diverse set of target–distractor swaps, pre-register coordinate margins, and report effect distributions with bootstrap intervals.", C.orangeSoft, C.orange],
-    ["02", "CAUSAL SUBSPACE SEARCH", "Test multi-head and low-rank residual subspaces. A single salient head was neither necessary nor sufficient in this case.", C.blueSoft, C.blue],
-    ["03", "LONG-HORIZON VISUAL MEMORY", "Patch target evidence across historical frames to identify when retrieval succeeds but precise action binding fails.", "#E4F4EE", C.green],
-    ["04", "DELTA-LENS DECOMPOSITION", "Separate residual changes from final norm and unembedding changes. Scale beyond five ScreenSpot probes and one hotel trace.", "#F3EBDD", C.gold],
+    ["01", "DOWNSAMPLED ATTRIBUTION COHORT", "Trace the frozen resolution cohort at every scale and compare target-specific attention for retained and lost clicks.", C.orangeSoft, C.orange],
+    ["02", "INDEPENDENT-IMAGE CAUSAL PANEL", "Repeat matched visual corruptions across applications and layouts, then report paired restoration distributions by item.", C.blueSoft, C.blue],
+    ["03", "LONG-HORIZON VISUAL MEMORY", "Remove, shuffle, and patch historical frames to separate context retrieval from final coordinate binding.", C.greenSoft, C.green],
+    ["04", "ACTION-READOUT TRAINING", "Target coordinate precision with oracle trajectories and verifiable environment reward while holding out a frozen diagnostic split.", "#F3EBDD", C.gold],
   ];
   directions.forEach(([num, title, desc, fill, accent], i) => {
     const left = i % 2 === 0 ? 64 : 650;
@@ -1009,22 +1113,22 @@ function addHeadMatrix(slide, headCase, left, top, width) {
     textBox(slide, desc, left + 26, top + 76, 512, 78, { fontSize: 16, color: C.ink });
   });
   rect(slide, 64, 550, 1152, 88, C.deep, true);
-  textBox(slide, "TRAINING LOOP", 90, 570, 156, 20, { fontSize: 13, bold: true, color: C.gold });
-  textBox(slide, "Oracle SFT, followed by measured causal recovery and GRPO + LoRA with verifiable reward", 264, 566, 902, 30, { fontSize: 21, bold: true, color: C.white, alignment: "center" });
-  textBox(slide, "Use attribution to choose interventions, not as the reward target.", 264, 602, 902, 20, { fontSize: 14, color: "#B9C3CD", alignment: "center" });
-  footer(slide, "Scale the matched protocol before making a population-level mechanism claim");
-  slide.speakerNotes.textFrame.setText("12:00–12:50 — The single-case intervention and eight-case delta lens change the agenda. Scale the matched protocol across a frozen split and report effect distributions. Search causal subspaces because the salient head was not sufficient by itself. Extend patching across historical frames to separate memory retrieval from action binding. For the delta lens, separate residual-stream changes from changes in each checkpoint’s final norm and unembedding, then expand beyond five ScreenSpot probes and one hotel trace. The training program remains oracle SFT, measured causal effects, then GRPO plus LoRA with verifiable reward. Do not optimize the heatmap itself.");
+  textBox(slide, "RESEARCH PRINCIPLE", 90, 570, 180, 20, { fontSize: 13, bold: true, color: C.gold });
+  textBox(slide, "Use attribution to choose causal tests, then evaluate interventions on held-out behavior", 284, 566, 870, 30, { fontSize: 20, bold: true, color: C.white, alignment: "center" });
+  textBox(slide, "Heatmaps guide hypotheses; task outcomes determine whether the model improved.", 284, 602, 870, 20, { fontSize: 14, color: "#B9C3CD", alignment: "center" });
+  footer(slide, "Scale across items before making a population-level mechanism claim");
+  slide.speakerNotes.textFrame.setText("9:20–10:10 — Four directions follow directly from the evidence. First, trace the existing downsampling cohort to distinguish lost visual signal from coordinate readout failure. Second, repeat the causal panel across independent images and applications. Third, intervene on historical frames to test context retrieval causally. Fourth, train coordinate precision with oracle trajectories and verifiable environment reward while keeping a frozen diagnostic split. Attribution should select hypotheses and intervention sites; behavior remains the evaluation target.");
 }
 
-// 15 - takeaways and demo
+// 13 - takeaways
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.ink;
-  slideTitle(slide, "Takeaways", "Attribution narrows the search and intervention tests the mechanism", 15, true);
+  slideTitle(slide, "Takeaways", "The evidence points to visual resolution and coordinate readout", 13, true);
   const takeaways = [
-    ["01", "Remove general awareness", "Same-image instruction controls make target-specific routing visible."],
-    ["02", "Separate routing from mechanism", "The strongest attention head did not carry the coordinate effect by itself."],
-    ["03", "Patch the target evidence", "Four target residual tokens recover one-third of the matched corruption gap."],
+    ["01", "Resolution changes grounding", "Only 4 of 36 native-success clicks survive at quarter resolution."],
+    ["02", "Attention can outlive the click", "A strict miss still places its task-specific peak inside the annotated target."],
+    ["03", "Context reaches later actions", "The successful hotel click draws value-weighted attention from all three retained frames."],
   ];
   takeaways.forEach(([num, title, desc], i) => {
     const y = 150 + i * 122;
@@ -1033,30 +1137,62 @@ function addHeadMatrix(slide, headCase, left, top, width) {
     textBox(slide, desc, 138, y + 35, 430, 48, { fontSize: 15, color: "#B7C1CB" });
   });
   rect(slide, 646, 146, 570, 414, C.white, true);
-  textBox(slide, "LIVE DEMO · 90 SECONDS", 676, 174, 320, 22, { fontSize: 13, bold: true, color: C.orange });
-  const demo = [
-    ["1", "Static hit: raw versus prompt difference", "Peak enters the selected template."],
-    ["2", "Static miss: inspect click binding", "Correct task region, wrong tiny affordance."],
-    ["3", "Hotel trace: step through four frames", "Evidence appears before the failed final click."],
-    ["4", "Matched tile swap", "Compare target-patch recovery with the head-level null."],
+  textBox(slide, "WHAT THE CAUSAL PANEL ADDS", 676, 174, 360, 22, { fontSize: 13, bold: true, color: C.orange });
+  const causalTakeaways = [
+    ["1", "Recoverable Layer 15 state", "Clean Holo state restores +1.01 nats; Qwen restores +0.10."],
+    ["2", "Shared coordinate machinery", "Zeroing the same state harms both checkpoints."],
+    ["3", "Distributed mechanism", "No single attention head explains the restoration effect."],
   ];
-  demo.forEach(([num, title, desc], i) => {
-    const y = 218 + i * 78;
-    pill(slide, num, 676, y, 38, i === 3 ? C.orange : C.deep, C.white);
+  causalTakeaways.forEach(([num, title, desc], i) => {
+    const y = 226 + i * 98;
+    pill(slide, num, 676, y, 38, i === 0 ? C.orange : C.deep, C.white);
     textBox(slide, title, 730, y + 1, 430, 24, { fontSize: 17, bold: true });
-    textBox(slide, desc, 730, y + 29, 430, 22, { fontSize: 14, color: C.muted });
+    textBox(slide, desc, 730, y + 31, 430, 38, { fontSize: 14, color: C.muted });
   });
   rect(slide, 64, 588, 1152, 50, "#202C38", true);
-  textBox(slide, "Next decisive result: repeat the matched intervention across a frozen evaluation split", 90, 598, 1098, 28, { fontSize: 20, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
-  footer(slide, "Viewers: ScreenSpot hit + miss · causal result: artifacts/causal-intervention/powerpoint_windows_59_swap/results.json", true);
-  slide.speakerNotes.textFrame.setText("12:50–13:40 — Close on three defensible conclusions. The prompt ensemble exposes target-specific routing. Correct and incorrect cases can share coarse routing while differing in precise binding. In the matched intervention, regional layer-19 residuals pass both restoration and ablation tests, while the strongest direct-attention head does not. Fine-tuning moves every ScreenSpot diagnostic margin toward the oracle, but attention weighting choices and the hotel trajectory show that internal redistribution is selective. In the live demo, show raw versus prompt differential on the hit, the static miss, the hotel frames, then the clean/corrupted pair and intervention chart. The result is one matched case, so the next claim requires a frozen evaluation split.");
+  textBox(slide, "Current hypothesis: fine-tuning improves action-state formation more clearly than target-directed visual attention", 90, 598, 1098, 28, { fontSize: 19, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
+  footer(slide, "Attention is descriptive; the eight-prompt intervention is causal within one image", true);
+  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. The strict-miss example shows that target-specific attention may remain aligned when the final coordinate falls outside. The successful hotel rollout shows that evidence from multiple retained frames reaches the final action. The causal panel adds a model-comparison result: Holo develops a more recoverable Layer 15 coordinate state than Qwen, but both models rely on the state and no single head explains it. The strongest current hypothesis is that fine-tuning improves action-state formation and coordinate extraction more clearly than it improves target-directed visual attention.");
 }
 
-// 16 - appendix: examples for the 2 x 6 diagnostic taxonomy
+// 14 - methods appendix
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Appendix", "Examples for the 12 labeled UI × action cells", 16);
+  slideTitle(slide, "Methods appendix", "From generated coordinate tokens back to image patches", 14);
+  textBox(slide, "A attention weights · V value vectors · R rolled-out token influence · M image-patch map for generated x/y value tokens", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
+  const blocks = [
+    ["1", "VALUE-NORM", "A′ = normalize(A ⊙ ‖V‖₂)", "Down-weight attention paths whose value vectors carry little magnitude", C.orangeSoft, C.orange],
+    ["2", "CROSS-LAYER ROLLOUT", "Rₗ = ½I + ½A′ₗ\nR = Rₗ ··· R₁", "Compose all eight captured full-attention blocks with residual flow", C.blueSoft, C.blue],
+    ["3", "TOKEN TO PARAMETER", "M(x,y) = meanₛ Rₛ", "Average the x/y value-token maps so token length cannot inflate a parameter", C.greenSoft, C.green],
+  ];
+  blocks.forEach(([num, label, equation, desc, fill, accent], i) => {
+    const left = 64 + i * 395;
+    rect(slide, left, 154, 356, 230, C.white, true, C.line);
+    pill(slide, num, left + 22, 175, 46, accent, C.white);
+    textBox(slide, label, left + 84, 179, 230, 22, { fontSize: 13, bold: true, color: accent });
+    rect(slide, left + 22, 220, 312, 72, fill, true);
+    textBox(slide, equation, left + 36, 232, 284, 48, { fontSize: 20, bold: true, alignment: "center", verticalAlignment: "middle" });
+    textBox(slide, desc, left + 25, 316, 304, 52, { fontSize: 15, color: C.muted, alignment: "center" });
+  });
+  textBox(slide, "The baseline determines the question", 64, 422, 500, 30, { fontSize: 22, bold: true });
+  rect(slide, 64, 468, 548, 156, C.deep, true);
+  textBox(slide, "RAW VALUE-NORM MAP", 88, 490, 260, 20, { fontSize: 13, bold: true, color: "#9FC8F0" });
+  textBox(slide, "Mtarget", 88, 526, 472, 28, { fontSize: 21, bold: true, color: C.white });
+  textBox(slide, "Where does the generated coordinate draw value-weighted attention on this image?", 88, 567, 470, 38, { fontSize: 14, color: "#B9C3CD" });
+  rect(slide, 650, 468, 566, 156, C.white, true, C.line);
+  textBox(slide, "DIVERSE-INSTRUCTION BASELINE", 676, 490, 330, 20, { fontSize: 13, bold: true, color: C.orange });
+  textBox(slide, "Mtarget − mean(Mcontrol,k)", 676, 526, 470, 28, { fontSize: 19, bold: true });
+  textBox(slide, "What remains specific to this instruction after shared image saliency is removed?", 676, 567, 470, 38, { fontSize: 14, color: C.muted });
+  footer(slide, "Target lift = positive target-minus-control mass inside the target box ÷ target-box area fraction. 1× means a uniform residual map.");
+  slide.speakerNotes.textFrame.setText("Backup methods slide — Value-norm multiplies attention weights by the corresponding value-vector magnitude before normalization. Residual-aware rollout mixes each captured full-attention matrix with identity and composes the eight matrices in model order. We average only the generated x/y value-token maps. The raw map asks where the coordinate route goes. The diverse-instruction baseline subtracts four same-image alternate tasks and asks what remains specific to the target instruction. Target lift compares positive target mass with the target's share of image area. Hybrid Gated DeltaNet layers do not expose an equivalent square attention matrix and therefore sit outside this rollout.");
+}
+
+// 15 - appendix: examples for the 2 x 6 diagnostic taxonomy
+{
+  const slide = presentation.slides.add();
+  slide.background.fill = C.paper;
+  slideTitle(slide, "Appendix", "Examples for the 12 labeled UI × action cells", 15);
   textBox(slide, "Rows use the benchmark's target-element label; columns use our instruction-verb taxonomy", 64, 118, 1152, 24, { fontSize: 14, color: C.muted });
 
   const labeledFamilies = benchmarkBreakdown.action_family_order.filter((name) => name !== "Other");
@@ -1138,15 +1274,15 @@ function addHeadMatrix(slide, headCase, left, top, width) {
 }
 
 const requirements = {
-  explicitTotalSlideCount: 16,
-  requiredNativeTableOwnerSlides: [3, 10, 16],
-  requiredNativeChartOwnerSlides: [3, 4, 5, 12, 13],
+  explicitTotalSlideCount: 15,
+  requiredNativeTableOwnerSlides: [3, 15],
+  requiredNativeChartOwnerSlides: [3, 4, 5],
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v40");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v36.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v40.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
@@ -1162,11 +1298,10 @@ const result = await finalizePresentation({
     "--validate-bullet-geometry",
     "--validate-heading-fit",
     "--require-native-table-slide", "3",
-    "--require-native-table-slide", "10",
-    "--require-native-table-slide", "16",
+    "--require-native-table-slide", "15",
   ],
-  requiredNativeTableOwnerSlides: [3, 10, 16],
-  requiredNativeChartOwnerSlides: [3, 4, 5, 12, 13],
+  requiredNativeTableOwnerSlides: [3, 15],
+  requiredNativeChartOwnerSlides: [3, 4, 5],
   fontPolicy,
   verifyArtifactToolImport: true,
   receiptPath: path.join(stagingDir, `${path.basename(FINAL_PPTX)}.validation.json`),
