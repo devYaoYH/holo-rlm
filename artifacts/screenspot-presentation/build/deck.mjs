@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v50.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v52.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -124,12 +124,6 @@ const hotelPairedDir = path.join(
   workspaceDir,
   "artifacts/screenspot-presentation/hotel-freegen-paired-v1-attribution",
 );
-const hotelPaired = JSON.parse(
-  await fs.readFile(
-    path.join(workspaceDir, "artifacts/screenspot-presentation/hotel-freegen-paired-v1-summary.json"),
-    "utf8",
-  ),
-);
 const hotelPairedTrajectory = JSON.parse(
   await fs.readFile(path.join(hotelPairedDir, "trajectory.json"), "utf8"),
 );
@@ -138,6 +132,20 @@ const hotelPairedMaps = [0, 1, 2].map((frame) => path.join(
   hotelPairedTraceDir,
   `saliency-value-norm-rollout-frame-${String(frame).padStart(3, "0")}-step-063.png`,
 ));
+const hotelMatchedBundleDir = path.join(
+  workspaceDir,
+  "data/remote-results/hotel-freegen-paired-v1-20260922/hotel-freegen-paired-v1",
+);
+const readNormalizedActions = async (checkpoint, count) => Promise.all(
+  Array.from({ length: count }, async (_, index) => JSON.parse(
+    await fs.readFile(
+      path.join(hotelMatchedBundleDir, checkpoint, "bundles/test-0010/actions", `${String(index).padStart(4, "0")}.json`),
+      "utf8",
+    ),
+  ).normalized),
+);
+const hotelMatchedHoloActions = await readNormalizedActions("holo", 3);
+const hotelMatchedQwenActions = await readNormalizedActions("qwen", 4);
 const causalDir = path.join(workspaceDir, "artifacts/causal-intervention/powerpoint_windows_59_swap");
 const causalClean = path.join(causalDir, "clean-focus.png");
 const causalCorrupted = path.join(causalDir, "corrupted-focus.png");
@@ -414,7 +422,7 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   rect(slide, 650, 144, 566, 460, C.deep, true);
   pill(slide, "MULTI-TURN", 680, 170, 120, C.orange, C.white);
   textBox(slide, "Synthetic hotel search", 680, 216, 420, 34, { fontSize: 27, bold: true, color: C.white });
-  textBox(slide, "Six paired cases, native screenshots, four-action cap", 680, 258, 454, 28, { fontSize: 18, color: "#B9C3CD" });
+  textBox(slide, "One matched case, native screenshots, four-action cap", 680, 258, 454, 28, { fontSize: 18, color: "#B9C3CD" });
   const sequence = [
     ["01", "OBSERVE", "native frame"],
     ["02", "SEARCH", "≤3 scrolls"],
@@ -430,7 +438,7 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   textBox(slide, "CAPABILITY", 680, 555, 120, 18, { fontSize: 11, bold: true, color: C.gold });
   textBox(slide, "Context retrieval across frames", 808, 551, 370, 26, { fontSize: 18, bold: true, color: "#8FE0BF" });
   footer(slide, "Static evaluation isolates localization · the hotel environment tests whether earlier visual evidence reaches a later action");
-  slide.speakerNotes.textFrame.setText("0:35–1:15 — Introduce two complementary capabilities. ScreenSpot-Pro isolates static UI localization from one screenshot and instruction. The synthetic hotel environment tests context retrieval and action formation across a sequence of screenshots. The paired pilot runs Holo and its Qwen base independently on six audited cases at native resolution, using the official HoloDesktop 0.1.10 tools, normalized coordinates, a four-action cap, and the three-screenshot retention policy. Sources: docs/screenspot-case-study.md, docs/hotel-freegen-paired-v1.md, and artifacts/screenspot-presentation/hotel-freegen-paired-v1-summary.json.");
+  slide.speakerNotes.textFrame.setText("0:35–1:15 — Introduce two complementary capabilities. ScreenSpot-Pro isolates static UI localization from one screenshot and instruction. The synthetic hotel environment tests context retrieval and action formation across a sequence of screenshots. The matched test-0010 case runs Holo and its Qwen base independently from the same frozen fixture at native resolution, using the official HoloDesktop 0.1.10 tools, normalized coordinates, a four-action cap, and the three-screenshot retention policy. The incomplete multi-case batch is excluded from the finalized evidence set because a 384-token output cap truncated four Holo responses. Sources: docs/screenspot-case-study.md and data/remote-results/hotel-freegen-paired-v1-20260922/hotel-freegen-paired-v1/{holo,qwen}/bundles/test-0010.");
 }
 
 // 3 - full ScreenSpot-Pro replication
@@ -779,43 +787,67 @@ function addHeadMatrix(slide, headCase, left, top, width) {
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Paired hotel free generation", "Holo completes 2 of 6 while Qwen completes 0 of 6", 9);
-  textBox(slide, "Six audited cases · native 1280×800 screenshots · official tools · four-action cap", 64, 118, 900, 24, { fontSize: 15, color: C.muted });
+  slideTitle(slide, "Matched hotel trajectory", "Holo clicks while Qwen continues searching", 9);
+  textBox(slide, "Exploratory n=1 · same frozen fixture · native 1280×800 screenshots · official tools", 64, 118, 900, 24, { fontSize: 15, color: C.muted });
 
-  textBox(slide, "OUTCOMES ACROSS THE PRIMARY COHORT", 64, 156, 500, 18, { fontSize: 11, bold: true, color: C.blue });
-  const outcomeChart = slide.charts.add("bar", {
-    position: { left: 64, top: 178, width: 500, height: 222 },
-    categories: ["Qwen 3.5 4B", "Holo 3.1 4B"],
-    series: [
-      { name: "Success", values: [0, 2], fill: C.green },
-      { name: "Invalid action", values: [2, 4], fill: C.orange },
-      { name: "Step limit", values: [2, 0], fill: C.gold },
-      { name: "Incorrect click", values: [2, 0], fill: C.blue },
+  textBox(slide, "SAME TARGET · FJORD COMPASS LODGE · €166", 64, 156, 500, 18, { fontSize: 11, bold: true, color: C.blue });
+  const matchedActions = [
+    ["MODEL", "TURN 1", "TURN 2", "TURN 3", "TURN 4", "OUTCOME"],
+    [
+      "Holo",
+      `scroll ${hotelMatchedHoloActions[0].delta_y}`,
+      `scroll ${hotelMatchedHoloActions[1].delta_y}`,
+      `click\n(${hotelMatchedHoloActions[2].x},${hotelMatchedHoloActions[2].y})`,
+      "—",
+      "correct click",
     ],
-    barOptions: { direction: "bar", grouping: "stacked", gapWidth: 55 },
-    hasLegend: true,
-    legend: { position: "bottom" },
-    xAxis: { minimumScale: 0, maximumScale: 6, majorUnit: 1, title: "cases" },
-    yAxis: { textStyle: { fill: C.ink, fontSize: 13, bold: true } },
-    dataLabels: { showValue: false },
-    chartFill: C.paper,
-    chartLine: { fill: "none", width: 0 },
-    plotAreaFill: C.paper,
-    plotAreaLine: { fill: "none", width: 0 },
+    [
+      "Qwen",
+      `scroll ${hotelMatchedQwenActions[0].delta_y}`,
+      `scroll ${hotelMatchedQwenActions[1].delta_y}`,
+      `scroll ${hotelMatchedQwenActions[2].delta_y}`,
+      `scroll ${hotelMatchedQwenActions[3].delta_y}`,
+      "cap reached",
+    ],
+  ];
+  const matchedTable = slide.tables.add({
+    rows: matchedActions.length,
+    columns: matchedActions[0].length,
+    left: 64,
+    top: 186,
+    width: 500,
+    height: 166,
+    values: matchedActions,
+    columnWidths: [72, 76, 76, 92, 76, 108],
+    rowHeights: [36, 64, 64],
   });
-  applyPresentationChartFont(outcomeChart, { fontFamily: family });
+  matchedTable.cells.block({ row: 0, column: 0, rowCount: matchedActions.length, columnCount: matchedActions[0].length }).assign({
+    margins: { left: 6, right: 6, top: 5, bottom: 5 },
+  });
+  matchedTable.borders.assign({ style: "solid", fill: C.paper, width: 2 });
+  for (let rowIndex = 0; rowIndex < matchedActions.length; rowIndex += 1) {
+    for (let columnIndex = 0; columnIndex < matchedActions[0].length; columnIndex += 1) {
+      const cell = matchedTable.getCell(rowIndex, columnIndex);
+      cell.fill = rowIndex === 0 ? C.deep : rowIndex === 1 ? C.greenSoft : C.blueSoft;
+      cell.text.style = {
+        typeface: family,
+        fontSize: rowIndex === 0 ? 10 : 11,
+        bold: rowIndex === 0 || columnIndex === 0 || columnIndex === 5,
+        color: rowIndex === 0 ? C.white : rowIndex === 1 && columnIndex === 5 ? C.green : rowIndex === 2 && columnIndex === 5 ? C.blue : C.ink,
+        alignment: "center",
+        verticalAlignment: "middle",
+        autoFit: "shrinkText",
+      };
+    }
+  }
 
-  textBox(slide, `${hotelPaired.holo.primary_aggregate.success_count}/6`, 64, 416, 145, 48, { fontSize: 39, bold: true, color: C.green });
-  textBox(slide, "Holo successes", 64, 462, 145, 22, { fontSize: 14, bold: true, color: C.ink });
-  textBox(slide, `${hotelPaired.qwen.primary_aggregate.success_count}/6`, 242, 416, 145, 48, { fontSize: 39, bold: true, color: C.blue });
-  textBox(slide, "Qwen successes", 242, 462, 145, 22, { fontSize: 14, bold: true, color: C.ink });
-  textBox(slide, "Holo: four malformed structured actions\nQwen: two malformed, two step-limit, two wrong clicks", 400, 420, 164, 70, { fontSize: 12, bold: true, color: C.muted });
+  textBox(slide, "BOTH TRACK €166 BY TURN 3", 64, 382, 300, 18, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "Holo sees all six prices and clicks. Qwen identifies €166 as the lowest observed price, then spends its fourth action scrolling.", 64, 410, 500, 62, { fontSize: 18, bold: true, color: C.ink });
+  rect(slide, 64, 506, 500, 116, C.white, true, C.line);
+  textBox(slide, "CLAIM BOUNDARY", 88, 526, 190, 18, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "This matched case motivates a stopping and action-readout hypothesis. It does not estimate checkpoint accuracy.", 88, 553, 452, 48, { fontSize: 16, bold: true, color: C.ink });
 
-  rect(slide, 64, 510, 500, 112, C.white, true, C.line);
-  textBox(slide, "CLAIM BOUNDARY", 88, 530, 190, 18, { fontSize: 11, bold: true, color: C.orange });
-  textBox(slide, "The pilot measures the whole action loop. It does not isolate visual understanding from formatting, stopping, or coordinate policy.", 88, 556, 452, 48, { fontSize: 15, bold: true, color: C.ink });
-
-  textBox(slide, "TRACED HOLO SUCCESS · FINAL VALUE-NORM ROLLOUT", 596, 156, 620, 18, { fontSize: 11, bold: true, color: C.blue });
+  textBox(slide, "TRACED HOLO REPLICATE · FINAL VALUE-NORM ROLLOUT", 596, 156, 620, 18, { fontSize: 11, bold: true, color: C.blue });
   textBox(slide, "HISTORY 1", 596, 181, 132, 15, { fontSize: 9, bold: true, color: C.muted, alignment: "center" });
   await image(slide, hotelPairedMaps[0], 596, 201, 132, 83, { alt: "First retained frame in the successful Holo hotel trajectory", fit: "contain", geometry: "rect", borderRadius: 0 });
   textBox(slide, "HISTORY 2", 596, 297, 132, 15, { fontSize: 9, bold: true, color: C.muted, alignment: "center" });
@@ -847,12 +879,12 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   );
 
   rect(slide, 596, 510, 620, 112, C.deep, true);
-  textBox(slide, "TRACED SUCCESS", 620, 529, 150, 18, { fontSize: 10, bold: true, color: C.green });
+  textBox(slide, "TRACED REPLICATE", 620, 529, 150, 18, { fontSize: 10, bold: true, color: C.green });
   textBox(slide, "Fjord Compass Lodge · €166", 620, 550, 300, 25, { fontSize: 19, bold: true, color: C.white });
   textBox(slide, "Two scrolls, then click (1023,216) inside the oracle button", 620, 579, 360, 20, { fontSize: 13, bold: true, color: C.orange });
   textBox(slide, "Attribution appears across all three retained frames. These maps are descriptive and do not yet subtract diverse-instruction controls.", 970, 531, 220, 70, { fontSize: 12, color: "#CBD3DB" });
   footer(slide, "Independent free generation · HoloDesktop 0.1.10 tools · normalized 0–1000 coordinates · native resolution");
-  slide.speakerNotes.textFrame.setText("6:20–7:20 — This slide now reports the paired free-generation pilot rather than a single success. The primary cohort contains six frozen cases whose deterministic route requires no more than three scrolls before the click. Holo succeeds on two of six and produces four malformed structured actions. Qwen succeeds on zero of six, with two malformed actions, two runs reaching the action cap, and two incorrect clicks. The chart therefore supports action-policy and output-contract fragility, but it does not isolate visual understanding. The visual is Holo's successful native-resolution test-0010 replicate: two scrolls followed by click (1023,216) on Fjord Compass Lodge at €166. The final value-norm rollout is rendered across the two retained history frames and the current frame. These are raw descriptive maps without same-image diverse-instruction subtraction. Qwen's corresponding traced run ends before its first executable action, so we do not present it as a matched final-click attribution comparison. Test-0000 remains archived but is excluded because its golden route requires four scrolls. Sources: artifacts/screenspot-presentation/hotel-freegen-paired-v1-summary.json; artifacts/screenspot-presentation/hotel-freegen-paired-v1-attribution/trajectory.json; docs/hotel-freegen-paired-v1.md; data/remote-results/hotel-freegen-paired-v1-20260922.");
+  slide.speakerNotes.textFrame.setText("6:20–7:20 — This slide reports one complete matched free-generation case and excludes the incomplete multi-case batch. Holo and Qwen start from the same frozen test-0010 fixture, use native 1280 by 800 screenshots, the official HoloDesktop 0.1.10 tool schema, normalized coordinates, and a four-action cap. Holo scrolls 500 pixels twice, inventories all six prices, then clicks Fjord Compass Lodge at normalized (1023,208). Qwen scrolls 250 pixels four times. By its third response, Qwen records €166 as the lowest observed price, but it spends the fourth action scrolling again and reaches the cap without clicking. This supports a stopping and action-readout hypothesis within one case, not a checkpoint accuracy claim. The visual uses a separately traced Holo replicate on the same fixture: two scrolls followed by click (1023,216). Its final value-norm rollout appears across the two retained history frames and the current frame. These maps remain descriptive and do not include same-image diverse-instruction subtraction. The larger batch is absent from the finalized evidence because a 384-token cap truncated four Holo responses. Sources: data/remote-results/hotel-freegen-paired-v1-20260922/hotel-freegen-paired-v1/holo/bundles/test-0010; data/remote-results/hotel-freegen-paired-v1-20260922/hotel-freegen-paired-v1/qwen/bundles/test-0010; artifacts/screenspot-presentation/hotel-freegen-paired-v1-attribution/trajectory.json.");
 }
 
 // 10 - causal protocol across eight mirrored prompts
@@ -1171,8 +1203,8 @@ if (false) {
   const directions = [
     ["01", "TOKEN GRID VS RESAMPLING", "Hold the visual-token grid fixed while varying blur and resampling, then vary grid size with matched image content.", C.orangeSoft, C.orange],
     ["02", "HELD-OUT CAUSAL GENERALIZATION", "Repeat the Layer 15 clean-state patch on independent screenshots, applications, and layouts with a preregistered paired test.", C.blueSoft, C.blue],
-    ["03", "CONTROL-CORRECTED VISUAL MEMORY", "Add same-image alternate-instruction controls to paired hotel histories, then remove or patch retained frames at the final click.", C.greenSoft, C.green],
-    ["04", "ACTION-CONTRACT ABLATION", "Cross checkpoint, tool-call contract, and decoding budget to separate coordinate policy from malformed JSON, extra scrolling, and premature clicks.", "#F3EBDD", C.gold],
+    ["03", "CONTROL-CORRECTED VISUAL MEMORY", "Add same-image alternate-instruction controls to the matched hotel history, then remove or patch retained frames at the final click.", C.greenSoft, C.green],
+    ["04", "STOPPING AND ACTION ABLATION", "Cross checkpoint, tool-call contract, and action budget to separate coordinate policy from continued scrolling and premature clicks.", "#F3EBDD", C.gold],
   ];
   directions.forEach(([num, title, desc, fill, accent], i) => {
     const left = i % 2 === 0 ? 64 : 650;
@@ -1185,10 +1217,10 @@ if (false) {
   });
   rect(slide, 64, 550, 1152, 88, C.deep, true);
   textBox(slide, "COMPLETED EVIDENCE", 90, 570, 190, 20, { fontSize: 13, bold: true, color: C.gold });
-  textBox(slide, "Resolution attribution, paired hotel free generation, and the Layer 15 causal panel", 286, 564, 850, 30, { fontSize: 19, bold: true, color: C.white, alignment: "center" });
+  textBox(slide, "Resolution attribution, one matched hotel trajectory, and the Layer 15 causal panel", 286, 564, 850, 30, { fontSize: 19, bold: true, color: C.white, alignment: "center" });
   textBox(slide, "The next experiments isolate image sampling, output contracts, visual memory, and held-out generalization.", 286, 601, 850, 20, { fontSize: 13, color: "#B9C3CD", alignment: "center" });
   footer(slide, "Mechanism claims now require controlled interventions beyond the completed cohorts");
-  slide.speakerNotes.textFrame.setText("9:20–10:10 — The 18-case resolution-attribution cohort is complete, so it is no longer listed as future work. The next resolution experiment should separate reduced spatial sampling from resampling artifacts by independently controlling image blur and visual-grid size. The hotel pilot motivates two tests: add same-image alternate-instruction controls to the multi-frame traces, then intervene on retained frames; and cross checkpoint with the tool-call contract and decoding budget because Holo and Qwen fail in different action-interface modes. The Layer 15 panel has a paired effect across eight mirrored prompts, but it still needs independent screenshots and applications before a broad mechanism claim. Sources: artifacts/screenspot-presentation/resolution-saliency-cohort18-v1/summary.json; artifacts/screenspot-presentation/hotel-freegen-paired-v1-summary.json; artifacts/screenspot-presentation/causal-panel-statistics-v1.json; docs/hotel-freegen-paired-v1.md.");
+  slide.speakerNotes.textFrame.setText("9:20–10:10 — The 18-case resolution-attribution cohort is complete, so it is no longer listed as future work. The next resolution experiment should separate reduced spatial sampling from resampling artifacts by independently controlling image blur and visual-grid size. The complete matched hotel case motivates two tests: add same-image alternate-instruction controls to the multi-frame trace, then intervene on retained frames; and repeat the matched comparison across new fixtures with a validated completion budget to test stopping and action readout. The Layer 15 panel has a paired effect across eight mirrored prompts, but it still needs independent screenshots and applications before a broad mechanism claim. Sources: artifacts/screenspot-presentation/resolution-saliency-cohort18-v1/summary.json; artifacts/screenspot-presentation/hotel-freegen-paired-v1-attribution/trajectory.json; artifacts/screenspot-presentation/causal-panel-statistics-v1.json.");
 }
 
 // 13 - takeaways
@@ -1199,7 +1231,7 @@ if (false) {
   const takeaways = [
     ["01", "Resolution changes grounding", "Only 4 of 36 clicks survive; cohort target mass falls 24× at quarter resolution."],
     ["02", "Attention can outlive the click", "Across reduced-resolution runs, 7 of 29 misses still rank the oracle patch first."],
-    ["03", "Action execution remains fragile", "Holo completes 2 of 6 paired hotel cases. Qwen completes 0 of 6, with failures concentrated after visual inspection."],
+    ["03", "Stopping differs in one matched case", "Both models track €166. Holo clicks after two scrolls, while Qwen keeps searching until the action cap."],
   ];
   takeaways.forEach(([num, title, desc], i) => {
     const y = 150 + i * 122;
@@ -1223,7 +1255,7 @@ if (false) {
   rect(slide, 64, 588, 1152, 50, "#202C38", true);
   textBox(slide, "Current hypothesis: fine-tuning improves action-state formation more clearly than target-directed visual attention", 90, 598, 1098, 28, { fontSize: 19, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
   footer(slide, "Attention is descriptive; the eight-prompt intervention is causal within one image", true);
-  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the balanced 18-case attribution cohort finds a 24-fold drop in median target-specific mass. Most reduced-resolution misses also lose target localization, but 7 of 29 still place the highest task-specific patch inside the annotated target. In the paired hotel pilot, Holo completes two of six audited cases and Qwen completes none. Holo's traced success carries value-weighted attention across all three retained frames, while the cohort failures are dominated by malformed actions, excess scrolling, and wrong clicks. This supports action-interface fragility after visual inspection, although the small pilot does not isolate perception from policy. The causal panel adds a model-comparison result: Holo develops a more recoverable Layer 15 coordinate state than Qwen, but both models rely on the state and no single attention head explains it. The strongest current hypothesis is that fine-tuning improves action-state formation and coordinate extraction more clearly than it improves target-directed visual attention.");
+  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the balanced 18-case attribution cohort finds a 24-fold drop in median target-specific mass. Most reduced-resolution misses also lose target localization, but 7 of 29 still place the highest task-specific patch inside the annotated target. In the complete matched hotel case, both checkpoints record €166 as the lowest observed price. Holo terminates with the correct click after two scrolls, while Qwen spends all four actions scrolling. The separately traced Holo replicate carries value-weighted attention across all three retained frames. This one case motivates a stopping and action-readout hypothesis but does not estimate checkpoint accuracy. The causal panel adds a model-comparison result: Holo develops a more recoverable Layer 15 coordinate state than Qwen, but both models rely on the state and no single attention head explains it. The strongest current hypothesis is that fine-tuning improves action-state formation and coordinate extraction more clearly than it improves target-directed visual attention.");
 }
 
 // 14 - methods appendix
@@ -1346,14 +1378,14 @@ if (false) {
 
 const requirements = {
   explicitTotalSlideCount: 15,
-  requiredNativeTableOwnerSlides: [3, 6, 15],
-  requiredNativeChartOwnerSlides: [3, 4, 5, 9],
+  requiredNativeTableOwnerSlides: [3, 6, 9, 15],
+  requiredNativeChartOwnerSlides: [3, 4, 5],
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v50");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v52");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v50.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v52.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
@@ -1370,9 +1402,10 @@ const result = await finalizePresentation({
     "--validate-heading-fit",
     "--require-native-table-slide", "3",
     "--require-native-table-slide", "6",
+    "--require-native-table-slide", "9",
     "--require-native-table-slide", "15",
   ],
-  requiredNativeTableOwnerSlides: [3, 6, 15],
+  requiredNativeTableOwnerSlides: [3, 6, 9, 15],
   requiredNativeChartOwnerSlides: [3, 4, 5],
   fontPolicy,
   verifyArtifactToolImport: true,
