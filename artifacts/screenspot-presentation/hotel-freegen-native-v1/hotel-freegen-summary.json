@@ -1,0 +1,98 @@
+{
+  "actions": [
+    {
+      "arguments": "{\"action\":\"scroll\",\"delta_y\":-500}",
+      "name": "desktop_action"
+    },
+    {
+      "arguments": "{\"action\":\"scroll\",\"delta_y\":-500}",
+      "name": "desktop_action"
+    },
+    {
+      "arguments": "{\"action\":\"click\",\"x\":634,\"y\":225}",
+      "name": "desktop_action"
+    }
+  ],
+  "assets": [
+    {
+      "frame": 0,
+      "height": 647,
+      "path": "artifacts/screenspot-presentation/hotel-freegen-native-v1/final-y-attribution-frame-0.png",
+      "sha256": "06843dcc1b4f22a73137c92e61724071644611cb5c7967bdfeedab39cc16579f",
+      "width": 330
+    },
+    {
+      "frame": 1,
+      "height": 647,
+      "path": "artifacts/screenspot-presentation/hotel-freegen-native-v1/final-y-attribution-frame-1.png",
+      "sha256": "0a3e91bea6f2fbf8a4b04fc44961359b32ef9986457432a18b94a1e606317fcc",
+      "width": 330
+    },
+    {
+      "frame": 2,
+      "height": 647,
+      "path": "artifacts/screenspot-presentation/hotel-freegen-native-v1/final-y-attribution-frame-2.png",
+      "sha256": "830210b597f3c487bd1625cb6a0b986dc77c49c56b7c3676d6b38aa3c39dc8e9",
+      "width": 330
+    }
+  ],
+  "completed_steps": 3,
+  "final_model_click": [
+    634,
+    225
+  ],
+  "final_projected_click": [
+    649,
+    162
+  ],
+  "final_y_frame_mass": [
+    0.10541756451129913,
+    0.08030228316783905,
+    0.09073571860790253
+  ],
+  "final_y_frame_share": [
+    0.3813182925817643,
+    0.29047084942562557,
+    0.32821085799261007
+  ],
+  "oracle_hotel": "test-0035-lumen-harbor-rooms",
+  "oracle_name": "Lumen Harbor Rooms",
+  "oracle_price": 122,
+  "protocol": {
+    "attributed_span": "y = 225",
+    "attribution": "value_norm_rollout",
+    "coordinates": "normalized 0-1000",
+    "downsampled_before_model": false,
+    "generation": "free",
+    "input_resolution": [
+      1024,
+      720
+    ],
+    "max_pixels": 16777216,
+    "patch_grid": [
+      22,
+      32
+    ],
+    "teacher_forcing": false
+  },
+  "recall_stress_controls": {
+    "completed_steps": [
+      0,
+      0
+    ],
+    "items": [
+      "test-0015",
+      "test-0075"
+    ],
+    "model_native_arguments": "{\"action\":\"scroll\",\"-delta_y\":-500}",
+    "outcome": "invalid tool call before first action"
+  },
+  "schema_version": 1,
+  "selected_hotel": "test-0035-juniper-signal-inn",
+  "selected_name": "Juniper Signal Inn",
+  "selected_price": 312,
+  "source_archive_sha256": "32a18a4c053b60127f52e2ddc449351b00250c3a20c7e05be2f5fda410f84843",
+  "task_success": false,
+  "trace_id": "trace-20260922T035643Z-a6a081aa747b",
+  "trajectory_id": "traj-20260922T035615Z-0b7c877373"
+}

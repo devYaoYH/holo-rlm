@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.909.61513/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v31.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v32.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -90,20 +90,16 @@ const slide7PromptDifference = path.join(
   slide67NativeDir,
   "powerpoint_windows_54/prompt_difference-context.png",
 );
-const nativeSaliencyDir = path.join(
+const hotelFreegenDir = path.join(
   workspaceDir,
-  "artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1",
+  "artifacts/screenspot-presentation/hotel-freegen-native-v1",
 );
-const nativeSaliency = JSON.parse(
-  await fs.readFile(path.join(nativeSaliencyDir, "native-saliency-summary.json"), "utf8"),
+const hotelFreegen = JSON.parse(
+  await fs.readFile(path.join(hotelFreegenDir, "hotel-freegen-summary.json"), "utf8"),
 );
-const hotelNativeDiffMaps = [0, 1, 2].map((frame) =>
-  path.join(
-    nativeSaliencyDir,
-    `hotel_test_0035_large_ui_step_2/holo-value-norm-frame-${frame}.png`,
-  ),
+const hotelFreegenMaps = [0, 1, 2].map((frame) =>
+  path.join(hotelFreegenDir, `final-y-attribution-frame-${frame}.png`),
 );
-const hotelNative = nativeSaliency.groups.hotel_test_0035_large_ui_step_2.methods.value_norm_attention;
 const causalDir = path.join(workspaceDir, "artifacts/causal-intervention/powerpoint_windows_59_swap");
 const causalClean = path.join(causalDir, "clean-focus.png");
 const causalCorrupted = path.join(causalDir, "corrupted-focus.png");
@@ -655,26 +651,47 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   slide.speakerNotes.textFrame.setText("5:05–6:00 — This is the failure case under the same full-resolution official protocol and the same four-control baseline design. Holo freely emits (124,73), projecting to (357.1,131.4) pixels. The x coordinate is inside the annotated proofing-language control, while y falls 7.4 pixels below its bottom edge. After value-norm rollout and subtraction of four same-image controls—Check accessibility, Translate, Add comment, and Show comments—the peak patch is still inside the oracle. The tiny box receives 17.15% of positive residual mass, a 278.6x lift, and the leave-one-control-out floor is 0.951. This is consistent with a localized visual route but an imprecise action readout. It does not prove that attention caused the miss. Source: data/remote-results/slide67-native-controls-20260922 and artifacts/screenspot-presentation/slide67-native-contrast-v1.");
 }
 
-// 8 - native-resolution multi-turn trajectory
+// 8 - native-resolution free multi-turn trajectory
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Descriptive attribution", "The action path resolves onto the cheapest button", 8);
-  textBox(slide, "Value-norm target minus 4 same-history alternate instructions on teacher-forced x/y tokens", 64, 122, 930, 25, { fontSize: 15, color: C.muted });
-  pill(slide, "GREEN BOX = ORACLE", 1000, 119, 216, C.deep, C.white);
-  const labels = ["FRAME 0 · TOP RESULTS", "FRAME 1 · MID LIST", "FRAME 2 · CHEAPEST VISIBLE"];
-  for (let i = 0; i < hotelNativeDiffMaps.length; i += 1) {
-    const x = 64 + i * 386;
-    await image(slide, hotelNativeDiffMaps[i], x, 166, 370, 260, { alt: `Native-resolution hotel prompt-differential frame ${i}` });
-    pill(slide, labels[i], x + 12, 438, 250, i === 2 ? C.orange : C.deep, C.white);
+  slideTitle(slide, "Free multi-turn rollout", "Holo scans all three frames—then clicks the wrong hotel", 8);
+  textBox(slide, "Native 1024×720 · no teacher forcing · final y-coordinate value-norm rollout across retained frames", 64, 118, 950, 24, { fontSize: 15, color: C.muted });
+  pill(slide, "ORANGE = CLICK · GREEN = ORACLE", 948, 115, 268, C.deep, C.white);
+
+  const labels = ["FRAME 0 · SCROLL −500", "FRAME 1 · SCROLL −500", "FRAME 2 · CLICK (634,225)"];
+  const panelLefts = [64, 328, 592];
+  for (let i = 0; i < hotelFreegenMaps.length; i += 1) {
+    textBox(slide, labels[i], panelLefts[i], 151, 240, 18, { fontSize: 11, bold: true, color: i === 2 ? C.orange : C.blue, alignment: "center" });
+    await image(slide, hotelFreegenMaps[i], panelLefts[i], 176, 240, 460, {
+      alt: `Final click y-coordinate value-norm attribution over retained hotel frame ${i}`,
+      fit: "contain",
+      geometry: "rect",
+      borderRadius: 0,
+    });
   }
-  metricCard(slide, 64, 492, 350, "Holo target-box differential", `${(hotelNative.tuned.prompt_difference_target_region_mass * 100).toFixed(2)} pp`, C.orange, "34.5% of positive residual mass");
-  metricCard(slide, 432, 492, 350, "Holo − Qwen", `+${(hotelNative.delta_prompt_difference_target_region_mass * 100).toFixed(2)} pp`, C.green, "same images, history, and controls");
-  metricCard(slide, 800, 492, 416, "Control stability", hotelNative.tuned.minimum_leave_one_out_cosine.toFixed(3), C.blue, "minimum leave-one-control-out cosine");
-  rect(slide, 64, 616, 1152, 46, C.deep, true);
-  textBox(slide, "The current frame carries 68.1% of Holo's positive prompt differential; the oracle button alone carries 34.5%.", 84, 626, 1112, 26, { fontSize: 17, bold: true, color: C.white, alignment: "center" });
-  footer(slide, "Native 1024×720 → 22×32 per frame · identical 3-frame / 2-scroll history · no max-width downsampling");
-  slide.speakerNotes.textFrame.setText("6:00–7:10 — This rerun uses the exact three 1024×720 trajectory frames at the checkpoint-native 16,777,216-pixel ceiling, producing a 22×32 merged-token grid per frame. Every condition receives the same neutral user setup, the same two teacher-forced scroll actions, and the same image bytes. The generic official hotel system prompt is retained; only the final visible-target instruction changes. Four controls request Juniper's button, Ember's button, the Lumen name, or the StayLocal logo, each with an independently curated oracle coordinate. Holo's value-norm target-box differential is 10.74 percentage points, versus 6.55 for base Qwen, a +4.19-point delta. Minimum leave-one-control-out cosine is 0.957. The current frame carries 68.1% of Holo's positive prompt differential, and the cheapest button carries 34.5%. This is a teacher-forced routing diagnostic, not a free-generation accuracy result. It shows that the final coordinate-token path can retrieve the sequence and bind to the visible cheapest affordance when resolution is preserved. Source: artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1/native-saliency-summary.json.");
+
+  rect(slide, 864, 151, 352, 485, C.deep, true);
+  pill(slide, "FREE ROLLOUT · FAIL", 890, 177, 170, C.orange, C.white);
+  textBox(slide, "312", 890, 224, 100, 42, { fontSize: 34, bold: true, color: C.orange });
+  textBox(slide, "Juniper selected", 990, 228, 190, 24, { fontSize: 16, bold: true, color: C.white });
+  textBox(slide, "122", 890, 270, 100, 42, { fontSize: 34, bold: true, color: C.green });
+  textBox(slide, "Lumen oracle", 990, 274, 190, 24, { fontSize: 16, bold: true, color: C.white });
+  rect(slide, 890, 326, 300, 1, "#465563");
+  textBox(slide, "FINAL y-TOKEN ROUTING", 890, 346, 250, 18, { fontSize: 11, bold: true, color: C.gold });
+  const frameShares = hotelFreegen.final_y_frame_share.map((value) => value * 100);
+  frameShares.forEach((share, index) => {
+    const y = 378 + index * 38;
+    textBox(slide, `F${index}`, 890, y, 26, 20, { fontSize: 12, bold: true, color: C.white });
+    rect(slide, 922, y + 2, 210, 16, "#465563", true);
+    rect(slide, 922, y + 2, 210 * share / 45, 16, index === 2 ? C.orange : C.blue, true);
+    textBox(slide, `${share.toFixed(1)}%`, 1140, y - 1, 50, 20, { fontSize: 12, bold: true, color: C.white, alignment: "right" });
+  });
+  textBox(slide, "All three frames contribute to the coordinate decision; routing across history is present, but the final action is wrong.", 890, 500, 300, 60, { fontSize: 15, bold: true, color: C.white });
+  rect(slide, 890, 573, 300, 46, "#2A3845", true);
+  textBox(slide, "2/2 earlier-target controls emitted invalid ‘−delta_y’ before action.", 904, 581, 272, 32, { fontSize: 12, color: "#F2BDAF", alignment: "center", verticalAlignment: "middle" });
+  footer(slide, "Official Holo harness/system prompt · normalized 0–1000 click → 649×162 px · no pre-model downsampling");
+  slide.speakerNotes.textFrame.setText("6:00–7:10 — This is a genuine free Holo rollout, not the teacher-forced hotel probe used later in the delta lens. The official harness/system prompt is used unchanged. The model receives three native 1024x720 frames at the 16,777,216-pixel ceiling, each represented as a 22x32 merged-token grid, and generates scroll -500, scroll -500, then click (634,225) in normalized 0-1000 coordinates. That projects to pixel (649,162) and opens Juniper Signal Inn at 312, although Lumen Harbor Rooms at 122 is fully visible in the same final frame. The displayed maps are value-norm rollout for the generated y-coordinate tokens. Their positive mass is distributed 38.1%, 29.0%, and 32.8% across frames 0, 1, and 2, so the sequence is being routed into the action decision. This does not prove semantic understanding, but it localizes the observed failure downstream of simply ignoring the history. Two separate earlier-target recall cases independently emitted an invalid model-native tool argument, minus-delta_y, before taking any action, reinforcing the action-format weakness. Source: artifacts/screenspot-presentation/hotel-freegen-native-v1/hotel-freegen-summary.json and data/remote-results/hotel-freegen-native-20260922.");
 }
 
 // 9 - balanced multi-item layer/head aggregate
@@ -1054,7 +1071,7 @@ const requirements = {
 const fontPolicy = { basis: "design", families: [family] };
 const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v31.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v32.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
