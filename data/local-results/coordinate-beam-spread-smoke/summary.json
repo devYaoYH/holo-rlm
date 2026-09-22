@@ -1,0 +1,181 @@
+{
+  "aggregate": {
+    "all_beams_format_valid_count": 1,
+    "any_beam_hit_count": 1,
+    "case_count": 1,
+    "mean_rms_radius": 2.5495097567963922,
+    "mean_unique_coordinate_count": 4.0,
+    "runtime_seconds": 143.50477862497792,
+    "top1_hit_count": 1
+  },
+  "claim_boundary": "Small feasibility pilot on a selected native-success cohort. Beam spread is a diagnostic uncertainty signal, not yet a calibrated confidence estimate or evidence that adaptive cropping improves accuracy.",
+  "configuration": {
+    "coordinate_contract": "integer x/y in normalized 0-1000 space",
+    "image_max_pixels": 16777216,
+    "image_min_pixels": 65536,
+    "linear_scale": 0.25,
+    "max_new_tokens": 64,
+    "num_beams": 4,
+    "num_return_sequences": 4,
+    "resize": "PIL Lanczos before the checkpoint processor",
+    "sample_ids": [
+      "powerpoint_windows_59"
+    ]
+  },
+  "created_at": "2026-09-22T15:12:10.008917+00:00",
+  "experiment": "coordinate_beam_spread_pilot_v1",
+  "inference_protocol": "hcompany_element_localization_v1",
+  "method": "deterministic beam search over the official normalized x/y JSON action sequence",
+  "model": {
+    "architectures": [
+      "Qwen3_5ForConditionalGeneration"
+    ],
+    "attention_implementation_profile": null,
+    "attention_layer_indices": [
+      3,
+      7,
+      11,
+      15,
+      19,
+      23,
+      27,
+      31
+    ],
+    "device": "mps",
+    "dtype": "bfloat16",
+    "eager_attention": false,
+    "image_max_pixels": 16777216,
+    "image_min_pixels": 65536,
+    "image_token_id": 248056,
+    "load_strategy": "stream",
+    "model_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+    "model_revision": "8c88265a5a159bfd1492db9243733dd2e6e04a6e",
+    "model_type": "qwen3_5",
+    "processor_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+    "torch_version": "2.14.0",
+    "transformers_version": "5.17.0",
+    "vision_config": {
+      "deepstack_visual_indexes": [],
+      "depth": 24,
+      "dtype": "float32",
+      "hidden_act": "gelu_pytorch_tanh",
+      "hidden_size": 1024,
+      "in_channels": 3,
+      "initializer_range": 0.02,
+      "intermediate_size": 4096,
+      "model_type": "qwen3_5_vision",
+      "num_heads": 16,
+      "num_position_embeddings": 2304,
+      "out_hidden_size": 2560,
+      "patch_size": 16,
+      "spatial_merge_size": 2,
+      "temporal_patch_size": 2
+    }
+  },
+  "results": [
+    {
+      "any_beam_hits_oracle": true,
+      "application": "powerpoint",
+      "candidates": [
+        {
+          "coordinate": {
+            "x": 485,
+            "y": 344
+          },
+          "format_valid": true,
+          "hits_oracle": true,
+          "rank": 1,
+          "sequence_score": -0.5357552766799927,
+          "source_pixel": {
+            "x": 1396.8,
+            "y": 619.2
+          },
+          "text": "{\"x\":485,\"y\":344}"
+        },
+        {
+          "coordinate": {
+            "x": 485,
+            "y": 349
+          },
+          "format_valid": true,
+          "hits_oracle": true,
+          "rank": 2,
+          "sequence_score": -0.5357552766799927,
+          "source_pixel": {
+            "x": 1396.8,
+            "y": 628.2
+          },
+          "text": "{\"x\":485,\"y\":349}"
+        },
+        {
+          "coordinate": {
+            "x": 483,
+            "y": 343
+          },
+          "format_valid": true,
+          "hits_oracle": true,
+          "rank": 3,
+          "sequence_score": -0.53797447681427,
+          "source_pixel": {
+            "x": 1391.04,
+            "y": 617.4
+          },
+          "text": "{\"x\":483,\"y\":343}"
+        },
+        {
+          "coordinate": {
+            "x": 483,
+            "y": 344
+          },
+          "format_valid": true,
+          "hits_oracle": true,
+          "rank": 4,
+          "sequence_score": -0.53797447681427,
+          "source_pixel": {
+            "x": 1391.04,
+            "y": 619.2
+          },
+          "text": "{\"x\":483,\"y\":344}"
+        }
+      ],
+      "instruction": "Create a \"Psychedelic vibrant\" presentation",
+      "linear_scale": 0.25,
+      "low_resolution_size": [
+        720,
+        450
+      ],
+      "oracle_bbox_source_pixels": [
+        1289.0,
+        563.0,
+        1489.0,
+        702.0
+      ],
+      "prompt_tokens": 492,
+      "runtime_seconds": 143.00750254199374,
+      "sample_id": "powerpoint_windows_59",
+      "source_image_sha256": "715c393ead252d51217fb228e1c0d3a92516db39cb000147568d64da764ce07f",
+      "source_image_size": [
+        2880,
+        1800
+      ],
+      "spread": {
+        "centroid": {
+          "x": 484.0,
+          "y": 345.0
+        },
+        "hit_count": 4,
+        "hit_fraction": 1.0,
+        "max_pairwise_distance": 6.324555320336759,
+        "max_pairwise_fraction_of_diagonal": 0.00447213595499958,
+        "rms_radius": 2.5495097567963922,
+        "std_x": 1.0,
+        "std_y": 2.345207879911715,
+        "unique_count": 4,
+        "valid_count": 4
+      },
+      "top1_hits_oracle": true,
+      "ui_type": "text"
+    }
+  ],
+  "schema_version": 1
+}

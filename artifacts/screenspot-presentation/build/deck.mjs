@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v55.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v58.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -82,6 +82,14 @@ const causalPanelStats = JSON.parse(
     "utf8",
   ),
 );
+const coordinateBeamPilot = JSON.parse(
+  await fs.readFile(
+    path.join(workspaceDir, "artifacts/screenspot-presentation/coordinate-beam-spread-pilot-v1.json"),
+    "utf8",
+  ),
+);
+const coordinateBeamHit = coordinateBeamPilot.cases.find((row) => row.known_quarter_resolution_outcome === "correct");
+const coordinateBeamMiss = coordinateBeamPilot.cases.find((row) => row.known_quarter_resolution_outcome === "incorrect");
 const resolutionSaliencyMaps = [100, 75, 50, 25].map((scale) =>
   path.join(resolutionSaliencyDir, `scale-${scale}.png`),
 );
@@ -1195,39 +1203,11 @@ if (false) {
 
 }
 
-// 12 - future research directions
-{
-  const slide = presentation.slides.add();
-  slide.background.fill = C.paper;
-  slideTitle(slide, "Next tests", "Completed evidence narrows the next experiments", 12);
-  const directions = [
-    ["01", "TOKEN GRID VS RESAMPLING", "Hold the visual-token grid fixed while varying blur and resampling, then vary grid size with matched image content.", C.orangeSoft, C.orange],
-    ["02", "HELD-OUT CAUSAL GENERALIZATION", "Repeat the Layer 15 clean-state patch on independent screenshots, applications, and layouts with a preregistered paired test.", C.blueSoft, C.blue],
-    ["03", "CONTROL-CORRECTED VISUAL MEMORY", "Add same-image alternate-instruction controls to the matched hotel history, then remove or patch retained frames at the final click.", C.greenSoft, C.green],
-    ["04", "STOPPING AND ACTION ABLATION", "Cross checkpoint, tool-call contract, and action budget to separate coordinate policy from continued scrolling and premature clicks.", "#F3EBDD", C.gold],
-  ];
-  directions.forEach(([num, title, desc, fill, accent], i) => {
-    const left = i % 2 === 0 ? 64 : 650;
-    const top = i < 2 ? 148 : 350;
-    rect(slide, left, top, 566, 176, C.white, true, C.line);
-    pill(slide, num, left + 22, top + 22, 48, accent, C.white);
-    rect(slide, left + 88, top + 22, 446, 31, fill, true);
-    textBox(slide, title, left + 102, top + 28, 418, 20, { fontSize: 13, bold: true, color: accent });
-    textBox(slide, desc, left + 26, top + 76, 512, 78, { fontSize: 16, color: C.ink });
-  });
-  rect(slide, 64, 550, 1152, 88, C.deep, true);
-  textBox(slide, "COMPLETED EVIDENCE", 90, 570, 190, 20, { fontSize: 13, bold: true, color: C.gold });
-  textBox(slide, "Resolution attribution, one matched hotel trajectory, and the Layer 15 causal panel", 286, 564, 850, 30, { fontSize: 19, bold: true, color: C.white, alignment: "center" });
-  textBox(slide, "The next experiments isolate image sampling, output contracts, visual memory, and held-out generalization.", 286, 601, 850, 20, { fontSize: 13, color: "#B9C3CD", alignment: "center" });
-  footer(slide, "Mechanism claims now require controlled interventions beyond the completed cohorts");
-  slide.speakerNotes.textFrame.setText("9:20–10:10 — The 18-case resolution-attribution cohort is complete, so it is no longer listed as future work. The next resolution experiment should separate reduced spatial sampling from resampling artifacts by independently controlling image blur and visual-grid size. The complete matched hotel case motivates two tests: add same-image alternate-instruction controls to the multi-frame trace, then intervene on retained frames; and repeat the matched comparison across new fixtures with a validated completion budget to test stopping and action readout. The Layer 15 panel has a paired effect across eight mirrored prompts, but it still needs independent screenshots and applications before a broad mechanism claim. Sources: artifacts/screenspot-presentation/resolution-saliency-cohort18-v1/summary.json; artifacts/screenspot-presentation/hotel-freegen-paired-v1-attribution/trajectory.json; artifacts/screenspot-presentation/causal-panel-statistics-v1.json.");
-}
-
-// 13 - takeaways
+// 12 - takeaways
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.ink;
-  slideTitle(slide, "Key takeaways", "Resolution shapes grounding\nFine-tuning strengthens recoverable action state", 13, true);
+  slideTitle(slide, "Key takeaways", "Resolution shapes grounding\nFine-tuning strengthens recoverable action state", 12, true);
   const takeaways = [
     ["01", "Resolution changes grounding", "Only 4 of 36 clicks survive; cohort target mass falls 24× at quarter resolution."],
     ["02", "Attention can outlive the click", "Across reduced-resolution runs, 7 of 29 misses still rank the oracle patch first."],
@@ -1254,8 +1234,65 @@ if (false) {
   });
   rect(slide, 64, 588, 1152, 50, "#202C38", true);
   textBox(slide, "Working interpretation: fine-tuning improves coordinate readout more clearly than value-weighted target grounding", 90, 598, 1098, 28, { fontSize: 19, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
-  footer(slide, "End of main deck. Attention is descriptive. The eight-prompt intervention is causal within one image.", true);
-  slide.speakerNotes.textFrame.setText("10:10–11:10 — Close the main deck on the combined evidence. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the balanced 18-case attribution cohort finds a 24-fold drop in median target-specific mass. Most reduced-resolution misses also lose target localization, but 7 of 29 still place the highest task-specific patch inside the annotated target. In the complete matched hotel case, both checkpoints record €166 as the lowest observed price. Holo terminates with the correct click after two scrolls, while Qwen spends all four actions scrolling. The separately traced Holo replicate carries value-weighted attention across all three retained frames. This one case motivates a stopping and action-readout hypothesis but does not estimate checkpoint accuracy. The causal panel adds the strongest model-comparison evidence: Holo develops a more recoverable Layer 15 coordinate state than Qwen, while both models rely on that state and no single attention head explains the effect. The current hypothesis is that fine-tuning strengthens action-state formation and coordinate extraction more clearly than value-weighted target grounding. Slides A1 and A2 are backup material for methods and benchmark taxonomy.");
+  footer(slide, "Attention is descriptive. The eight-prompt intervention is causal within one image.", true);
+  slide.speakerNotes.textFrame.setText("9:20–10:20 — Synthesize the evidence before the proposal. ScreenSpot replication shows that geometry and resolution strongly condition localization. Only four of 36 native-success clicks survive at quarter resolution, and the balanced 18-case attribution cohort finds a 24-fold drop in median target-specific mass. Most reduced-resolution misses also lose target localization, but 7 of 29 still place the highest task-specific patch inside the annotated target. In the complete matched hotel case, both checkpoints record €166 as the lowest observed price. Holo terminates with the correct click after two scrolls, while Qwen spends all four actions scrolling. This one case motivates a stopping and action-readout hypothesis but does not estimate checkpoint accuracy. The causal panel adds the strongest model-comparison evidence: Holo develops a more recoverable Layer 15 coordinate state than Qwen, while both models rely on that state and no single attention head explains the effect. The working interpretation is that fine-tuning strengthens action-state formation and coordinate extraction more clearly than value-weighted target grounding. Transition to the final proposal: use test-time uncertainty to spend resolution only where the action remains unstable.");
+}
+
+// 13 - research proposal
+{
+  const slide = presentation.slides.add();
+  slide.background.fill = C.paper;
+  slideTitle(slide, "Research proposal", "Adaptive-resolution coordinate search", 13);
+  textBox(slide, "Can uncertainty route only hard cases to a higher-resolution pass?", 64, 118, 900, 24, { fontSize: 16, color: C.muted });
+
+  textBox(slide, "PROPOSED TEST-TIME LOOP", 64, 160, 760, 18, { fontSize: 11, bold: true, color: C.blue });
+  const stages = [
+    ["1", "LOW-RES PASS", "Start at 25% linear resolution", C.blueSoft, C.blue],
+    ["2", "CANDIDATES", "Decode K coordinates in parallel", C.orangeSoft, C.orange],
+    ["3", "UNCERTAINTY", "Spatial spread plus token confidence", "#F3EBDD", C.gold],
+    ["4", "ROUTE", "Tight: click\nBroad: crop", C.greenSoft, C.green],
+    ["5", "REFINE", "Raise resolution until stable or native", "#E9EDF1", C.deep],
+  ];
+  stages.forEach(([num, heading, body, fill, accent], index) => {
+    const left = 64 + index * 155;
+    rect(slide, left, 190, 140, 122, fill, true, accent);
+    pill(slide, num, left + 12, 202, 34, accent, C.white);
+    textBox(slide, heading, left + 14, 241, 112, 20, { fontSize: 11, bold: true, color: accent, alignment: "center" });
+    textBox(slide, body, left + 12, 268, 116, 34, { fontSize: 12, color: C.ink, alignment: "center", verticalAlignment: "middle" });
+    if (index < stages.length - 1) rect(slide, left + 140, 248, 15, 4, C.muted, true);
+  });
+  rect(slide, 64, 336, 760, 146, C.white, true, C.line);
+  textBox(slide, "RESEARCH WEDGE", 88, 358, 180, 18, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "Deterministic beams are a cheap baseline, but the pilot shows false consensus.", 88, 388, 690, 28, { fontSize: 20, bold: true, color: C.ink });
+  textBox(slide, "Test temperature-sampled coordinates plus token confidence, then crop only uncertain cases. The target is a better accuracy–latency frontier for Holo 4B, without weight updates or hidden activations.", 88, 426, 690, 42, { fontSize: 14, color: C.muted });
+
+  rect(slide, 854, 160, 362, 322, C.deep, true);
+  textBox(slide, "LOCAL FEASIBILITY · n=2", 880, 182, 280, 18, { fontSize: 11, bold: true, color: C.gold });
+  textBox(slide, "Quarter-resolution deterministic beams", 880, 208, 300, 24, { fontSize: 16, bold: true, color: C.white });
+  textBox(slide, "KNOWN HIT", 880, 250, 120, 18, { fontSize: 10, bold: true, color: C.green });
+  textBox(slide, `${coordinateBeamHit.rms_radius_normalized.toFixed(2)} spread`, 880, 272, 146, 30, { fontSize: 24, bold: true, color: C.white });
+  textBox(slide, `${coordinateBeamHit.beam_hit_count}/4 beams hit`, 1034, 278, 142, 20, { fontSize: 13, color: "#BDE7D8", alignment: "right" });
+  rect(slide, 880, 314, 300, 1, "#465563");
+  textBox(slide, "KNOWN MISS", 880, 334, 120, 18, { fontSize: 10, bold: true, color: C.orange });
+  textBox(slide, `${coordinateBeamMiss.rms_radius_normalized.toFixed(2)} spread`, 880, 356, 146, 30, { fontSize: 24, bold: true, color: C.white });
+  textBox(slide, `${coordinateBeamMiss.beam_hit_count}/4 beams hit`, 1034, 362, 142, 20, { fontSize: 13, color: "#F6B9AA", alignment: "right" });
+  rect(slide, 880, 400, 300, 54, C.orange, true);
+  textBox(slide, "The wrong case clustered more tightly.", 894, 412, 272, 30, { fontSize: 15, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
+
+  const proposalChecks = [
+    ["HYPOTHESIS", "Adaptive routing recovers low-resolution misses while skipping a second pass on easy cases."],
+    ["EVALUATION", "Strict click accuracy against pixels processed and p50/p95 latency on the 36-case native-success cohort."],
+    ["BASELINES", "Quarter and native single pass, fixed two-pass zoom, deterministic beams, and stochastic uncertainty gating."],
+  ];
+  proposalChecks.forEach(([heading, body], index) => {
+    const left = 64 + index * 394;
+    textBox(slide, heading, left, 520, 330, 18, { fontSize: 11, bold: true, color: index === 0 ? C.green : index === 1 ? C.blue : C.orange });
+    textBox(slide, body, left, 548, 348, 62, { fontSize: 15, bold: true, color: C.ink });
+  });
+  rect(slide, 64, 630, 1152, 32, C.deep, true);
+  textBox(slide, "Adjacent to AutoFocus, UI-Zoomer, and ZoomClick · Holo-specific test of cheap beams, calibrated routing, and latency", 84, 637, 1112, 18, { fontSize: 12, bold: true, color: C.white, alignment: "center" });
+  footer(slide, "End of main deck. Two-case pilot tests feasibility, not benchmark accuracy or calibration.");
+  slide.speakerNotes.textFrame.setText("10:20–11:20 — End on one focused research proposal. Start with a low-resolution image, produce a batched coordinate ensemble, estimate uncertainty, and route only uncertain cases to a crop-and-resize pass. Repeat until the coordinate distribution is sufficiently stable or the crop reaches native resolution. The proposal is black-box at test time: no model updates and no hidden activations. Our first local Metal feasibility check used the official H Company localization prompt and VisualLocalizerOutput contract on two previously native-correct ScreenSpot-Pro items at 25 percent linear resolution. Four deterministic beams were valid and distinct in both cases. On the known quarter-resolution hit, RMS coordinate radius was 2.55 normalized units and all four beams hit. On the known miss, radius was only 1.12 and no beam hit; all candidates shared x equals 15 and differed only by adjacent y values. Deterministic top-beam spread therefore shows false consensus and cannot serve as the gate by itself. The next experiment should compare deterministic beams with temperature-sampled coordinate candidates plus token confidence, then test whether a calibrated gate recovers low-resolution misses while avoiding a second pass on easy cases. This direction overlaps materially with AutoFocus and UI-Zoomer, which already use sampled coordinate uncertainty for adaptive visual search, and with ZoomClick's training-free zoom prior. The research wedge is narrower: Holo-specific evaluation, deterministic beams as a cheap baseline, a resolution ladder rather than unconditional native inference, and a mechanistic link to the recoverable action state observed in this deck. InnerZoom provides an important white-box efficiency comparison because it avoids the second forward pass by reinjecting intermediate evidence. Sources: artifacts/screenspot-presentation/coordinate-beam-spread-pilot-v1.json; data/local-results/coordinate-beam-spread-smoke/summary.json; data/local-results/coordinate-beam-spread-vscode0-v1/summary.json; https://arxiv.org/abs/2605.02630; https://arxiv.org/abs/2604.14113; https://arxiv.org/abs/2512.05941; https://arxiv.org/abs/2606.30084.");
 }
 
 // 14 - methods appendix
@@ -1383,9 +1420,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v55");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v58");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v55.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v58.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "experiment": "coordinate_beam_spread_pilot_v1",
+  "model": "Hcompany/Holo-3.1-4B",
+  "device": "mps",
+  "dtype": "bfloat16",
+  "inference_protocol": "hcompany_element_localization_v1",
+  "linear_scale": 0.25,
+  "coordinate_contract": "integer x/y in normalized 0-1000 space",
+  "beam_count": 4,
+  "cases": [
+    {
+      "sample_id": "powerpoint_windows_59",
+      "instruction": "Create a \"Psychedelic vibrant\" presentation",
+      "known_quarter_resolution_outcome": "correct",
+      "valid_beams": 4,
+      "unique_coordinates": 4,
+      "coordinates": [[485, 344], [485, 349], [483, 343], [483, 344]],
+      "rms_radius_normalized": 2.5495097567963922,
+      "max_pairwise_distance_normalized": 6.324555320336759,
+      "beam_hit_count": 4,
+      "runtime_seconds": 143.01,
+      "source": "data/local-results/coordinate-beam-spread-smoke/summary.json"
+    },
+    {
+      "sample_id": "vscode_macos_0",
+      "instruction": "Refresh the file explorer.",
+      "known_quarter_resolution_outcome": "incorrect",
+      "valid_beams": 4,
+      "unique_coordinates": 4,
+      "coordinates": [[15, 171], [15, 172], [15, 173], [15, 174]],
+      "rms_radius_normalized": 1.118033988749895,
+      "max_pairwise_distance_normalized": 3.0,
+      "beam_hit_count": 0,
+      "runtime_seconds": 185.81,
+      "source": "data/local-results/coordinate-beam-spread-vscode0-v1/summary.json"
+    }
+  ],
+  "finding": "The incorrect case produced a tighter deterministic beam cluster than the correct case. Top-beam coordinate spread alone is not a monotonic uncertainty signal in this two-case feasibility pilot.",
+  "next_test": "Compare deterministic beams with temperature-sampled coordinate ensembles and token confidence, then test whether a calibrated gate can route uncertain cases to an adaptive crop-and-resize pass.",
+  "claim_boundary": "Selected two-case feasibility pilot on one known quarter-resolution hit and one known quarter-resolution miss. This does not estimate accuracy, calibration, or latency on the benchmark population."
+}
