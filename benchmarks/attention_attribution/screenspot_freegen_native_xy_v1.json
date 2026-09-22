@@ -1,0 +1,415 @@
+{
+  "schema_version": 1,
+  "name": "screenspot_freegen_native_xy_v1",
+  "processor_path": "../../models/Holo-3.1-4B",
+  "models": [
+    {
+      "label": "Qwen3.5-4B",
+      "role": "base",
+      "path": "../../models/Qwen3.5-4B"
+    },
+    {
+      "label": "Holo3.1-4B",
+      "role": "tuned",
+      "path": "../../models/Holo-3.1-4B"
+    }
+  ],
+  "image_min_pixels": 65536,
+  "image_max_pixels": 16777216,
+  "score_reduction": "mean",
+  "experiment_design": {
+    "generation": "Coordinates come from the official free-generation full benchmark run.",
+    "attribution": "Post-hoc deterministic replay of Holo's own generated JSON action, with x and y token queries reconstructed separately and no oracle or distractor candidate comparison.",
+    "resolution": "Original 2880x1800 images at image_max_pixels=16777216; no downsampling.",
+    "source_traces": {
+      "powerpoint_windows_63": "trace-20260921T111129Z-5e703d33e804",
+      "powerpoint_windows_54": "trace-20260921T111102Z-7175e3911919"
+    }
+  },
+  "cases": [
+    {
+      "id": "powerpoint_windows_63_x",
+      "protocol": "hcompany_element_localization_v1_posthoc_generated_action",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../artifacts/screenspot-presentation/native-freegen-v1/source/powerpoint_windows_63.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nFill color"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "free_generated_action",
+          "text": "{\"x\":209,\"y\":241}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":209,\"y\":241}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "sample_id": "powerpoint_windows_63",
+        "instruction": "Fill color",
+        "bbox": [
+          585,
+          419,
+          619,
+          480
+        ],
+        "free_generated_coordinate": [
+          209,
+          241
+        ],
+        "attributed_field": "x",
+        "strict_correct": true,
+        "source_run": "data/remote-results/run/screenspot-full-official/summary.json",
+        "source_resolution": [
+          2880,
+          1800
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_63_y",
+      "protocol": "hcompany_element_localization_v1_posthoc_generated_action",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../artifacts/screenspot-presentation/native-freegen-v1/source/powerpoint_windows_63.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nFill color"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "free_generated_action",
+          "text": "{\"x\":209,\"y\":241}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":209,\"y\":241}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "sample_id": "powerpoint_windows_63",
+        "instruction": "Fill color",
+        "bbox": [
+          585,
+          419,
+          619,
+          480
+        ],
+        "free_generated_coordinate": [
+          209,
+          241
+        ],
+        "attributed_field": "y",
+        "strict_correct": true,
+        "source_run": "data/remote-results/run/screenspot-full-official/summary.json",
+        "source_resolution": [
+          2880,
+          1800
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_54_x",
+      "protocol": "hcompany_element_localization_v1_posthoc_generated_action",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../artifacts/screenspot-presentation/native-freegen-v1/source/powerpoint_windows_54.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nChoose the language for proofing tools"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "free_generated_action",
+          "text": "{\"x\":124,\"y\":72}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":124,\"y\":72}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "sample_id": "powerpoint_windows_54",
+        "instruction": "Choose the language for proofing tools",
+        "bbox": [
+          333,
+          69,
+          391,
+          124
+        ],
+        "free_generated_coordinate": [
+          124,
+          72
+        ],
+        "attributed_field": "x",
+        "strict_correct": false,
+        "source_run": "data/remote-results/run/screenspot-full-official/summary.json",
+        "source_resolution": [
+          2880,
+          1800
+        ]
+      }
+    },
+    {
+      "id": "powerpoint_windows_54_y",
+      "protocol": "hcompany_element_localization_v1_posthoc_generated_action",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../artifacts/screenspot-presentation/native-freegen-v1/source/powerpoint_windows_54.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nChoose the language for proofing tools"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "free_generated_action",
+          "text": "{\"x\":124,\"y\":72}",
+          "scored_spans": [
+            [
+              13,
+              15
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":124,\"y\":72}",
+          "scored_spans": [
+            [
+              13,
+              15
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "sample_id": "powerpoint_windows_54",
+        "instruction": "Choose the language for proofing tools",
+        "bbox": [
+          333,
+          69,
+          391,
+          124
+        ],
+        "free_generated_coordinate": [
+          124,
+          72
+        ],
+        "attributed_field": "y",
+        "strict_correct": false,
+        "source_run": "data/remote-results/run/screenspot-full-official/summary.json",
+        "source_resolution": [
+          2880,
+          1800
+        ]
+      }
+    }
+  ]
+}

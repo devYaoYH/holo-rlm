@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "screen_case": "powerpoint_windows_59",
+  "screen_grid": [
+    56,
+    90
+  ],
+  "screen_target_delta": {
+    "direct_attention": {
+      "base_target_mass": 0.15836842302196547,
+      "tuned_target_mass": 0.17157568145361504,
+      "delta_target_mass": 0.013207258431649577,
+      "base_target_lift": 22.805052915163028,
+      "tuned_target_lift": 24.706898129320567,
+      "delta_target_lift": 1.9018452141575395,
+      "base_peak_inside_target": false,
+      "tuned_peak_inside_target": true
+    },
+    "value_norm_attention": {
+      "base_target_mass": 0.13328753628910098,
+      "tuned_target_mass": 0.12584546889468057,
+      "delta_target_mass": -0.00744206739442041,
+      "base_target_lift": 19.193405225630542,
+      "tuned_target_lift": 18.121747520834003,
+      "delta_target_lift": -1.0716577047965394,
+      "base_peak_inside_target": false,
+      "tuned_peak_inside_target": false
+    }
+  },
+  "hotel_case": "hotel_test_0035_large_ui_step_2",
+  "hotel_frame_allocation": {
+    "direct_attention": {
+      "base_frame_mass": [
+        0.21039393090779632,
+        0.13867708797311706,
+        0.6509289811190866
+      ],
+      "tuned_frame_mass": [
+        0.1392457407590436,
+        0.20584170844534624,
+        0.6549125507956102
+      ],
+      "delta_frame_mass": [
+        -0.0711481901487527,
+        0.0671646204722292,
+        0.0039835696765234945
+      ]
+    },
+    "value_norm_attention": {
+      "base_frame_mass": [
+        0.36801285915370346,
+        0.14999202591089947,
+        0.48199511493539704
+      ],
+      "tuned_frame_mass": [
+        0.20219723786875812,
+        0.2301457707820845,
+        0.5676569913491574
+      ],
+      "delta_frame_mass": [
+        -0.16581562128494534,
+        0.08015374487118504,
+        0.0856618764137603
+      ]
+    }
+  },
+  "rendering": {
+    "method": "value_norm_attention",
+    "base_and_tuned_shared_percentile": 99.5,
+    "delta_symmetric_absolute_percentile": 99.5,
+    "target_box": [
+      1289.0,
+      563.0,
+      1489.0,
+      702.0
+    ],
+    "positive_delta_color": "orange-red",
+    "negative_delta_color": "blue"
+  },
+  "files": {
+    "base": "artifacts/screenspot-presentation/delta-lens-v23/attention-qwen-value-norm.png",
+    "tuned": "artifacts/screenspot-presentation/delta-lens-v23/attention-holo-value-norm.png",
+    "delta": "artifacts/screenspot-presentation/delta-lens-v23/attention-holo-minus-qwen-value-norm.png"
+  }
+}

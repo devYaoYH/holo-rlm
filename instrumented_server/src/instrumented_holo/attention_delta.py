@@ -335,6 +335,7 @@ def run_manifest(
     tuned_model: Path | None = None,
     processor_path: Path | None = None,
     case_ids: list[str] | None = None,
+    roles: list[str] | None = None,
 ) -> dict[str, Any]:
     plan = select_plan_cases(
         override_plan_paths(
@@ -346,11 +347,18 @@ def run_manifest(
         case_ids,
     )
     require_plan_paths(plan)
+    requested_roles = set(roles or ("base", "tuned"))
+    unknown_roles = requested_roles - {"base", "tuned"}
+    if unknown_roles:
+        raise ValueError(f"unknown model roles: {sorted(unknown_roles)}")
+    selected_models = tuple(model for model in plan.models if model.role in requested_roles)
+    if not selected_models:
+        raise ValueError("at least one model role must be selected")
     output_dir = output_dir.expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     model_outputs: dict[str, dict[str, Any]] = {}
     started = time.time()
-    for model_spec in plan.models:
+    for model_spec in selected_models:
         final_path = output_dir / f"{model_spec.role}.json"
         if final_path.is_file():
             payload = json.loads(final_path.read_text())
@@ -425,12 +433,18 @@ def run_manifest(
             partial_path.unlink(missing_ok=True)
         finally:
             _release_engine(engine)
-    comparison = compare_attention_results(model_outputs["base"], model_outputs["tuned"])
+    comparison = (
+        compare_attention_results(model_outputs["base"], model_outputs["tuned"])
+        if requested_roles == {"base", "tuned"}
+        else None
+    )
     result = {
         "schema_version": 1,
         "experiment": f"{plan.raw.get('name', plan.path.stem)}_attention_delta",
         "manifest": str(plan.path),
         "models": {role: payload["model"] for role, payload in model_outputs.items()},
+        "selected_roles": sorted(requested_roles),
+        "case_count": len(plan.cases),
         "comparison": comparison,
         "runtime_seconds": time.time() - started,
     }
@@ -449,6 +463,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--tuned-model", type=Path)
     result.add_argument("--processor", type=Path)
     result.add_argument("--case-id", action="append")
+    result.add_argument("--role", action="append", choices=("base", "tuned"))
     return result
 
 
@@ -461,8 +476,9 @@ def main(argv: list[str] | None = None) -> None:
         tuned_model=args.tuned_model,
         processor_path=args.processor,
         case_ids=args.case_id,
+        roles=args.role,
     )
-    print(json.dumps({"output": str(args.output.resolve()), "cases": len(result["comparison"]["cases"])}, indent=2))
+    print(json.dumps({"output": str(args.output.resolve()), "cases": result["case_count"]}, indent=2))
 
 
 if __name__ == "__main__":

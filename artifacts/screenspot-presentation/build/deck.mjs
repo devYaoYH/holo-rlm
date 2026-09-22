@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.909.61513/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v28.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v29.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -59,6 +59,19 @@ const targetSizeAnalysis = JSON.parse(
 
 const successRaw = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_59/preview-raw.png");
 const successDiff = path.join(workspaceDir, "data/attributions/screenspot-powerpoint_windows_59/preview-target-minus-prompt-baseline.png");
+const freegenNativeDir = path.join(
+  workspaceDir,
+  "artifacts/screenspot-presentation/native-freegen-v1",
+);
+const freegenNative = JSON.parse(
+  await fs.readFile(path.join(freegenNativeDir, "native-freegen-attribution-summary.json"), "utf8"),
+);
+const freegenHit = freegenNative.samples.powerpoint_windows_63;
+const freegenMiss = freegenNative.samples.powerpoint_windows_54;
+const freegenHitX = path.join(freegenNativeDir, "powerpoint_windows_63/holo-value-norm-x-token.png");
+const freegenHitY = path.join(freegenNativeDir, "powerpoint_windows_63/holo-value-norm-y-token.png");
+const freegenHitJoint = path.join(freegenNativeDir, "powerpoint_windows_63/holo-value-norm-joint-xy.png");
+const freegenMissJoint = path.join(freegenNativeDir, "powerpoint_windows_54/holo-value-norm-joint-xy.png");
 const nativeSaliencyDir = path.join(
   workspaceDir,
   "artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1",
@@ -66,17 +79,12 @@ const nativeSaliencyDir = path.join(
 const nativeSaliency = JSON.parse(
   await fs.readFile(path.join(nativeSaliencyDir, "native-saliency-summary.json"), "utf8"),
 );
-const powerpointNativeDiff = path.join(
-  nativeSaliencyDir,
-  "powerpoint_windows_48/holo-value-norm-frame-0.png",
-);
 const hotelNativeDiffMaps = [0, 1, 2].map((frame) =>
   path.join(
     nativeSaliencyDir,
     `hotel_test_0035_large_ui_step_2/holo-value-norm-frame-${frame}.png`,
   ),
 );
-const powerpointNative = nativeSaliency.groups.powerpoint_windows_48.methods.value_norm_attention;
 const hotelNative = nativeSaliency.groups.hotel_test_0035_large_ui_step_2.methods.value_norm_attention;
 const causalDir = path.join(workspaceDir, "artifacts/causal-intervention/powerpoint_windows_59_swap");
 const causalClean = path.join(causalDir, "clean-focus.png");
@@ -573,46 +581,55 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   slide.speakerNotes.textFrame.setText("2:55–4:05 — Define the symbols once. A is the attention-weight matrix. V contains the value vectors. R is the residual-aware rollout across the eight captured full-attention blocks. M is the resulting image-patch map traced from the generated x/y coordinate-value tokens. Value-norm changes the routing matrix before rollout. Rollout mixes attention and identity 50/50 and multiplies the captured layers in model order. Then average only the generated x/y value-token maps. Target lift is the positive target-minus-control mass inside the target box divided by the target-box area fraction; 1× means spatially uniform positive residual mass. Hybrid linear-attention blocks are omitted because they expose no equivalent square softmax matrix.");
 }
 
-// 6 — success raw vs prompt difference
+// 6 — native-resolution free-generation success and attribution method
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Descriptive attribution", "Same-image controls reveal the selected template", 6);
-  textBox(slide, "“Create a Psychedelic vibrant presentation”", 64, 122, 780, 30, { fontSize: 19, bold: true, color: C.muted });
-  pill(slide, "WHITE RING = ISSUED CLICK", 940, 119, 276, C.deep, C.white);
-  await image(slide, successRaw, 64, 174, 548, 342, { alt: "Raw value-norm rollout on success case", crop: { left: 0, top: 0.02, right: 0.30, bottom: 0.31 } });
-  await image(slide, successDiff, 668, 174, 548, 342, { alt: "Target minus diverse-instruction baseline on success case", crop: { left: 0, top: 0.02, right: 0.30, bottom: 0.31 } });
-  pill(slide, "RAW ROLLOUT", 84, 192, 122, C.deep, C.white);
-  pill(slide, "TARGET − PROMPT BASELINE", 688, 192, 228, C.orange, C.white);
-  metricCard(slide, 64, 540, 252, "Target lift", "3.85×", C.muted, "raw rollout");
-  metricCard(slide, 330, 540, 282, "Peak", "outside", C.muted, "generic top-left saliency");
-  metricCard(slide, 668, 540, 252, "Target lift", "16.08×", C.orange, "instruction differential");
-  metricCard(slide, 934, 540, 282, "Peak", "inside", C.green, "3.2% of frame diagonal away");
-  footer(slide, "Local trace: powerpoint_windows_59 · 4 same-image controls · LOO cosine 0.925 mean / 0.828 minimum");
-  slide.speakerNotes.textFrame.setText("4:05–5:05 — This slide establishes the measurement we use from here onward. The raw map is dominated by stable top-left saliency. With four diverse same-image prompts averaged after per-request L1 normalization, the peak moves inside the annotated template and lift rises from 3.85× to 16.08×. Leave-one-control-out cosine is 0.925 mean and 0.828 minimum. The repaired click is visually correct at (1394, 632), but the original tool syntax is malformed, so official correctness remains false. Source: data/attributions/screenspot-powerpoint_windows_59/analysis.json.");
+  slideTitle(slide, "Free generation · strict hit", "Two coordinate tokens route complementary spatial evidence", 6);
+  textBox(slide, "Instruction: Fill color", 64, 118, 470, 26, { fontSize: 18, bold: true, color: C.muted });
+  pill(slide, "GREEN = ORACLE · WHITE = CLICK", 838, 115, 378, C.deep, C.white);
+  textBox(slide, "X TOKEN", 64, 151, 180, 18, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "Y TOKEN", 426, 151, 180, 18, { fontSize: 11, bold: true, color: C.orange });
+  await image(slide, freegenHitX, 64, 174, 344, 205, { alt: "Holo value-norm attention for its freely generated x coordinate", crop: { left: 0, top: 0, right: 0.45, bottom: 0.46 } });
+  await image(slide, freegenHitY, 426, 174, 344, 205, { alt: "Holo value-norm attention for its freely generated y coordinate", crop: { left: 0, top: 0, right: 0.45, bottom: 0.46 } });
+  textBox(slide, "JOINT X×Y VIEW", 64, 398, 220, 18, { fontSize: 11, bold: true, color: C.green });
+  await image(slide, freegenHitJoint, 64, 421, 706, 205, { alt: "Geometric-mean visualization of x and y value-norm maps", crop: { left: 0, top: 0, right: 0.45, bottom: 0.46 } });
+  rect(slide, 806, 151, 410, 475, C.deep, true);
+  pill(slide, "STRICT HIT", 834, 178, 122, C.green, C.white);
+  textBox(slide, "(209, 241)", 834, 226, 330, 42, { fontSize: 32, bold: true, color: C.white });
+  textBox(slide, "Free Holo output lands inside the annotated Fill control.", 834, 274, 330, 60, { fontSize: 18, bold: true, color: "#D5DEE6" });
+  rect(slide, 834, 356, 330, 1, "#465563");
+  textBox(slide, "x-token mass in target columns", 834, 378, 240, 20, { fontSize: 12, color: "#9EABB7" });
+  textBox(slide, `${(freegenHit.x_token_mass_in_target_columns * 100).toFixed(1)}%`, 1070, 374, 94, 26, { fontSize: 20, bold: true, color: C.orange, alignment: "right" });
+  textBox(slide, "y-token mass in target rows", 834, 424, 240, 20, { fontSize: 12, color: "#9EABB7" });
+  textBox(slide, `${(freegenHit.y_token_mass_in_target_rows * 100).toFixed(1)}%`, 1070, 420, 94, 26, { fontSize: 20, bold: true, color: C.orange, alignment: "right" });
+  textBox(slide, "joint-view target mass", 834, 470, 240, 20, { fontSize: 12, color: "#9EABB7" });
+  textBox(slide, `${(freegenHit.joint_xy_target_mass * 100).toFixed(1)}%`, 1070, 466, 94, 26, { fontSize: 20, bold: true, color: C.green, alignment: "right" });
+  textBox(slide, "Value-norm first. The joint view intersects the two axis maps; it is a visualization, not a new causal score.", 834, 524, 330, 66, { fontSize: 14, color: "#B9C3CD" });
+  footer(slide, "Official free generation · native 2880×1800 → 56×90 grid · normalized 0–1000 coordinates · no downsampling");
+  slide.speakerNotes.textFrame.setText("4:05–5:05 — This is a fresh case from the official full ScreenSpot-Pro run, not an oracle-forced action. Holo freely returns JSON coordinate (209,241), which projects to (601.9,433.8) pixels and lands inside the annotated Fill control. For post-hoc attribution we replay Holo's own generated string and reconstruct value-norm attention separately for the x and y value tokens. The x token places 30.3% of its mass in columns that intersect the target; the y token places 28.2% in the target rows. The joint panel is the normalized geometric mean of the two maps, used only to visualize their spatial intersection; it places 12.9% on the tiny target box. The source stays at 2880x1800 under the 16,777,216-pixel ceiling, producing a 56x90 merged-token grid. Sources: data/remote-results/run/screenspot-full-official/summary.json and artifacts/screenspot-presentation/native-freegen-v1/native-freegen-attribution-summary.json.");
 }
 
-// 7 — native-resolution PowerPoint control ensemble
+// 7 — native-resolution free-generation near miss
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Descriptive attribution", "The former New Slide miss becomes a hit under the faithful protocol", 7);
-  textBox(slide, "Instruction: Create new slide", 80, 126, 500, 28, { fontSize: 19, bold: true, color: C.muted });
-  pill(slide, "GREEN BOX = ORACLE", 638, 121, 196, C.deep, C.white);
-  await image(slide, powerpointNativeDiff, 64, 164, 770, 438, { alt: "Native-resolution Holo value-norm prompt differential for Create new slide", crop: { left: 0, top: 0, right: 0.34, bottom: 0.43 } });
+  slideTitle(slide, "Free generation · strict near-miss", "Correct region, wrong action precision", 7);
+  textBox(slide, "Instruction: Choose the language for proofing tools", 64, 122, 700, 26, { fontSize: 18, bold: true, color: C.muted });
+  pill(slide, "GREEN = ORACLE · WHITE = CLICK", 838, 118, 378, C.deep, C.white);
+  await image(slide, freegenMissJoint, 64, 164, 770, 438, { alt: "Joint x/y value-norm view for the freely generated PowerPoint language-control near miss", crop: { left: 0, top: 0, right: 0.42, bottom: 0.58 } });
   rect(slide, 872, 164, 344, 438, C.deep, true);
-  pill(slide, "STRICT HIT", 900, 190, 118, C.green, C.white);
-  textBox(slide, "The official image-first JSON localizer returns (66, 61), inside New Slide.", 900, 242, 270, 92, { fontSize: 23, bold: true, color: C.white });
-  textBox(slide, "The value-norm target-minus-control map also isolates the same tiny ribbon control.", 900, 348, 270, 64, { fontSize: 17, color: "#C5CFD8" });
+  pill(slide, "STRICT MISS", 900, 190, 126, C.orange, C.white);
+  textBox(slide, "(124, 72)", 900, 238, 270, 40, { fontSize: 30, bold: true, color: C.white });
+  textBox(slide, "The click is horizontally inside the target—but 5.6 px below its bottom edge.", 900, 286, 270, 82, { fontSize: 19, bold: true, color: "#D5DEE6" });
   rect(slide, 900, 438, 270, 1, "#465563");
-  textBox(slide, "Target-box differential", 900, 460, 166, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
-  textBox(slide, `${(powerpointNative.tuned.prompt_difference_target_region_mass * 100).toFixed(2)} pp`, 1062, 457, 108, 26, { fontSize: 20, bold: true, color: C.orange, alignment: "right" });
-  textBox(slide, "Holo − Qwen", 900, 504, 132, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
-  textBox(slide, `+${(powerpointNative.delta_prompt_difference_target_region_mass * 100).toFixed(2)} pp`, 1034, 501, 136, 26, { fontSize: 20, bold: true, color: C.green, alignment: "right" });
-  textBox(slide, "Min LOO cosine", 900, 548, 132, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
-  textBox(slide, powerpointNative.tuned.minimum_leave_one_out_cosine.toFixed(3), 1034, 545, 136, 26, { fontSize: 20, bold: true, color: C.white, alignment: "right" });
-  footer(slide, "Native 2880×1800 input → 56×90 merged-token grid · value-norm · 4 same-image controls · normalized coordinates");
-  slide.speakerNotes.textFrame.setText("5:05–6:00 — This rerun corrects the earlier slide. Under H Company's official image-first element-localization prompt and normalized JSON coordinates, the full benchmark record for powerpoint_windows_48 returns (66,61), a strict hit inside the annotated New Slide box. The saliency map is separately teacher-forced through the annotated box-center coordinate and subtracts four same-image alternate-instruction controls. Holo's value-norm target-box differential is 7.47 percentage points, versus 4.33 for base Qwen, a +3.14-point delta. Minimum leave-one-control-out cosine is 0.946. The source remains 2880×1800 and produces a 56×90 merged-token grid. The earlier miss used a custom desktop-action prompt and a lower-resolution attribution path, so it should not be presented as benchmark-faithful evidence. Sources: data/remote-results/run/screenspot-full-official/summary.json and artifacts/screenspot-presentation/native-saliency-ppt48-hotel35-v1/native-saliency-summary.json.");
+  textBox(slide, "joint-view target mass", 900, 460, 180, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
+  textBox(slide, `${(freegenMiss.joint_xy_target_mass * 100).toFixed(1)}%`, 1082, 457, 88, 26, { fontSize: 20, bold: true, color: C.orange, alignment: "right" });
+  textBox(slide, "joint-view target lift", 900, 506, 180, 20, { fontSize: 12, bold: true, color: "#91A0AE" });
+  textBox(slide, `${freegenMiss.joint_xy_target_lift.toFixed(1)}×`, 1082, 503, 88, 26, { fontSize: 20, bold: true, color: C.green, alignment: "right" });
+  textBox(slide, "The visual route reaches the correct toolbar neighborhood. The evaluated failure is the final pointer placement.", 900, 546, 270, 42, { fontSize: 13, color: "#B9C3CD" });
+  footer(slide, "Official free generation · native 2880×1800 → 56×90 grid · 5.6-pixel boundary miss · no downsampling");
+  slide.speakerNotes.textFrame.setText("5:05–6:00 — This is the failure illustration from the same official full-resolution run. Holo freely returns (124,72), which projects to (357.1,129.6) pixels. The x coordinate falls inside the annotated language-control width, while y is only 5.6 pixels below the target box. The joint x/y value-norm view still places 4.54% of its mass on the tiny target, 38.2 times the uniform patch-area baseline. This makes the distinction concrete: the model localized the correct toolbar neighborhood, but the action readout was not precise enough for point-in-box scoring. The overlay is post-hoc attribution of Holo's own generated action, not an oracle/distractor likelihood comparison. Source: artifacts/screenspot-presentation/native-freegen-v1/native-freegen-attribution-summary.json.");
 }
 
 // 8 - native-resolution multi-turn trajectory
@@ -1014,7 +1031,7 @@ const requirements = {
 const fontPolicy = { basis: "design", families: [family] };
 const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v28.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v29.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({

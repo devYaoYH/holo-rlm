@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "definition": "Value-norm attention reconstructed over Holo's own free-generated coordinate tokens. x and y are shown separately; joint-xy is the normalized geometric mean used only as a two-axis visualization.",
+  "resolution": "2880x1800 source; 16777216 processor pixel ceiling; no downsampling",
+  "samples": {
+    "powerpoint_windows_54": {
+      "instruction": "Choose the language for proofing tools",
+      "strict_correct": false,
+      "bbox": [
+        333,
+        69,
+        391,
+        124
+      ],
+      "free_generated_coordinate": [
+        124,
+        72
+      ],
+      "free_generated_click_pixels": [
+        357.12,
+        129.6
+      ],
+      "image_size": [
+        2880,
+        1800
+      ],
+      "grid": [
+        56,
+        90
+      ],
+      "x_token_mass_in_target_columns": 0.27384059286841195,
+      "y_token_mass_in_target_rows": 0.13306663570563804,
+      "joint_xy_target_mass": 0.045436381076838395,
+      "joint_xy_target_lift": 38.166560104544246,
+      "rendered": {
+        "x-token": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/native-freegen-v1/powerpoint_windows_54/holo-value-norm-x-token.png",
+        "y-token": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/native-freegen-v1/powerpoint_windows_54/holo-value-norm-y-token.png",
+        "joint-xy": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/native-freegen-v1/powerpoint_windows_54/holo-value-norm-joint-xy.png"
+      }
+    },
+    "powerpoint_windows_63": {
+      "instruction": "Fill color",
+      "strict_correct": true,
+      "bbox": [
+        585,
+        419,
+        619,
+        480
+      ],
+      "free_generated_coordinate": [
+        209,
+        241
+      ],
+      "free_generated_click_pixels": [
+        601.92,
+        433.8
+      ],
+      "image_size": [
+        2880,
+        1800
+      ],
+      "grid": [
+        56,
+        90
+      ],
+      "x_token_mass_in_target_columns": 0.30278522883418957,
+      "y_token_mass_in_target_rows": 0.28151903848959714,
+      "joint_xy_target_mass": 0.1286814850705802,
+      "joint_xy_target_lift": 162.13867118893106,
+      "rendered": {
+        "x-token": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/native-freegen-v1/powerpoint_windows_63/holo-value-norm-x-token.png",
+        "y-token": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/native-freegen-v1/powerpoint_windows_63/holo-value-norm-y-token.png",
+        "joint-xy": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/native-freegen-v1/powerpoint_windows_63/holo-value-norm-joint-xy.png"
+      }
+    }
+  }
+}

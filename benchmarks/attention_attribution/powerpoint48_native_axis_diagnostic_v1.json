@@ -1,0 +1,1036 @@
+{
+  "schema_version": 1,
+  "name": "powerpoint48_native_axis_diagnostic_v1",
+  "processor_path": "../../models/Holo-3.1-4B",
+  "models": [
+    {
+      "label": "Qwen3.5-4B",
+      "role": "base",
+      "path": "../../models/Qwen3.5-4B"
+    },
+    {
+      "label": "Holo3.1-4B",
+      "role": "tuned",
+      "path": "../../models/Holo-3.1-4B"
+    }
+  ],
+  "image_min_pixels": 65536,
+  "image_max_pixels": 16777216,
+  "score_reduction": "mean",
+  "experiment_design": {
+    "purpose": "Diagnostic decomposition of the existing PowerPoint-48 prompt-control map into separate x-coordinate and y-coordinate token queries.",
+    "resolution": "Original 2880x1800 image; no downsampling."
+  },
+  "cases": [
+    {
+      "id": "powerpoint_windows_48_target_new_slide_x",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate new slide"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":66,\"y\":58}",
+          "scored_spans": [
+            [
+              5,
+              7
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":66,\"y\":58}",
+          "scored_spans": [
+            [
+              5,
+              7
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "target",
+        "instruction": "Create new slide",
+        "bbox": [
+          164,
+          68,
+          218,
+          139
+        ],
+        "bbox_source": "ScreenSpot-Pro annotation",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            164,
+            68,
+            218,
+            139
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_target_new_slide",
+        "attributed_field": "x"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_target_new_slide_y",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate new slide"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":66,\"y\":58}",
+          "scored_spans": [
+            [
+              12,
+              14
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":66,\"y\":58}",
+          "scored_spans": [
+            [
+              12,
+              14
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "target",
+        "instruction": "Create new slide",
+        "bbox": [
+          164,
+          68,
+          218,
+          139
+        ],
+        "bbox_source": "ScreenSpot-Pro annotation",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            164,
+            68,
+            218,
+            139
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_target_new_slide",
+        "attributed_field": "y"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_title_x",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the title placeholder"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":505,\"y\":403}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":505,\"y\":403}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Click the title placeholder",
+        "bbox": [
+          735,
+          535,
+          2175,
+          914
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            735,
+            535,
+            2175,
+            914
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_title",
+        "attributed_field": "x"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_title_y",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the title placeholder"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":505,\"y\":403}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":505,\"y\":403}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Click the title placeholder",
+        "bbox": [
+          735,
+          535,
+          2175,
+          914
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            735,
+            535,
+            2175,
+            914
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_title",
+        "attributed_field": "y"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_subtitle_x",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the subtitle placeholder"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":505,\"y\":588}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":505,\"y\":588}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Click the subtitle placeholder",
+        "bbox": [
+          735,
+          925,
+          2175,
+          1189
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            735,
+            925,
+            2175,
+            1189
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_subtitle",
+        "attributed_field": "x"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_subtitle_y",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nClick the subtitle placeholder"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":505,\"y\":588}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":505,\"y\":588}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Click the subtitle placeholder",
+        "bbox": [
+          735,
+          925,
+          2175,
+          1189
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            735,
+            925,
+            2175,
+            1189
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_subtitle",
+        "attributed_field": "y"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_insert_x",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nOpen the Insert tab"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":99,\"y\":29}",
+          "scored_spans": [
+            [
+              5,
+              7
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":99,\"y\":29}",
+          "scored_spans": [
+            [
+              5,
+              7
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Open the Insert tab",
+        "bbox": [
+          258,
+          38,
+          314,
+          65
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            258,
+            38,
+            314,
+            65
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_insert",
+        "attributed_field": "x"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_insert_y",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nOpen the Insert tab"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":99,\"y\":29}",
+          "scored_spans": [
+            [
+              12,
+              14
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":99,\"y\":29}",
+          "scored_spans": [
+            [
+              12,
+              14
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Open the Insert tab",
+        "bbox": [
+          258,
+          38,
+          314,
+          65
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            258,
+            38,
+            314,
+            65
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_insert",
+        "attributed_field": "y"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_template_x",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nSelect the red Standard Template in the right sidebar"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":904,\"y\":420}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":904,\"y\":420}",
+          "scored_spans": [
+            [
+              5,
+              8
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Select the red Standard Template in the right sidebar",
+        "bbox": [
+          2480,
+          674,
+          2725,
+          837
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            2480,
+            674,
+            2725,
+            837
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_template",
+        "attributed_field": "x"
+      }
+    },
+    {
+      "id": "powerpoint_windows_48_control_template_y",
+      "protocol": "hcompany_element_localization_v1",
+      "request": {
+        "model": "Hcompany/Holo-3.1-4B",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_path",
+                "path": "../../data/screenspot-pro/images/powerpoint_windows_48.png"
+              },
+              {
+                "type": "text",
+                "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nSelect the red Standard Template in the right sidebar"
+              }
+            ]
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 64,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "structured_outputs": {
+          "json": {
+            "properties": {
+              "x": {
+                "description": "X coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "X",
+                "type": "integer"
+              },
+              "y": {
+                "description": "Y coordinate as integer in [0, 1000]",
+                "maximum": 1000,
+                "minimum": 0,
+                "title": "Y",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "title": "VisualLocalizerOutput",
+            "type": "object"
+          }
+        }
+      },
+      "candidates": [
+        {
+          "label": "curated_coordinate",
+          "text": "{\"x\":904,\"y\":420}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        },
+        {
+          "label": "alignment_duplicate",
+          "text": "{\"x\":904,\"y\":420}",
+          "scored_spans": [
+            [
+              13,
+              16
+            ]
+          ]
+        }
+      ],
+      "case_metadata": {
+        "ensemble_group": "powerpoint_windows_48",
+        "ensemble_role": "control",
+        "instruction": "Select the red Standard Template in the right sidebar",
+        "bbox": [
+          2480,
+          674,
+          2725,
+          837
+        ],
+        "bbox_source": "manually curated from the source screenshot",
+        "image_size": [
+          2880,
+          1800
+        ],
+        "frame_bboxes": [
+          [
+            2480,
+            674,
+            2725,
+            837
+          ]
+        ],
+        "axis_source_case": "powerpoint_windows_48_control_template",
+        "attributed_field": "y"
+      }
+    }
+  ]
+}

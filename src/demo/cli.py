@@ -69,9 +69,9 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument(
         "--trace-generation-steps",
         type=int,
-        choices=range(1, 257),
+        choices=range(0, 257),
         default=int(os.environ.get("HOLO_TRACE_GENERATION_STEPS", "4")),
-        help="generated token steps retained in each activation trace",
+        help="generated token steps retained in each activation trace; 0 disables tracing",
     )
     run.add_argument("--redact", action="append", default=[], metavar="X1,Y1,X2,Y2")
     holo = sub.add_parser("holo")

@@ -88,3 +88,42 @@ def test_local_backend_keeps_128_token_floor_for_complete_native_tool_call(monke
     assert backend._http.request["max_tokens"] == 128
     assert backend._http.request["trace"]["max_generation_steps"] == 64
     assert action == {"action": "scroll", "delta_y": 800}
+
+
+def test_local_backend_can_disable_activation_tracing(monkeypatch) -> None:
+    class Response:
+        def __init__(self, payload):
+            self.payload = payload
+
+        def json(self):
+            return self.payload
+
+        def raise_for_status(self):
+            return None
+
+    class Client:
+        def __init__(self, **_kwargs):
+            self.request = None
+
+        def get(self, _url):
+            return Response({"data": []})
+
+        def post(self, _url, *, json):
+            self.request = json
+            return Response({"choices": [{"message": {"content": '{"action":"scroll","delta_y":-500}'}}]})
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr("demo.backends.httpx.Client", Client)
+    backend = OpenAIBackend("http://localhost/v1", "test-model", "test", "test", trace_generation_steps=0)
+    backend.decide(
+        step=0,
+        messages=[{"role": "user", "content": "Scroll down."}],
+        image=Image.new("RGB", (1024, 720)),
+        config={},
+        state={},
+    )
+
+    assert "trace" not in backend._http.request
+    assert backend._http.request["max_tokens"] == 128

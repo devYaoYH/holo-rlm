@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "definition": "Target instruction minus the mean of four same-image controls, split by scored coordinate field.",
+  "interpretation": "A dominant x-column in the x-token map and y-row in the y-token map indicates axis-factorized coordinate routing. Averaging those queries creates a cross/stripe visualization and should not be interpreted as object-wide residual activation.",
+  "axes": {
+    "x": {
+      "positive_mass": 0.48464507110909333,
+      "target_box_share_of_positive_mass": 0.21660754853615907,
+      "target_column_share_of_positive_mass": 0.5136468730674774,
+      "target_row_share_of_positive_mass": 0.3239816377577915,
+      "rendered": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/powerpoint48-axis-diagnostic-v1/powerpoint48-holo-value-norm-x-difference.png"
+    },
+    "y": {
+      "positive_mass": 0.4710531429876049,
+      "target_box_share_of_positive_mass": 0.08962469335594957,
+      "target_column_share_of_positive_mass": 0.32030892544756645,
+      "target_row_share_of_positive_mass": 0.2721031550934068,
+      "rendered": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/artifacts/screenspot-presentation/powerpoint48-axis-diagnostic-v1/powerpoint48-holo-value-norm-y-difference.png"
+    }
+  }
+}

@@ -9,9 +9,9 @@
 | 1:15-2:10 | 3 | Establish the full-benchmark replication and show the raw UI-by-action breakdown. |
 | 2:10-2:55 | 4 | Show the observed target-area distributions before interpreting the raw icon gap. |
 | 2:55-4:05 | 5 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
-| 4:05-5:05 | 6 | Establish the headline attribution metric: same-image instruction differential. |
-| 5:05-6:00 | 7 | Static miss: coarse task region is salient, but the tiny affordance loses. |
-| 6:00-7:10 | 8 | Native multi-turn probe: action-row evidence across history resolves onto the cheapest visible button in the current frame. |
+| 4:05-5:05 | 6 | Use a native-resolution free-generation hit to explain separate x/y value-norm attribution and their joint spatial view. |
+| 5:05-6:00 | 7 | Show a native-resolution free-generation failure that misses the correct target by only 5.6 pixels. |
+| 6:00-7:10 | 8 | Follow Holo's free multi-turn hotel rollout across retained frames and actions. |
 | 7:10-8:15 | 9 | Present the balanced four-item aggregate: Layer 19 ranks first narrowly, with a strong multi-head cluster rather than a unique H10 feature. |
 | 8:15-9:05 | 10 | Define the lossless tile swap and teacher-forced coordinate margin. |
 | 9:05-10:00 | 11 | Show activation restoration and ablation together. Contrast target residuals with the head-level null. |
@@ -25,9 +25,9 @@
 - **Full ScreenSpot-Pro replication:** the official element-localization harness completes all **1,581 items** with **1,042 strict hits**, for **65.9% accuracy**, **100% valid JSON**, and zero failed requests. This is **0.6 percentage point** below the project owner's reported 4B reference of about **66.5%**.
 - **UI label and target size:** ScreenSpot-Pro labels the clicked target, not the instruction semantics. An icon target has no text hint; a target with a text label is classified as text even when an icon is also present. Raw text accuracy is **79.4%**, versus **44.0%** for icons. The median normalized text-target area is **4.77×** the icon median, driven mostly by median width (**111 px versus 26 px**) rather than height (**25 px versus 24 px**). The distribution slide reports the observed bucketed geometry rather than an adjusted accuracy estimate. Target size is an important confound, but the histogram does not estimate how much of the accuracy gap it causes.
 - **UI × action breakdown:** the weakest labeled raw cell is **icon + file/transfer at 36.1% (13/36)**, and the larger **icon + navigation/reveal** cell reaches **40.3% (60/149)**. Treat the matrix as a diagnostic breakdown rather than a causal effect of UI type. Action families come from a deterministic first-verb keyword mapping and are not an official ScreenSpot-Pro taxonomy.
-- **ScreenSpot visual hit:** prompt-differential target lift is **16.08x**, versus **3.85x** for raw rollout. Its peak falls inside the annotated target. Leave-one-control-out cosine is **0.925 mean / 0.828 minimum**.
-- **Native PowerPoint re-probe:** the earlier New Slide miss does not survive the benchmark-faithful protocol. Holo's official image-first JSON localizer returns normalized `(66,61)`, a strict hit. At native 2880×1800 resolution, the value-norm target-minus-control mass inside the annotated box is **7.47 percentage points for Holo versus 4.33 for Qwen**, a **+3.14-point** delta. Minimum leave-one-control-out cosine is **0.946**.
-- **Native multi-turn hotel probe:** the exact three 1024×720 frames produce a **22×32** grid each with no max-width downsampling. Holo's value-norm target-box differential is **10.74 percentage points versus 6.55 for Qwen**, a **+4.19-point** delta. The current frame carries **68.1%** of Holo's positive prompt differential and the cheapest button carries **34.5%**. Minimum leave-one-control-out cosine is **0.957**. This is a teacher-forced routing result, not free-generation accuracy.
+- **Native free-generation hit:** on `powerpoint_windows_63`, Holo freely emits normalized `(209,241)`, projecting to `(601.9,433.8)` pixels inside the annotated Fill control. Post-hoc value-norm reconstruction over Holo's own output assigns **30.3%** of x-token mass to target-intersecting columns and **28.2%** of y-token mass to target-intersecting rows. A geometric-mean joint view places **12.9%** on the tiny box; this joint panel is a visualization, not a causal score.
+- **Native free-generation near-miss:** on `powerpoint_windows_54`, Holo freely emits `(124,72)`, projecting to `(357.1,129.6)`. The x coordinate is inside the target width, while y is **5.6 pixels below** the annotated bottom edge. The joint x/y view still places **4.54%** on the target, **38.2×** its grid-area share. This is an action-precision failure after plausible visual localization.
+- **Axis-stripe audit:** the old `powerpoint_windows_48` prompt-difference map averages x- and y-token queries. When split, **51.4% of positive x-token differential mass** lies in columns intersecting the tiny target, versus **32.4%** in its rows. The conspicuous vertical stripe therefore comes primarily from x-coordinate routing. It is not a tensor-indexing bug or evidence that an entire image column shares one residual feature; it is an axis-factorized pattern amplified by averaging coordinate-token queries and by controls with different forced coordinates.
 - **Shifted-layout diagnostic:** frozen item `test-0035` moves the price column to about **58%** of viewport width and enlarges the UI. The £122 target receives **4.12x** causal previous-token lift for x and **4.01x** for y; the £135 runner-up receives **0.81x / 0.91x**. Holo still emits malformed, off-target coordinates. This supports position robustness but is not a same-image prompt-baseline result.
 - **Balanced Layer 19 result:** under the official harness, the frozen pilot contains **four items: two hits and two misses**, each with four visible same-image controls at the 2,097,152-pixel cap. Layer 19 ranks first at **158.4x mean target lift**, narrowly ahead of Layer 15 at **151.4x**. Layer 19 is top on two of four items and has median item rank 2.
 - **Layer architecture:** Layers 15 and 19 are both full-attention layers in Holo3.1-4B. The official configuration uses full attention at zero-based layers **3, 7, 11, 15, 19, 23, 27, and 31**, with Gated DeltaNet linear attention in the intervening layers. Our attention rollout measures only those eight full-attention blocks.
@@ -83,6 +83,12 @@ Patching asks whether clean state can restore the corrupted decision. Ablation a
 
 High attention can carry little signal when the corresponding value vector is near zero. We use `normalize(A * ||V||2)` before rollout, which suppresses strong-but-empty paths. This still omits value direction and downstream nonlinear effects.
 
+### Was the vertical stripe under the New Slide box a code bug?
+
+Not a tensor-indexing bug. The old map averaged attention from the scored x and y coordinate-token queries. In the exact native-resolution decomposition, 51.4% of the positive x-token target-minus-control mass lies in the target's columns. That x-coordinate routing creates the vertical band. The y-token map does not reproduce the same column.
+
+The visualization nevertheless overstates object-level saliency if the stripe is read as one coherent feature. The alternate instructions also use different forced coordinates, so subtraction mixes instruction conditioning with output-coordinate identity. For pre-delta-lens examples, the revised slides therefore attribute Holo's own freely generated action, show x and y separately, and label their geometric-mean intersection as a visualization rather than a causal estimator.
+
 ### What is cross-layer rollout here?
 
 At each captured full-attention block, row-normalize the value-weighted attention, mix it 50/50 with identity for residual flow, and multiply the eight matrices in model order. Holo is hybrid: its interleaved linear-attention blocks do not expose an equivalent square matrix, so they are outside this rollout.
@@ -90,6 +96,8 @@ At each captured full-attention block, row-normalize the value-weighted attentio
 ### What exactly is the prompt baseline?
 
 For each control instruction, run the same model, processor, decoding settings, image bytes, and, for the hotel case, the same action and frame history. L1-normalize each coordinate-token map across all retained image patches, average controls, then subtract from the target map. Leave-one-control-out cosine checks sensitivity to any one control.
+
+When each control is forced through a different coordinate, this estimates the combined instruction-plus-action route; it does not isolate instruction conditioning alone. A strict instruction-only control must hold the output coordinate string fixed across prompts.
 
 ### How are the new hotel controls constructed?
 
@@ -170,4 +178,4 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
 - Tracked hotel viewer and measurement: `artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/`
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)
-- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v28.pptx`
+- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v29.pptx`

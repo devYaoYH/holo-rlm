@@ -215,17 +215,18 @@ class OpenAIBackend:
             frame_index=step,
         )
         request["chat_template_kwargs"] = {"enable_thinking": False}
-        request["trace"] = {
-            "capture_attentions": True,
-            # Saliency uses attention rows, value norms, and prompt rollout.
-            # Retaining every layer's hidden state for every generated token
-            # adds substantial Metal memory pressure without affecting maps.
-            "capture_hidden_states": False,
-            "capture_kv": False,
-            "capture_value_norms": True,
-            "capture_rollout": True,
-            "max_generation_steps": self.trace_generation_steps,
-        }
+        if self.trace_generation_steps:
+            request["trace"] = {
+                "capture_attentions": True,
+                # Saliency uses attention rows, value norms, and prompt rollout.
+                # Retaining every layer's hidden state for every generated token
+                # adds substantial Metal memory pressure without affecting maps.
+                "capture_hidden_states": False,
+                "capture_kv": False,
+                "capture_value_norms": True,
+                "capture_rollout": True,
+                "max_generation_steps": self.trace_generation_steps,
+            }
         # The checkpoint may emit a short natural-language preamble before its
         # native tool call. A real scroll completion reached 64 tokens before
         # closing the final parameter tags, so 128 is the tested safe floor.
