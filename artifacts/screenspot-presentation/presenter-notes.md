@@ -4,7 +4,7 @@
 
 | Time | Slide | Talk track |
 |---|---|---|
-| 0:00-0:35 | 1 | Ask what is specific to the current instruction after removing generic visual awareness. |
+| 0:00-0:35 | 1 | Frame how visual evidence reaches GUI actions, where resolution disrupts the route, and what fine-tuning changes. |
 | 0:35-1:15 | 2 | Introduce static UI localization and multi-turn context retrieval as complementary capabilities. |
 | 1:15-2:10 | 3 | Establish the full-benchmark replication and show the raw UI-by-action breakdown. |
 | 2:10-2:55 | 4 | Show the observed target-area distributions before interpreting the raw icon gap. |
@@ -128,4 +128,4 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)
 - Resolution-ablation cohort and analysis: `benchmarks/resolution_ablation/screenspot_success_retention_v1.json` and `artifacts/screenspot-presentation/screenspot-resolution-ablation-v1.json`
 - Resolution-saliency pilot: `artifacts/screenspot-presentation/resolution-saliency-pilot-v1/summary.json`
-- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v43.pptx`
+- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v44.pptx`

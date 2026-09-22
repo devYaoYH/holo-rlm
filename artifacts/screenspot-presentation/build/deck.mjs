@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v43.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v44.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -371,10 +371,10 @@ function addHeadMatrix(slide, headCase, left, top, width) {
   await image(slide, successDiff, 704, 0, 576, 720, { alt: "Instruction-specific saliency on the Psychedelic vibrant template", borderRadius: 0, geometry: "rect", line: "none", crop: { left: 0.28, top: 0.08, right: 0.28, bottom: 0.08 } });
   rect(slide, 640, 0, 126, 720, { type: "gradient", gradientKind: "linear", angleDeg: 0, stops: [{ offset: 0, color: C.ink }, { offset: 100000, color: "#10151C00" }] });
   pill(slide, "MECHANISTIC GUI ANALYSIS", 64, 62, 224, C.orange, C.white);
-  textBox(slide, "When attention\nstops being generic", 64, 142, 590, 168, { fontSize: 55, bold: true, color: C.white });
+  textBox(slide, "Visual evidence and\nGUI action formation", 64, 142, 590, 168, { fontSize: 55, bold: true, color: C.white });
   textBox(slide, "Action-token attribution for static GUI grounding and multi-turn visual memory", 68, 340, 535, 104, { fontSize: 24, color: "#CBD3DB" });
-  textBox(slide, "Holo 3.1 4B · local Metal traces · 21 Sep 2026", 68, 605, 535, 28, { fontSize: 14, bold: true, color: "#97A4B2" });
-  slide.speakerNotes.textFrame.setText("0:00–0:35 — Frame the question: what is specific to the current instruction after removing generic image saliency, and can the same machinery follow evidence across a multi-turn trajectory? The visual is the final prompt-differential map for the ScreenSpot visual hit. Source: data/attributions/screenspot-powerpoint_windows_59/analysis.json.");
+  textBox(slide, "Holo 3.1 4B · local and NVIDIA traces · 22 Sep 2026", 68, 605, 535, 28, { fontSize: 14, bold: true, color: "#97A4B2" });
+  slide.speakerNotes.textFrame.setText("0:00–0:35 — Frame the subject: how visual evidence reaches GUI actions, where resolution disrupts that route, and how fine-tuning changes the internal coordinate state. The visual is the final prompt-differential map for the ScreenSpot visual hit. Source: data/attributions/screenspot-powerpoint_windows_59/analysis.json.");
 }
 
 // 2 — two evaluation settings
@@ -1313,9 +1313,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v43");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v44");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v43.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v44.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
