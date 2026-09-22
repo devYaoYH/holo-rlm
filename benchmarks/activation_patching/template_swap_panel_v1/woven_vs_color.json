@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "name": "template_swap_panel_v1_woven_vs_color_official_json",
+  "protocol": "hcompany_element_localization_v1",
+  "phase": "A_spatial_residual_layer_sweep",
+  "score_reduction": "mean",
+  "image_min_pixels": 65536,
+  "image_max_pixels": 16777216,
+  "clean_request": {
+    "model": "Hcompany/Holo-3.1-4B",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "image_path",
+            "path": "../../../data/screenspot-pro/images/powerpoint_windows_59.png"
+          },
+          {
+            "type": "text",
+            "text": "Localize an element on the GUI image according to the provided target and output a click position.\n * You must output a valid JSON following the format: {'properties': {'x': {'description': 'X coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'X', 'type': 'integer'}, 'y': {'description': 'Y coordinate as integer in [0, 1000]', 'maximum': 1000, 'minimum': 0, 'title': 'Y', 'type': 'integer'}}, 'required': ['x', 'y'], 'title': 'VisualLocalizerOutput', 'type': 'object'}\n Your target is:\nCreate a \"Woven fibers\" presentation"
+          }
+        ]
+      }
+    ],
+    "temperature": 0,
+    "max_tokens": 64,
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "structured_outputs": {
+      "json": {
+        "properties": {
+          "x": {
+            "description": "X coordinate as integer in [0, 1000]",
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "description": "Y coordinate as integer in [0, 1000]",
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "VisualLocalizerOutput",
+        "type": "object"
+      }
+    }
+  },
+  "corruption": {
+    "type": "swap_equal_tiles",
+    "image_index": 0,
+    "first_box": [
+      1069,
+      563,
+      1269,
+      735
+    ],
+    "second_box": [
+      849,
+      563,
+      1049,
+      735
+    ]
+  },
+  "candidates": [
+    {
+      "label": "instructed_target_slot",
+      "json_coordinate": [
+        406,
+        351
+      ]
+    },
+    {
+      "label": "matched_distractor_slot",
+      "json_coordinate": [
+        330,
+        351
+      ]
+    }
+  ],
+  "regions": {
+    "target": {
+      "image_index": 0,
+      "box": [
+        1069,
+        563,
+        1269,
+        702
+      ],
+      "limit": 4
+    },
+    "distractor": {
+      "image_index": 0,
+      "box": [
+        849,
+        563,
+        1049,
+        702
+      ],
+      "limit": 4
+    }
+  },
+  "interventions": [
+    {
+      "name": "layer_03_target_residuals",
+      "representation": {
+        "layer": 3,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_03_distractor_residuals",
+      "representation": {
+        "layer": 3,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_07_target_residuals",
+      "representation": {
+        "layer": 7,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_07_distractor_residuals",
+      "representation": {
+        "layer": 7,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_11_target_residuals",
+      "representation": {
+        "layer": 11,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_11_distractor_residuals",
+      "representation": {
+        "layer": 11,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_15_target_residuals",
+      "representation": {
+        "layer": 15,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_15_distractor_residuals",
+      "representation": {
+        "layer": 15,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_19_target_residuals",
+      "representation": {
+        "layer": 19,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_19_distractor_residuals",
+      "representation": {
+        "layer": 19,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_23_target_residuals",
+      "representation": {
+        "layer": 23,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_23_distractor_residuals",
+      "representation": {
+        "layer": 23,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_27_target_residuals",
+      "representation": {
+        "layer": 27,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_27_distractor_residuals",
+      "representation": {
+        "layer": 27,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    },
+    {
+      "name": "layer_31_target_residuals",
+      "representation": {
+        "layer": 31,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "target"
+      }
+    },
+    {
+      "name": "layer_31_distractor_residuals",
+      "representation": {
+        "layer": 31,
+        "component": "residual_output",
+        "unit": "image_region",
+        "region": "distractor"
+      }
+    }
+  ],
+  "preregistration": {
+    "panel_type": "within_image_spatial_replication",
+    "selection_rule_for_phase_b": "A layer advances only if its target residual interchange has positive restoration and positive clean-run ablation drop in at least 3 of 4 panel cases, and its median target restoration exceeds the same-layer distractor-region median.",
+    "phase_b_rule": "Sweep all attention heads at every Phase-A-selected layer across all four frozen cases; do not select heads using only a single case.",
+    "scope_limit": "This panel is not an independent-image estimate or a ScreenSpot-Pro accuracy result."
+  }
+}
