@@ -14,8 +14,12 @@ def _walk_trace_ids(value: Any) -> set[str]:
     result: set[str] = set()
     if isinstance(value, dict):
         for key, item in value.items():
-            if key == "trace_id" and isinstance(item, str) and item.startswith("trace-"):
+            if key in {"trace_id", "instrumented_trace_id"} and isinstance(item, str) and item.startswith("trace-"):
                 result.add(item)
+            elif key in {"trace_ids", "instrumented_trace_ids"} and isinstance(item, list):
+                result.update(
+                    trace_id for trace_id in item if isinstance(trace_id, str) and trace_id.startswith("trace-")
+                )
             else:
                 result.update(_walk_trace_ids(item))
     elif isinstance(value, list):

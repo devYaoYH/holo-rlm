@@ -41,7 +41,15 @@ def test_result_bundle_includes_only_referenced_traces(tmp_path: Path) -> None:
     run.mkdir()
     traces.mkdir()
     (run / "summary.json").write_text(
-        json.dumps({"items": [{"trace_id": "trace-one"}, {"nested": {"trace_id": "trace-two"}}]})
+        json.dumps(
+            {
+                "items": [
+                    {"trace_id": "trace-one"},
+                    {"nested": {"instrumented_trace_id": "trace-two"}},
+                ],
+                "instrumented_trace_ids": ["trace-one", "trace-two"],
+            }
+        )
     )
     for trace_id in ("trace-one", "trace-two", "trace-unused"):
         path = traces / trace_id
