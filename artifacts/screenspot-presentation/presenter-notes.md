@@ -1,6 +1,6 @@
 # Holo 3.1 attention attribution: presenter notes
 
-## Thirteen-minute run of show
+## Fourteen-minute run of show
 
 | Time | Slide | Talk track |
 |---|---|---|
@@ -8,22 +8,24 @@
 | 0:35-1:15 | 2 | Separate static ScreenSpot grounding from replayable multi-turn visual memory. |
 | 1:15-2:10 | 3 | Establish the full-benchmark replication and show the raw UI-by-action breakdown. |
 | 2:10-2:55 | 4 | Show the observed target-area distributions before interpreting the raw icon gap. |
-| 2:55-4:05 | 5 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
-| 4:05-5:05 | 6 | Use one native-resolution free-generation hit to compare causal prior-token subtraction with a same-image diverse-instruction baseline. |
-| 5:05-6:00 | 7 | Show a native-resolution free-generation failure whose diverse-instruction-subtracted peak is inside the target even though the click misses by 7.4 pixels. |
-| 6:00-7:10 | 8 | Follow Holo's free multi-turn hotel rollout across retained frames and actions. |
-| 7:10-8:15 | 9 | Present the balanced four-item aggregate: Layer 19 ranks first narrowly, with a strong multi-head cluster rather than a unique H10 feature. |
-| 8:15-9:05 | 10 | Define the lossless tile swap and teacher-forced coordinate margin. |
-| 9:05-10:00 | 11 | Show activation restoration and ablation together. Contrast target residuals with the head-level null. |
-| 10:00-11:05 | 12 | Compare Qwen and Holo action margins, ScreenSpot attention, and three-frame hotel allocation. |
-| 11:05-11:55 | 13 | Scale the protocol into a frozen causal evaluation set. |
-| 11:55-12:45 | 14 + demo | Recap the routing-versus-mechanism distinction, then show the matched pair and intervention chart. |
-| Optional | 15 | Use one real instruction per UI × action cell to make the diagnostic taxonomy concrete. |
+| 2:55-3:50 | 5 | Show paired success retention as screenshot resolution falls, then connect the larger icon loss to target geometry. |
+| 3:50-5:00 | 6 | Explain value-norm, eight-layer residual rollout, parameter-token aggregation, and both baselines. |
+| 5:00-6:00 | 7 | Use one native-resolution free-generation hit to compare causal prior-token subtraction with a same-image diverse-instruction baseline. |
+| 6:00-6:55 | 8 | Show a native-resolution free-generation failure whose diverse-instruction-subtracted peak is inside the target even though the click misses by 7.4 pixels. |
+| 6:55-8:05 | 9 | Follow Holo's free multi-turn hotel rollout across retained frames and actions. |
+| 8:05-9:10 | 10 | Present the balanced four-item aggregate: Layer 19 ranks first narrowly, with a strong multi-head cluster rather than a unique H10 feature. |
+| 9:10-10:00 | 11 | Define the lossless tile swap and teacher-forced coordinate margin. |
+| 10:00-10:55 | 12 | Show activation restoration and ablation together. Contrast target residuals with the head-level null. |
+| 10:55-12:00 | 13 | Compare Qwen and Holo action margins, ScreenSpot attention, and three-frame hotel allocation. |
+| 12:00-12:50 | 14 | Scale the protocol into a frozen causal evaluation set. |
+| 12:50-13:40 | 15 + demo | Recap the routing-versus-mechanism distinction, then show the matched pair and intervention chart. |
+| Optional | 16 | Use one real instruction per UI × action cell to make the diagnostic taxonomy concrete. |
 
 ## Exact claims to make
 
 - **Full ScreenSpot-Pro replication:** the official element-localization harness completes all **1,581 items** with **1,042 strict hits**, for **65.9% accuracy**, **100% valid JSON**, and zero failed requests. This is **0.6 percentage point** below the project owner's reported 4B reference of about **66.5%**.
 - **UI label and target size:** ScreenSpot-Pro labels the clicked target, not the instruction semantics. An icon target has no text hint; a target with a text label is classified as text even when an icon is also present. Raw text accuracy is **79.4%**, versus **44.0%** for icons. The median normalized text-target area is **4.77×** the icon median, driven mostly by median width (**111 px versus 26 px**) rather than height (**25 px versus 24 px**). The distribution slide reports the observed bucketed geometry rather than an adjusted accuracy estimate. Target size is an important confound, but the histogram does not estimate how much of the accuracy gap it causes.
+- **Resolution success retention:** the paired cohort contains **36 ScreenSpot-Pro items that are strict hits at native resolution**, balanced across three applications and icon/text targets with size-spread sampling. The same-run native rerun remains **36/36**. Retention falls to **25/36 (69.4%)** at 75% linear resolution, **22/36 (61.1%)** at 50%, and **4/36 (11.1%)** at 25%. Wilson 95% intervals are **53.1–82.0%**, **44.9–75.2%**, and **4.4–25.3%**. At half resolution, text targets retain **15/18 (83.3%)** clicks versus **7/18 (38.9%)** for icons. This estimates paired retention among selected native successes, not unconditional benchmark accuracy.
 - **UI × action breakdown:** the weakest labeled raw cell is **icon + file/transfer at 36.1% (13/36)**, and the larger **icon + navigation/reveal** cell reaches **40.3% (60/149)**. Treat the matrix as a diagnostic breakdown rather than a causal effect of UI type. Action families come from a deterministic first-verb keyword mapping and are not an official ScreenSpot-Pro taxonomy.
 - **Baseline comparison on a native free-generation hit:** on `powerpoint_windows_63`, Holo freely emits normalized `(209,243)`, projecting to `(601.9,437.4)` pixels inside the annotated Fill control. With value-norm rollout fixed, causal prior-token subtraction places **6.75%** of positive residual mass in the target (**168.8× lift**), while subtraction of four same-image diverse instructions places **18.58%** there (**464.4× lift**). The control ensemble has a **0.991** minimum leave-one-control-out cosine. The baseline is an analysis choice: the causal map asks what exceeds prior completion state, while the diverse ensemble asks what is specific to this instruction after removing shared image saliency.
 - **Native free-generation action-precision miss:** on `powerpoint_windows_54`, Holo freely emits `(124,73)`, projecting to `(357.1,131.4)`. The x coordinate is inside the target width, while y is **7.4 pixels below** the annotated bottom edge. After subtracting four same-image diverse instructions, the peak patch is inside the oracle and **17.15%** of positive residual mass falls there (**278.6× lift**), with a **0.951** leave-one-control-out floor. This is consistent with successful target-specific routing followed by an imprecise action readout.
@@ -50,7 +52,7 @@
 3. Sort heads by **Prompt difference** and point out layer 19 / head 10 as a strong direct value-norm head in this selected case, then contrast that with the balanced aggregate where H11 and H14 rank higher.
 4. Show the native `powerpoint_windows_48` value-norm overlay. The green box marks New Slide; the official `(66,61)` output is a strict hit.
 5. Show the three native free-rollout hotel overlays in `hotel-freegen-official-tools-v1/`.
-6. Step from history frame 1 to the current frame. The final y-token path allocates 67.8% of its image mass to the two retained history frames, and the freely generated click lands inside Lumen's £122 button. Emphasize that there is no teacher forcing on slide 8 and that the official runtime tool schemas are used.
+6. Step from history frame 1 to the current frame. The final y-token path allocates 67.8% of its image mass to the two retained history frames, and the freely generated click lands inside Lumen's £122 button. Emphasize that there is no teacher forcing on slide 9 and that the official runtime tool schemas are used.
 7. End on the balanced layer/head table as a source of intervention hypotheses, not a causal conclusion.
 8. Show the clean/corrupted tile pair, then the intervention chart. Contrast the target-patch result with the layer-19/head-10 null.
 
@@ -112,7 +114,7 @@ No. It shows that the final action's differential attribution allocates positive
 
 Yes for this descriptive probe. PowerPoint remains 2880×1800 and becomes a 56×90 merged-token grid; each hotel frame remains 1024×720 and becomes 22×32. Both use the checkpoint-native 16,777,216-pixel ceiling. This does not prove that resolution caused the older miss, because the prompt and trajectory protocol were corrected at the same time. A causal resolution claim still needs a factorial sweep that holds the prompt, task, and layout fixed while varying only the vision-token budget.
 
-### Why is the uncertainty statement on slide 9 so cautious?
+### Why is the uncertainty statement on slide 10 so cautious?
 
 The new slide aggregates four independent items rather than treating heads as replicates. The item-level bootstrap range for Layer 19 is 23.2x to 293.7x, which is intentionally described as a range for this frozen pilot rather than a population confidence interval. A larger preregistered cohort should bootstrap by item or trajectory, not by token, layer, or head.
 
@@ -175,9 +177,10 @@ Keep a frozen diverse test split. Generate and inspect oracle SFT trajectories, 
 - Slide-ready paired attention assets: `artifacts/screenspot-presentation/delta-lens-paired-controls-v1/`
 - Official-tool native free hotel rollout and attribution packages: `data/remote-results/hotel-official-tools-native-20260922-rerun/`
 - Official-tool native free hotel slide assets: `artifacts/screenspot-presentation/hotel-freegen-official-tools-v1/`
-- Native hotel teacher-forced control manifest (used only after slide 12): `benchmarks/attention_attribution/powerpoint48_hotel35_native_controls_v1.json`
-- Native hotel paired results (used only after slide 12): `data/local-results/attention-delta-ppt48-hotel35-native-controls-v1/`
+- Native hotel teacher-forced control manifest (used only after slide 13): `benchmarks/attention_attribution/powerpoint48_hotel35_native_controls_v1.json`
+- Native hotel paired results (used only after slide 13): `data/local-results/attention-delta-ppt48-hotel35-native-controls-v1/`
 - Static measurements: `data/attributions/screenspot-powerpoint_windows_{59,48}/analysis.json`
 - Tracked hotel viewer and measurement: `artifacts/screenspot-presentation/live/hotel-cheapest-multiframe/`
 - Hotel probe manifest: `data/trajectory-prompt-cases/hotel-cheapest-final-640/case.json` (directory name is historical; manifest records full-resolution `1280x800` frames and `frame_scale=1.0`)
-- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v35.pptx`
+- Resolution-ablation cohort and analysis: `benchmarks/resolution_ablation/screenspot_success_retention_v1.json` and `artifacts/screenspot-presentation/screenspot-resolution-ablation-v1.json`
+- Revised deck: `artifacts/screenspot-presentation/holo-attribution-research-v36.pptx`
