@@ -36,6 +36,7 @@ from .result_bundle import package_results
 from .runner import capture_run
 from .screenspot import TRACE_PROFILES, load_screenspot_sample, run_screenspot_case
 from .screenspot_benchmark import run_screenspot_benchmark
+from .screenspot_resolution import run_resolution_ablation
 from .trajectory_contrast import run_multiframe_prompt_case
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -144,6 +145,22 @@ def parser() -> argparse.ArgumentParser:
     screenspot_benchmark.add_argument("--count", type=int)
     screenspot_benchmark.add_argument("--no-resume", action="store_true")
     screenspot_benchmark.add_argument("--fail-fast", action="store_true")
+    resolution = sub.add_parser("screenspot-resolution-ablation")
+    resolution.add_argument("manifest", type=Path)
+    resolution.add_argument(
+        "--annotations", type=Path, default=PROJECT_ROOT / "data" / "screenspot-pro" / "annotations"
+    )
+    resolution.add_argument(
+        "--images",
+        type=Path,
+        default=PROJECT_ROOT / "data" / "screenspot-pro" / "resolution-ablation-images",
+    )
+    resolution.add_argument(
+        "--output",
+        type=Path,
+        default=PROJECT_ROOT / "data" / "screenspot-pro" / "resolution-ablation-runs" / "success-retention-v1",
+    )
+    resolution.add_argument("--no-resume", action="store_true")
     contrast = sub.add_parser("screenspot-contrast")
     contrast.add_argument("case", type=Path, help="case.json written by screenspot-case")
     contrast.add_argument("--trace-root", type=Path, default=PROJECT_ROOT / "data" / "traces")
@@ -390,6 +407,18 @@ def main(argv: list[str] | None = None) -> None:
                 count=args.count,
                 resume=not args.no_resume,
                 fail_fast=args.fail_fast,
+            )
+        )
+    elif args.command == "screenspot-resolution-ablation":
+        _print(
+            run_resolution_ablation(
+                manifest_path=args.manifest,
+                annotation_root=args.annotations,
+                image_root=args.images,
+                base_url=base_url,
+                model_id=model_id,
+                output_dir=args.output,
+                resume=not args.no_resume,
             )
         )
     elif args.command == "screenspot-contrast":

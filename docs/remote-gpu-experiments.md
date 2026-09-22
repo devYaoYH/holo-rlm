@@ -41,6 +41,19 @@ The first request loads the checkpoint. Keep the server process and all experime
 
 Do not run ScreenSpot-Pro with the 262,144-pixel multi-frame safety cap. In a 10-item RTX 5090 calibration, that cap produced 0/10 grounding hits; the checkpoint-native limit produced 6/10 with the same model, prompt, items, and decoding. This small slice is a preflight diagnostic, not an estimate of the full benchmark score.
 
+For a controlled estimate of resolution sensitivity, use the frozen native-success cohort rather than changing the server's pixel ceiling. The ablation downsamples each source image to 100%, 75%, 50%, and 25% of its original width and height with Lanczos resampling while the server remains at the native 16,777,216-pixel ceiling. This holds the prompt, output schema, model process, aspect ratio, and normalized coordinate contract fixed:
+
+```bash
+uv run python scripts/fetch_screenspot_resolution_images.py \
+  benchmarks/resolution_ablation/screenspot_success_retention_v1.json
+
+uv run holo-capture screenspot-resolution-ablation \
+  benchmarks/resolution_ablation/screenspot_success_retention_v1.json \
+  --output /workspace/holo-results/screenspot-resolution-success-retention-v1
+```
+
+The cohort is conditioned on native-resolution success, so its primary estimand is **success retention under downsampling**, not unconditional ScreenSpot-Pro accuracy. The runner also reports retention conditional on success in the same-run native rerun, normalized point-to-box distance, and coordinate drift from that native click.
+
 ## 3. ScreenSpot-Pro with generated-token log probabilities
 
 Start with one item:
