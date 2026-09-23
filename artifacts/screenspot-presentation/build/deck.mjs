@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v58.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v61.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -90,6 +90,14 @@ const coordinateBeamPilot = JSON.parse(
 );
 const coordinateBeamHit = coordinateBeamPilot.cases.find((row) => row.known_quarter_resolution_outcome === "correct");
 const coordinateBeamMiss = coordinateBeamPilot.cases.find((row) => row.known_quarter_resolution_outcome === "incorrect");
+const coordinateBeamHitTrace = JSON.parse(
+  await fs.readFile(path.join(workspaceDir, "data/local-results/coordinate-beam-spread-smoke/summary.json"), "utf8"),
+).results[0];
+const coordinateBeamMissTrace = JSON.parse(
+  await fs.readFile(path.join(workspaceDir, "data/local-results/coordinate-beam-spread-vscode0-v1/summary.json"), "utf8"),
+).results[0];
+const coordinateBeamHitImage = path.join(workspaceDir, "data/screenspot-pro/images/powerpoint_windows_59.png");
+const coordinateBeamMissImage = path.join(workspaceDir, "data/screenspot-pro/images/vscode_macos_0.png");
 const resolutionSaliencyMaps = [100, 75, 50, 25].map((scale) =>
   path.join(resolutionSaliencyDir, `scale-${scale}.png`),
 );
@@ -281,6 +289,56 @@ function clickMarker(slide, x, y, size = 18, color = C.orange) {
   rect(slide, x - 3.5, y - size - 6, 7, size * 2 + 12, color, true);
   rect(slide, x - size - 6, y - 1.5, size * 2 + 12, 3, C.white, true);
   rect(slide, x - 1.5, y - size - 6, 3, size * 2 + 12, C.white, true);
+}
+
+function beamRing(slide, x, y, rank, scale = 1) {
+  const colors = [C.blue, C.orange, C.gold, C.green];
+  const radius = (10 - rank * 1.25) * scale;
+  return slide.shapes.add({
+    geometry: "ellipse",
+    position: { left: x - radius, top: y - radius, width: radius * 2, height: radius * 2 },
+    fill: "none",
+    line: { fill: colors[rank - 1], width: Math.max(1.5, 2.5 * scale) },
+  });
+}
+
+function outline(slide, left, top, width, height, color = C.orange, lineWidth = 3) {
+  return slide.shapes.add({
+    geometry: "rect",
+    position: { left, top, width, height },
+    fill: "none",
+    line: { fill: color, width: lineWidth },
+  });
+}
+
+function sourceToFrame(point, frame, sourceSize, crop = null) {
+  const [sourceWidth, sourceHeight] = sourceSize;
+  const region = crop ?? { left: 0, top: 0, right: sourceWidth, bottom: sourceHeight };
+  return {
+    x: frame.left + ((point.x - region.left) / (region.right - region.left)) * frame.width,
+    y: frame.top + ((point.y - region.top) / (region.bottom - region.top)) * frame.height,
+  };
+}
+
+function overlayBeamCase(slide, beamCase, frame, sourceSize, crop = null, scale = 1) {
+  const [sourceWidth, sourceHeight] = sourceSize;
+  const region = crop ?? { left: 0, top: 0, right: sourceWidth, bottom: sourceHeight };
+  const bbox = beamCase.oracle_bbox_source_pixels;
+  const bboxTopLeft = sourceToFrame({ x: bbox[0], y: bbox[1] }, frame, sourceSize, region);
+  const bboxBottomRight = sourceToFrame({ x: bbox[2], y: bbox[3] }, frame, sourceSize, region);
+  outline(
+    slide,
+    bboxTopLeft.x,
+    bboxTopLeft.y,
+    bboxBottomRight.x - bboxTopLeft.x,
+    bboxBottomRight.y - bboxTopLeft.y,
+    C.orange,
+    Math.max(2, 3 * scale),
+  );
+  beamCase.candidates.forEach((candidate) => {
+    const point = sourceToFrame(candidate.source_pixel, frame, sourceSize, region);
+    beamRing(slide, point.x, point.y, candidate.rank, scale);
+  });
 }
 
 function slideTitle(slide, kicker, title, index, dark = false) {
@@ -1278,6 +1336,7 @@ if (false) {
   textBox(slide, `${coordinateBeamMiss.beam_hit_count}/4 beams hit`, 1034, 362, 142, 20, { fontSize: 13, color: "#F6B9AA", alignment: "right" });
   rect(slide, 880, 400, 300, 54, C.orange, true);
   textBox(slide, "The wrong case clustered more tightly.", 894, 412, 272, 30, { fontSize: 15, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
+  textBox(slide, "Exact click overlays in Appendix A1", 880, 460, 300, 16, { fontSize: 10, bold: true, color: "#B9C3CD", alignment: "center" });
 
   const proposalChecks = [
     ["HYPOTHESIS", "Adaptive routing recovers low-resolution misses while skipping a second pass on easy cases."],
@@ -1295,11 +1354,66 @@ if (false) {
   slide.speakerNotes.textFrame.setText("10:20–11:20 — End on one focused research proposal. Start with a low-resolution image, produce a batched coordinate ensemble, estimate uncertainty, and route only uncertain cases to a crop-and-resize pass. Repeat until the coordinate distribution is sufficiently stable or the crop reaches native resolution. The proposal is black-box at test time: no model updates and no hidden activations. Our first local Metal feasibility check used the official H Company localization prompt and VisualLocalizerOutput contract on two previously native-correct ScreenSpot-Pro items at 25 percent linear resolution. Four deterministic beams were valid and distinct in both cases. On the known quarter-resolution hit, RMS coordinate radius was 2.55 normalized units and all four beams hit. On the known miss, radius was only 1.12 and no beam hit; all candidates shared x equals 15 and differed only by adjacent y values. Deterministic top-beam spread therefore shows false consensus and cannot serve as the gate by itself. The next experiment should compare deterministic beams with temperature-sampled coordinate candidates plus token confidence, then test whether a calibrated gate recovers low-resolution misses while avoiding a second pass on easy cases. This direction overlaps materially with AutoFocus and UI-Zoomer, which already use sampled coordinate uncertainty for adaptive visual search, and with ZoomClick's training-free zoom prior. The research wedge is narrower: Holo-specific evaluation, deterministic beams as a cheap baseline, a resolution ladder rather than unconditional native inference, and a mechanistic link to the recoverable action state observed in this deck. InnerZoom provides an important white-box efficiency comparison because it avoids the second forward pass by reinjecting intermediate evidence. Sources: artifacts/screenspot-presentation/coordinate-beam-spread-pilot-v1.json; data/local-results/coordinate-beam-spread-smoke/summary.json; data/local-results/coordinate-beam-spread-vscode0-v1/summary.json; https://arxiv.org/abs/2605.02630; https://arxiv.org/abs/2604.14113; https://arxiv.org/abs/2512.05941; https://arxiv.org/abs/2606.30084.");
 }
 
-// 14 - methods appendix
+// 14 - deterministic beam pilot appendix
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Appendix · definitions", "From generated coordinate tokens back to image patches", "A1");
+  slideTitle(slide, "Appendix · beam pilot", "The known miss forms the tighter beam cluster", "A1");
+  textBox(slide, "Orange box: ScreenSpot-Pro oracle · colored rings: deterministic beam ranks 1–4 · model input: 25% linear resize", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
+
+  const hitFrame = { left: 64, top: 188, width: 552, height: 345 };
+  const missFrame = { left: 680, top: 188, width: 536, height: 348.4 };
+  textBox(slide, "KNOWN QUARTER-RESOLUTION HIT", 64, 146, 380, 18, { fontSize: 11, bold: true, color: C.green });
+  textBox(slide, "Create a “Psychedelic vibrant” presentation", 64, 164, 552, 20, { fontSize: 14, bold: true, color: C.ink });
+  textBox(slide, "KNOWN QUARTER-RESOLUTION MISS", 680, 146, 380, 18, { fontSize: 11, bold: true, color: C.orange });
+  textBox(slide, "Refresh the file explorer", 680, 164, 536, 20, { fontSize: 14, bold: true, color: C.ink });
+
+  await image(slide, coordinateBeamHitImage, hitFrame.left, hitFrame.top, hitFrame.width, hitFrame.height, { alt: "ScreenSpot-Pro PowerPoint item with oracle box and deterministic beam clicks", geometry: "rect", borderRadius: 0, fit: "contain" });
+  overlayBeamCase(slide, coordinateBeamHitTrace, hitFrame, coordinateBeamHitTrace.source_image_size);
+  await image(slide, coordinateBeamMissImage, missFrame.left, missFrame.top, missFrame.width, missFrame.height, { alt: "ScreenSpot-Pro VS Code item with oracle box and deterministic beam clicks", geometry: "rect", borderRadius: 0, fit: "contain" });
+  overlayBeamCase(slide, coordinateBeamMissTrace, missFrame, coordinateBeamMissTrace.source_image_size);
+
+  const hitCrop = { left: 850, top: 540, right: 1950, bottom: 720 };
+  const missCrop = { left: 0, top: 135, right: 970, bottom: 293 };
+  const hitInset = { left: 64, top: 552, width: 552, height: 90 };
+  const missInset = { left: 680, top: 552, width: 536, height: 87.3 };
+  await image(slide, coordinateBeamHitImage, hitInset.left, hitInset.top, hitInset.width, hitInset.height, {
+    alt: "Magnified exact beam locations inside the PowerPoint oracle target",
+    geometry: "rect",
+    borderRadius: 0,
+    crop: {
+      left: hitCrop.left / coordinateBeamHitTrace.source_image_size[0],
+      top: hitCrop.top / coordinateBeamHitTrace.source_image_size[1],
+      right: 1 - hitCrop.right / coordinateBeamHitTrace.source_image_size[0],
+      bottom: 1 - hitCrop.bottom / coordinateBeamHitTrace.source_image_size[1],
+    },
+  });
+  overlayBeamCase(slide, coordinateBeamHitTrace, hitInset, coordinateBeamHitTrace.source_image_size, hitCrop, 0.8);
+  await image(slide, coordinateBeamMissImage, missInset.left, missInset.top, missInset.width, missInset.height, {
+    alt: "Magnified exact separation between the VS Code oracle target and wrong beam cluster",
+    geometry: "rect",
+    borderRadius: 0,
+    crop: {
+      left: missCrop.left / coordinateBeamMissTrace.source_image_size[0],
+      top: missCrop.top / coordinateBeamMissTrace.source_image_size[1],
+      right: 1 - missCrop.right / coordinateBeamMissTrace.source_image_size[0],
+      bottom: 1 - missCrop.bottom / coordinateBeamMissTrace.source_image_size[1],
+    },
+  });
+  overlayBeamCase(slide, coordinateBeamMissTrace, missInset, coordinateBeamMissTrace.source_image_size, missCrop, 0.8);
+
+  textBox(slide, "4/4 hit · RMS radius 2.55", 76, 648, 300, 20, { fontSize: 13, bold: true, color: C.green });
+  textBox(slide, "0/4 hit · RMS radius 1.12", 692, 648, 220, 20, { fontSize: 13, bold: true, color: C.orange });
+  textBox(slide, "Tight beam agreement does not imply correctness", 924, 648, 292, 20, { fontSize: 12, bold: true, color: C.ink, alignment: "right" });
+  footer(slide, "Exact source-pixel overlays. The pilot compares one selected hit with one selected miss; it does not estimate calibration.");
+  slide.speakerNotes.textFrame.setText("Appendix — Both screenshots show exact source-pixel positions after mapping normalized coordinates back with x times source width divided by 1000 and y times source height divided by 1000. The orange rectangle is the released ScreenSpot-Pro oracle box. The colored rings are the four returned deterministic beam sequences in rank order. The model did not receive the full-resolution screenshot shown here; each image was first resized to 25 percent of its original width and height with Lanczos resampling, then passed through the official H Company element-localization prompt and VisualLocalizerOutput coordinate contract. We called Transformers generate with do_sample false, num_beams four, num_return_sequences four, early_stopping true, output_scores true, and a 24-token limit except for the first smoke run, which used 64. Beam search keeps the four highest cumulative-score partial token sequences at every decoding step. These are correlated alternatives, not independent samples from the model distribution. In the PowerPoint hit, the four coordinates are (485,344), (485,349), (483,343), and (483,344); all land inside the oracle box. In the VS Code miss, the coordinates are (15,171) through (15,174); all land near the far-left gutter while the oracle refresh control lies farther right. RMS radius is computed in normalized 0–1000 coordinate space around the four-point centroid. The incorrect case has the smaller radius, 1.12 versus 2.55. This false consensus motivates temperature-sampled candidates plus token confidence for the next experiment. Sources: data/local-results/coordinate-beam-spread-smoke/summary.json; data/local-results/coordinate-beam-spread-vscode0-v1/summary.json; scripts/run_coordinate_beam_pilot.py.");
+}
+
+// 15 - methods appendix
+{
+  const slide = presentation.slides.add();
+  slide.background.fill = C.paper;
+  slideTitle(slide, "Appendix · definitions", "From generated coordinate tokens back to image patches", "A2");
   textBox(slide, "A attention weights · V value vectors · R rolled-out token influence · M image-patch map for generated x/y value tokens", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
   const blocks = [
     ["1", "VALUE-NORM", "A′ = normalize(A ⊙ ‖V‖₂)", "Down-weight attention paths whose value vectors carry little magnitude", C.orangeSoft, C.orange],
@@ -1328,11 +1442,11 @@ if (false) {
   slide.speakerNotes.textFrame.setText("Backup methods slide — Value-norm multiplies attention weights by the corresponding value-vector magnitude before normalization. Residual-aware rollout mixes each captured full-attention matrix with identity and composes the eight matrices in model order. We average only the generated x/y value-token maps. The raw map asks where the coordinate route goes. The diverse-instruction baseline subtracts four same-image alternate tasks and asks what remains specific to the target instruction. Target lift compares positive target mass with the target's share of image area. Hybrid Gated DeltaNet layers do not expose an equivalent square attention matrix and therefore sit outside this rollout.");
 }
 
-// 15 - appendix: examples for the 2 x 6 diagnostic taxonomy
+// 16 - appendix: examples for the 2 x 6 diagnostic taxonomy
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Appendix · benchmark taxonomy", "Examples for the 12 labeled UI × action cells", "A2");
+  slideTitle(slide, "Appendix · benchmark taxonomy", "Examples for the 12 labeled UI × action cells", "A3");
   textBox(slide, "Rows use the benchmark's target-element label; columns use our instruction-verb taxonomy", 64, 118, 1152, 24, { fontSize: 14, color: C.muted });
 
   const labeledFamilies = benchmarkBreakdown.action_family_order.filter((name) => name !== "Other");
@@ -1414,15 +1528,15 @@ if (false) {
 }
 
 const requirements = {
-  explicitTotalSlideCount: 15,
-  requiredNativeTableOwnerSlides: [3, 6, 9, 15],
+  explicitTotalSlideCount: 16,
+  requiredNativeTableOwnerSlides: [3, 6, 9, 16],
   requiredNativeChartOwnerSlides: [3, 4, 5],
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v58");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v61");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v58.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v61.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
@@ -1440,9 +1554,9 @@ const result = await finalizePresentation({
     "--require-native-table-slide", "3",
     "--require-native-table-slide", "6",
     "--require-native-table-slide", "9",
-    "--require-native-table-slide", "15",
+    "--require-native-table-slide", "16",
   ],
-  requiredNativeTableOwnerSlides: [3, 6, 9, 15],
+  requiredNativeTableOwnerSlides: [3, 6, 9, 16],
   requiredNativeChartOwnerSlides: [3, 4, 5],
   fontPolicy,
   verifyArtifactToolImport: true,
