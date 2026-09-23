@@ -77,6 +77,11 @@
         "causal_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/causal-tight.png",
         "prompt_difference": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/prompt_difference-context.png",
         "prompt_difference_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_63/prompt_difference-tight.png"
+      },
+      "overlay_opacity": {
+        "raw": 0.66,
+        "causal": 0.6,
+        "prompt_difference": 0.66
       }
     },
     "powerpoint_windows_54": {
@@ -150,6 +155,11 @@
         "causal_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/causal-tight.png",
         "prompt_difference": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/prompt_difference-context.png",
         "prompt_difference_tight": "artifacts/screenspot-presentation/slide67-native-contrast-v1/powerpoint_windows_54/prompt_difference-tight.png"
+      },
+      "overlay_opacity": {
+        "raw": 0.56,
+        "causal": 0.54,
+        "prompt_difference": 0.56
       }
     }
   }
