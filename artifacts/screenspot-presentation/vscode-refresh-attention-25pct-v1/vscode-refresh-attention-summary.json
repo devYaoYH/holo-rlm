@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "case": "vscode_macos_0",
+  "instruction": "Refresh the file explorer.",
+  "model": {
+    "model_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+    "processor_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+    "model_revision": "8c88265a5a159bfd1492db9243733dd2e6e04a6e",
+    "model_type": "qwen3_5",
+    "architectures": [
+      "Qwen3_5ForConditionalGeneration"
+    ],
+    "image_token_id": 248056,
+    "vision_config": {
+      "deepstack_visual_indexes": [],
+      "depth": 24,
+      "dtype": "float32",
+      "hidden_act": "gelu_pytorch_tanh",
+      "hidden_size": 1024,
+      "in_channels": 3,
+      "initializer_range": 0.02,
+      "intermediate_size": 4096,
+      "model_type": "qwen3_5_vision",
+      "num_heads": 16,
+      "num_position_embeddings": 2304,
+      "out_hidden_size": 2560,
+      "patch_size": 16,
+      "spatial_merge_size": 2,
+      "temporal_patch_size": 2
+    },
+    "attention_layer_indices": [
+      3,
+      7,
+      11,
+      15,
+      19,
+      23,
+      27,
+      31
+    ],
+    "device": "mps",
+    "dtype": "bfloat16",
+    "load_strategy": "stream",
+    "eager_attention": false,
+    "attention_implementation_profile": null,
+    "image_min_pixels": 65536,
+    "image_max_pixels": 16777216,
+    "torch_version": "2.14.0",
+    "transformers_version": "5.17.0"
+  },
+  "resolution": [
+    640,
+    416
+  ],
+  "grid": [
+    13,
+    20
+  ],
+  "method": "mean value-norm attention over eight sampled action strings",
+  "baseline": "mean of four same-image alternate-instruction value-norm maps",
+  "sample_count": 8,
+  "control_count": 4,
+  "sampling_hit_count": 0,
+  "sampling_rms_radius_normalized": 83.62294466831457,
+  "target_patch_indices": [
+    23
+  ],
+  "target_patch_area_fraction": 0.0038461538461538464,
+  "raw_target_mass": 0.07401607162992564,
+  "raw_target_lift": 19.244178623780666,
+  "raw_target_rank": 3,
+  "raw_target_mass_by_sample": [
+    0.06532147381152863,
+    0.04131984221451976,
+    0.14093720157752626,
+    0.06437537907675502,
+    0.055706891643427264,
+    0.06509384161645625,
+    0.10411691170000766,
+    0.05525703139918425
+  ],
+  "control_mean_target_mass": 0.011779358266600091,
+  "control_target_mass_by_instruction": {
+    "vscode_refresh_control_get_score_tab": 0.012185780310173512,
+    "vscode_refresh_control_disable_extension": 0.008743776216986071,
+    "vscode_refresh_control_call_gpt_tab": 0.011894978577109748,
+    "vscode_refresh_control_readme": 0.014292897962131032
+  },
+  "prompt_difference_target_mass": 0.06223671336332555,
+  "prompt_difference_target_rank": 3,
+  "target_share_of_positive_prompt_difference": 0.16281882022872327,
+  "leave_one_control_out": [
+    {
+      "excluded_control": "vscode_refresh_control_get_score_tab",
+      "target_mass": 0.062372187377850025,
+      "cosine_similarity": 0.9751728654249754
+    },
+    {
+      "excluded_control": "vscode_refresh_control_disable_extension",
+      "target_mass": 0.06122485268012088,
+      "cosine_similarity": 0.992236545485875
+    },
+    {
+      "excluded_control": "vscode_refresh_control_call_gpt_tab",
+      "target_mass": 0.06227525346682877,
+      "cosine_similarity": 0.978526210321634
+    },
+    {
+      "excluded_control": "vscode_refresh_control_readme",
+      "target_mass": 0.06307455992850253,
+      "cosine_similarity": 0.991433158584022
+    }
+  ],
+  "minimum_leave_one_out_cosine": 0.9751728654249754,
+  "raw_peak_patch_index": 60,
+  "raw_peak_inside_target": false,
+  "prompt_difference_peak_patch_index": 60,
+  "prompt_difference_peak_inside_target": false,
+  "rendered": {
+    "raw": "artifacts/screenspot-presentation/vscode-refresh-attention-25pct-v1/vscode-refresh-mean-value-norm-attention.png",
+    "prompt_difference": "artifacts/screenspot-presentation/vscode-refresh-attention-25pct-v1/vscode-refresh-diverse-instruction-subtracted-value-norm.png",
+    "comparison": "artifacts/screenspot-presentation/vscode-refresh-attention-25pct-v1/vscode-refresh-attention-vs-sampling.png"
+  },
+  "claim_boundary": "Single selected miss at 25% linear resolution; descriptive, not causal or population-level."
+}

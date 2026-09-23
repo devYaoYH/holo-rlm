@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "experiment": "vscode_refresh_sampling_25pct_attention_v1_attention_delta",
+  "manifest": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/benchmarks/attention_attribution/vscode_refresh_sampling_25pct_v1.json",
+  "models": {
+    "tuned": {
+      "model_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+      "processor_path": "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning/models/Holo-3.1-4B",
+      "model_revision": "8c88265a5a159bfd1492db9243733dd2e6e04a6e",
+      "model_type": "qwen3_5",
+      "architectures": [
+        "Qwen3_5ForConditionalGeneration"
+      ],
+      "image_token_id": 248056,
+      "vision_config": {
+        "deepstack_visual_indexes": [],
+        "depth": 24,
+        "dtype": "float32",
+        "hidden_act": "gelu_pytorch_tanh",
+        "hidden_size": 1024,
+        "in_channels": 3,
+        "initializer_range": 0.02,
+        "intermediate_size": 4096,
+        "model_type": "qwen3_5_vision",
+        "num_heads": 16,
+        "num_position_embeddings": 2304,
+        "out_hidden_size": 2560,
+        "patch_size": 16,
+        "spatial_merge_size": 2,
+        "temporal_patch_size": 2
+      },
+      "attention_layer_indices": [
+        3,
+        7,
+        11,
+        15,
+        19,
+        23,
+        27,
+        31
+      ],
+      "device": "mps",
+      "dtype": "bfloat16",
+      "load_strategy": "stream",
+      "eager_attention": false,
+      "attention_implementation_profile": null,
+      "image_min_pixels": 65536,
+      "image_max_pixels": 16777216,
+      "torch_version": "2.14.0",
+      "transformers_version": "5.17.0"
+    }
+  },
+  "selected_roles": [
+    "tuned"
+  ],
+  "case_count": 12,
+  "comparison": null,
+  "runtime_seconds": 656.6719498634338
+}
