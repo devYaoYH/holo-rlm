@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "experiment": "coordinate_stochastic_width_guardrail_v1",
+  "model": "Hcompany/Holo-3.1-4B",
+  "device": "mps",
+  "dtype": "bfloat16",
+  "inference_protocol": "hcompany_element_localization_v1",
+  "linear_scale": 0.25,
+  "decoding": {
+    "sample_count_per_case": 8,
+    "temperature": 0.8,
+    "top_p": 0.95,
+    "top_k": 20,
+    "num_beams": 1,
+    "width_logprob_delta_nats": 5.0,
+    "minimum_sampling_width": 2,
+    "guardrail": "Force top-1 when fewer than two tokens lie within 5 nats of the best raw next-token log probability. Otherwise apply temperature, top-p, and top-k sampling."
+  },
+  "format": {
+    "strict_json_valid_count": 16,
+    "candidate_count": 16,
+    "strict_json_valid_fraction": 1.0,
+    "forced_greedy_sequence_steps": 120,
+    "evaluated_sequence_steps": 216,
+    "forced_greedy_fraction": 0.5555555555555556
+  },
+  "cases": [
+    {
+      "sample_id": "powerpoint_windows_59",
+      "known_quarter_resolution_outcome": "correct",
+      "coordinates": [[504, 344], [488, 349], [478, 346], [464, 364], [500, 349], [486, 361], [493, 375], [486, 351]],
+      "rms_radius_normalized": 15.4626566281477,
+      "max_pairwise_distance_normalized": 44.721359549995796,
+      "sample_hit_count": 8,
+      "strict_json_valid_count": 8,
+      "runtime_seconds": 695.0534803339979
+    },
+    {
+      "sample_id": "vscode_macos_0",
+      "known_quarter_resolution_outcome": "incorrect",
+      "coordinates": [[36, 133], [55, 247], [10, 64], [37, 108], [38, 320], [37, 131], [25, 90], [32, 218]],
+      "rms_radius_normalized": 83.62294466831457,
+      "max_pairwise_distance_normalized": 257.52669764511796,
+      "sample_hit_count": 0,
+      "strict_json_valid_count": 8,
+      "runtime_seconds": 703.821146790986
+    }
+  ],
+  "deterministic_beam_baseline": {
+    "beam_count_per_case": 4,
+    "correct_case_rms_radius_normalized": 2.5495097567963922,
+    "correct_case_hit_count": 4,
+    "incorrect_case_rms_radius_normalized": 1.118033988749895,
+    "incorrect_case_hit_count": 0
+  },
+  "finding": "In these two selected cases, guarded stochastic sampling preserved strict JSON and produced substantially wider dispersion for the known miss than the known hit. Deterministic top beams showed the opposite ordering.",
+  "next_test": "Estimate calibration and routing performance on the 36-case native-success resolution cohort, then compare adaptive cropping against quarter-resolution, native-resolution, and fixed two-pass baselines.",
+  "claim_boundary": "Selected two-case feasibility pilot. This does not estimate benchmark accuracy, uncertainty calibration, or adaptive-crop efficacy.",
+  "source": "data/local-results/coordinate-stochastic-widthguard-v1/summary.json"
+}

@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v61.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v62.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -98,6 +98,22 @@ const coordinateBeamMissTrace = JSON.parse(
 ).results[0];
 const coordinateBeamHitImage = path.join(workspaceDir, "data/screenspot-pro/images/powerpoint_windows_59.png");
 const coordinateBeamMissImage = path.join(workspaceDir, "data/screenspot-pro/images/vscode_macos_0.png");
+const coordinateSamplingPilot = JSON.parse(
+  await fs.readFile(
+    path.join(workspaceDir, "artifacts/screenspot-presentation/coordinate-stochastic-widthguard-v1.json"),
+    "utf8",
+  ),
+);
+const coordinateSamplingHit = coordinateSamplingPilot.cases.find((row) => row.known_quarter_resolution_outcome === "correct");
+const coordinateSamplingMiss = coordinateSamplingPilot.cases.find((row) => row.known_quarter_resolution_outcome === "incorrect");
+const coordinateSamplingTrace = JSON.parse(
+  await fs.readFile(
+    path.join(workspaceDir, "data/local-results/coordinate-stochastic-widthguard-v1/summary.json"),
+    "utf8",
+  ),
+);
+const coordinateSamplingHitTrace = coordinateSamplingTrace.results.find((row) => row.sample_id === coordinateSamplingHit.sample_id);
+const coordinateSamplingMissTrace = coordinateSamplingTrace.results.find((row) => row.sample_id === coordinateSamplingMiss.sample_id);
 const resolutionSaliencyMaps = [100, 75, 50, 25].map((scale) =>
   path.join(resolutionSaliencyDir, `scale-${scale}.png`),
 );
@@ -302,6 +318,16 @@ function beamRing(slide, x, y, rank, scale = 1) {
   });
 }
 
+function samplePoint(slide, x, y, scale = 1) {
+  const radius = 6 * scale;
+  return slide.shapes.add({
+    geometry: "ellipse",
+    position: { left: x - radius, top: y - radius, width: radius * 2, height: radius * 2 },
+    fill: C.blue,
+    line: { fill: C.white, width: Math.max(1, 1.5 * scale) },
+  });
+}
+
 function outline(slide, left, top, width, height, color = C.orange, lineWidth = 3) {
   return slide.shapes.add({
     geometry: "rect",
@@ -338,6 +364,27 @@ function overlayBeamCase(slide, beamCase, frame, sourceSize, crop = null, scale 
   beamCase.candidates.forEach((candidate) => {
     const point = sourceToFrame(candidate.source_pixel, frame, sourceSize, region);
     beamRing(slide, point.x, point.y, candidate.rank, scale);
+  });
+}
+
+function overlaySamplingCase(slide, samplingCase, frame, sourceSize, crop = null, scale = 1) {
+  const [sourceWidth, sourceHeight] = sourceSize;
+  const region = crop ?? { left: 0, top: 0, right: sourceWidth, bottom: sourceHeight };
+  const bbox = samplingCase.oracle_bbox_source_pixels;
+  const bboxTopLeft = sourceToFrame({ x: bbox[0], y: bbox[1] }, frame, sourceSize, region);
+  const bboxBottomRight = sourceToFrame({ x: bbox[2], y: bbox[3] }, frame, sourceSize, region);
+  outline(
+    slide,
+    bboxTopLeft.x,
+    bboxTopLeft.y,
+    bboxBottomRight.x - bboxTopLeft.x,
+    bboxBottomRight.y - bboxTopLeft.y,
+    C.orange,
+    Math.max(2, 3 * scale),
+  );
+  samplingCase.candidates.forEach((candidate) => {
+    const point = sourceToFrame(candidate.source_pixel, frame, sourceSize, region);
+    samplePoint(slide, point.x, point.y, scale);
   });
 }
 
@@ -1306,7 +1353,7 @@ if (false) {
   textBox(slide, "PROPOSED TEST-TIME LOOP", 64, 160, 760, 18, { fontSize: 11, bold: true, color: C.blue });
   const stages = [
     ["1", "LOW-RES PASS", "Start at 25% linear resolution", C.blueSoft, C.blue],
-    ["2", "CANDIDATES", "Decode K coordinates in parallel", C.orangeSoft, C.orange],
+    ["2", "CANDIDATES", "Sample K coordinates in parallel", C.orangeSoft, C.orange],
     ["3", "UNCERTAINTY", "Spatial spread plus token confidence", "#F3EBDD", C.gold],
     ["4", "ROUTE", "Tight: click\nBroad: crop", C.greenSoft, C.green],
     ["5", "REFINE", "Raise resolution until stable or native", "#E9EDF1", C.deep],
@@ -1321,22 +1368,23 @@ if (false) {
   });
   rect(slide, 64, 336, 760, 146, C.white, true, C.line);
   textBox(slide, "RESEARCH WEDGE", 88, 358, 180, 18, { fontSize: 11, bold: true, color: C.orange });
-  textBox(slide, "Deterministic beams are a cheap baseline, but the pilot shows false consensus.", 88, 388, 690, 28, { fontSize: 20, bold: true, color: C.ink });
-  textBox(slide, "Test temperature-sampled coordinates plus token confidence, then crop only uncertain cases. The target is a better accuracy–latency frontier for Holo 4B, without weight updates or hidden activations.", 88, 426, 690, 42, { fontSize: 14, color: C.muted });
+  textBox(slide, "Guarded stochastic sampling exposes the selected miss without breaking JSON.", 88, 388, 690, 28, { fontSize: 20, bold: true, color: C.ink });
+  textBox(slide, "The two-case result supports a larger calibration study. Test whether spread plus token confidence can route uncertain low-resolution cases to a crop while easy cases stop after one pass.", 88, 426, 690, 42, { fontSize: 14, color: C.muted });
 
   rect(slide, 854, 160, 362, 322, C.deep, true);
   textBox(slide, "LOCAL FEASIBILITY · n=2", 880, 182, 280, 18, { fontSize: 11, bold: true, color: C.gold });
-  textBox(slide, "Quarter-resolution deterministic beams", 880, 208, 300, 24, { fontSize: 16, bold: true, color: C.white });
-  textBox(slide, "KNOWN HIT", 880, 250, 120, 18, { fontSize: 10, bold: true, color: C.green });
-  textBox(slide, `${coordinateBeamHit.rms_radius_normalized.toFixed(2)} spread`, 880, 272, 146, 30, { fontSize: 24, bold: true, color: C.white });
-  textBox(slide, `${coordinateBeamHit.beam_hit_count}/4 beams hit`, 1034, 278, 142, 20, { fontSize: 13, color: "#BDE7D8", alignment: "right" });
-  rect(slide, 880, 314, 300, 1, "#465563");
-  textBox(slide, "KNOWN MISS", 880, 334, 120, 18, { fontSize: 10, bold: true, color: C.orange });
-  textBox(slide, `${coordinateBeamMiss.rms_radius_normalized.toFixed(2)} spread`, 880, 356, 146, 30, { fontSize: 24, bold: true, color: C.white });
-  textBox(slide, `${coordinateBeamMiss.beam_hit_count}/4 beams hit`, 1034, 362, 142, 20, { fontSize: 13, color: "#F6B9AA", alignment: "right" });
-  rect(slide, 880, 400, 300, 54, C.orange, true);
-  textBox(slide, "The wrong case clustered more tightly.", 894, 412, 272, 30, { fontSize: 15, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
-  textBox(slide, "Exact click overlays in Appendix A1", 880, 460, 300, 16, { fontSize: 10, bold: true, color: "#B9C3CD", alignment: "center" });
+  textBox(slide, "Quarter-resolution candidate spread", 880, 208, 300, 24, { fontSize: 16, bold: true, color: C.white });
+  textBox(slide, "DETERMINISTIC BEAMS", 880, 244, 150, 16, { fontSize: 9, bold: true, color: "#9FC8F0" });
+  textBox(slide, `Hit ${coordinateBeamHit.rms_radius_normalized.toFixed(2)} · ${coordinateBeamHit.beam_hit_count}/4`, 880, 264, 142, 20, { fontSize: 14, bold: true, color: C.white });
+  textBox(slide, `Miss ${coordinateBeamMiss.rms_radius_normalized.toFixed(2)} · ${coordinateBeamMiss.beam_hit_count}/4`, 1034, 264, 146, 20, { fontSize: 14, bold: true, color: C.white, alignment: "right" });
+  rect(slide, 880, 296, 300, 1, "#465563");
+  textBox(slide, "GUARDED STOCHASTIC SAMPLES", 880, 312, 220, 16, { fontSize: 9, bold: true, color: C.gold });
+  textBox(slide, `Hit ${coordinateSamplingHit.rms_radius_normalized.toFixed(2)} · ${coordinateSamplingHit.sample_hit_count}/8`, 880, 332, 142, 24, { fontSize: 17, bold: true, color: "#BDE7D8" });
+  textBox(slide, `Miss ${coordinateSamplingMiss.rms_radius_normalized.toFixed(2)} · ${coordinateSamplingMiss.sample_hit_count}/8`, 1024, 332, 156, 24, { fontSize: 17, bold: true, color: "#F6B9AA", alignment: "right" });
+  textBox(slide, "T=0.8 · sample only when ≥2 tokens fall within 5 nats", 880, 364, 300, 16, { fontSize: 9, color: "#B9C3CD", alignment: "center" });
+  rect(slide, 880, 392, 300, 50, C.green, true);
+  textBox(slide, "16/16 strict JSON outputs", 894, 402, 272, 28, { fontSize: 16, bold: true, color: C.white, alignment: "center", verticalAlignment: "middle" });
+  textBox(slide, "Exact stochastic click overlays in Appendix A1", 880, 454, 300, 16, { fontSize: 10, bold: true, color: "#B9C3CD", alignment: "center" });
 
   const proposalChecks = [
     ["HYPOTHESIS", "Adaptive routing recovers low-resolution misses while skipping a second pass on easy cases."],
@@ -1351,15 +1399,15 @@ if (false) {
   rect(slide, 64, 630, 1152, 32, C.deep, true);
   textBox(slide, "Adjacent to AutoFocus, UI-Zoomer, and ZoomClick · Holo-specific test of cheap beams, calibrated routing, and latency", 84, 637, 1112, 18, { fontSize: 12, bold: true, color: C.white, alignment: "center" });
   footer(slide, "End of main deck. Two-case pilot tests feasibility, not benchmark accuracy or calibration.");
-  slide.speakerNotes.textFrame.setText("10:20–11:20 — End on one focused research proposal. Start with a low-resolution image, produce a batched coordinate ensemble, estimate uncertainty, and route only uncertain cases to a crop-and-resize pass. Repeat until the coordinate distribution is sufficiently stable or the crop reaches native resolution. The proposal is black-box at test time: no model updates and no hidden activations. Our first local Metal feasibility check used the official H Company localization prompt and VisualLocalizerOutput contract on two previously native-correct ScreenSpot-Pro items at 25 percent linear resolution. Four deterministic beams were valid and distinct in both cases. On the known quarter-resolution hit, RMS coordinate radius was 2.55 normalized units and all four beams hit. On the known miss, radius was only 1.12 and no beam hit; all candidates shared x equals 15 and differed only by adjacent y values. Deterministic top-beam spread therefore shows false consensus and cannot serve as the gate by itself. The next experiment should compare deterministic beams with temperature-sampled coordinate candidates plus token confidence, then test whether a calibrated gate recovers low-resolution misses while avoiding a second pass on easy cases. This direction overlaps materially with AutoFocus and UI-Zoomer, which already use sampled coordinate uncertainty for adaptive visual search, and with ZoomClick's training-free zoom prior. The research wedge is narrower: Holo-specific evaluation, deterministic beams as a cheap baseline, a resolution ladder rather than unconditional native inference, and a mechanistic link to the recoverable action state observed in this deck. InnerZoom provides an important white-box efficiency comparison because it avoids the second forward pass by reinjecting intermediate evidence. Sources: artifacts/screenspot-presentation/coordinate-beam-spread-pilot-v1.json; data/local-results/coordinate-beam-spread-smoke/summary.json; data/local-results/coordinate-beam-spread-vscode0-v1/summary.json; https://arxiv.org/abs/2605.02630; https://arxiv.org/abs/2604.14113; https://arxiv.org/abs/2512.05941; https://arxiv.org/abs/2606.30084.");
+  slide.speakerNotes.textFrame.setText("10:20–11:20 — End on one focused research proposal. Start with a low-resolution image, produce a batched coordinate ensemble, estimate uncertainty, and route only uncertain cases to a crop-and-resize pass. Repeat until the coordinate distribution is sufficiently stable or the crop reaches native resolution. The proposal is black-box at test time: no model updates and no hidden activations. We first tested four deterministic beams on two previously native-correct ScreenSpot-Pro items at 25 percent linear resolution. The known hit had RMS radius 2.55 and all four beams hit. The known miss had a tighter 1.12 radius and no beam hit, showing false consensus. We then ran eight stochastic sequences per case with temperature 0.8, top-p 0.95, top-k 20, and one beam. A confidence-width guardrail forced top-1 whenever fewer than two tokens were within five nats of the best raw next-token log probability. It forced greedy decoding on 120 of 216 sequence-token positions. All 16 outputs remained strict JSON. The hit produced eight unique clicks, all inside the target, with RMS radius 15.46. The miss produced eight unique clicks, none inside the target, with RMS radius 83.62. Guarded stochastic spread therefore separates these two selected cases where deterministic beam spread did not. This is a feasibility result, not calibration. The next experiment should estimate routing accuracy on the 36-case native-success cohort and compare pixels processed plus p50 and p95 latency. This direction overlaps materially with AutoFocus and UI-Zoomer, which already use sampled coordinate uncertainty for adaptive visual search, and with ZoomClick's training-free zoom prior. The research wedge is Holo-specific evaluation, a token-confidence width guardrail, a resolution ladder, and a mechanistic link to the recoverable action state observed in this deck. InnerZoom remains an important white-box efficiency comparison because it avoids the second forward pass by reinjecting intermediate evidence. Sources: artifacts/screenspot-presentation/coordinate-beam-spread-pilot-v1.json; artifacts/screenspot-presentation/coordinate-stochastic-widthguard-v1.json; data/local-results/coordinate-stochastic-widthguard-v1/summary.json; https://arxiv.org/abs/2605.02630; https://arxiv.org/abs/2604.14113; https://arxiv.org/abs/2512.05941; https://arxiv.org/abs/2606.30084.");
 }
 
-// 14 - deterministic beam pilot appendix
+// 14 - stochastic sampling pilot appendix
 {
   const slide = presentation.slides.add();
   slide.background.fill = C.paper;
-  slideTitle(slide, "Appendix · beam pilot", "The known miss forms the tighter beam cluster", "A1");
-  textBox(slide, "Orange box: ScreenSpot-Pro oracle · colored rings: deterministic beam ranks 1–4 · model input: 25% linear resize", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
+  slideTitle(slide, "Appendix · sampling pilot", "Guarded stochastic spread separates the selected cases", "A1");
+  textBox(slide, "Orange box: ScreenSpot-Pro oracle · blue dots: eight stochastic clicks · model input: 25% linear resize", 64, 118, 1152, 22, { fontSize: 13, color: C.muted });
 
   const hitFrame = { left: 64, top: 188, width: 552, height: 345 };
   const missFrame = { left: 680, top: 188, width: 536, height: 348.4 };
@@ -1368,15 +1416,15 @@ if (false) {
   textBox(slide, "KNOWN QUARTER-RESOLUTION MISS", 680, 146, 380, 18, { fontSize: 11, bold: true, color: C.orange });
   textBox(slide, "Refresh the file explorer", 680, 164, 536, 20, { fontSize: 14, bold: true, color: C.ink });
 
-  await image(slide, coordinateBeamHitImage, hitFrame.left, hitFrame.top, hitFrame.width, hitFrame.height, { alt: "ScreenSpot-Pro PowerPoint item with oracle box and deterministic beam clicks", geometry: "rect", borderRadius: 0, fit: "contain" });
-  overlayBeamCase(slide, coordinateBeamHitTrace, hitFrame, coordinateBeamHitTrace.source_image_size);
-  await image(slide, coordinateBeamMissImage, missFrame.left, missFrame.top, missFrame.width, missFrame.height, { alt: "ScreenSpot-Pro VS Code item with oracle box and deterministic beam clicks", geometry: "rect", borderRadius: 0, fit: "contain" });
-  overlayBeamCase(slide, coordinateBeamMissTrace, missFrame, coordinateBeamMissTrace.source_image_size);
+  await image(slide, coordinateBeamHitImage, hitFrame.left, hitFrame.top, hitFrame.width, hitFrame.height, { alt: "ScreenSpot-Pro PowerPoint item with oracle box and guarded stochastic clicks", geometry: "rect", borderRadius: 0, fit: "contain" });
+  overlaySamplingCase(slide, coordinateSamplingHitTrace, hitFrame, coordinateSamplingHitTrace.source_image_size);
+  await image(slide, coordinateBeamMissImage, missFrame.left, missFrame.top, missFrame.width, missFrame.height, { alt: "ScreenSpot-Pro VS Code item with oracle box and guarded stochastic clicks", geometry: "rect", borderRadius: 0, fit: "contain" });
+  overlaySamplingCase(slide, coordinateSamplingMissTrace, missFrame, coordinateSamplingMissTrace.source_image_size);
 
   const hitCrop = { left: 850, top: 540, right: 1950, bottom: 720 };
-  const missCrop = { left: 0, top: 135, right: 970, bottom: 293 };
+  const missCrop = { left: 0, top: 60, right: 600, bottom: 560 };
   const hitInset = { left: 64, top: 552, width: 552, height: 90 };
-  const missInset = { left: 680, top: 552, width: 536, height: 87.3 };
+  const missInset = { left: 680, top: 552, width: 108, height: 90 };
   await image(slide, coordinateBeamHitImage, hitInset.left, hitInset.top, hitInset.width, hitInset.height, {
     alt: "Magnified exact beam locations inside the PowerPoint oracle target",
     geometry: "rect",
@@ -1388,7 +1436,7 @@ if (false) {
       bottom: 1 - hitCrop.bottom / coordinateBeamHitTrace.source_image_size[1],
     },
   });
-  overlayBeamCase(slide, coordinateBeamHitTrace, hitInset, coordinateBeamHitTrace.source_image_size, hitCrop, 0.8);
+  overlaySamplingCase(slide, coordinateSamplingHitTrace, hitInset, coordinateSamplingHitTrace.source_image_size, hitCrop, 0.8);
   await image(slide, coordinateBeamMissImage, missInset.left, missInset.top, missInset.width, missInset.height, {
     alt: "Magnified exact separation between the VS Code oracle target and wrong beam cluster",
     geometry: "rect",
@@ -1400,13 +1448,14 @@ if (false) {
       bottom: 1 - missCrop.bottom / coordinateBeamMissTrace.source_image_size[1],
     },
   });
-  overlayBeamCase(slide, coordinateBeamMissTrace, missInset, coordinateBeamMissTrace.source_image_size, missCrop, 0.8);
+  overlaySamplingCase(slide, coordinateSamplingMissTrace, missInset, coordinateSamplingMissTrace.source_image_size, missCrop, 0.6);
+  textBox(slide, "T=0.8, top-p=0.95, top-k=20\nGreedy when fewer than two tokens fall within 5 nats", 812, 566, 392, 58, { fontSize: 14, bold: true, color: C.ink });
 
-  textBox(slide, "4/4 hit · RMS radius 2.55", 76, 648, 300, 20, { fontSize: 13, bold: true, color: C.green });
-  textBox(slide, "0/4 hit · RMS radius 1.12", 692, 648, 220, 20, { fontSize: 13, bold: true, color: C.orange });
-  textBox(slide, "Tight beam agreement does not imply correctness", 924, 648, 292, 20, { fontSize: 12, bold: true, color: C.ink, alignment: "right" });
-  footer(slide, "Exact source-pixel overlays. The pilot compares one selected hit with one selected miss; it does not estimate calibration.");
-  slide.speakerNotes.textFrame.setText("Appendix — Both screenshots show exact source-pixel positions after mapping normalized coordinates back with x times source width divided by 1000 and y times source height divided by 1000. The orange rectangle is the released ScreenSpot-Pro oracle box. The colored rings are the four returned deterministic beam sequences in rank order. The model did not receive the full-resolution screenshot shown here; each image was first resized to 25 percent of its original width and height with Lanczos resampling, then passed through the official H Company element-localization prompt and VisualLocalizerOutput coordinate contract. We called Transformers generate with do_sample false, num_beams four, num_return_sequences four, early_stopping true, output_scores true, and a 24-token limit except for the first smoke run, which used 64. Beam search keeps the four highest cumulative-score partial token sequences at every decoding step. These are correlated alternatives, not independent samples from the model distribution. In the PowerPoint hit, the four coordinates are (485,344), (485,349), (483,343), and (483,344); all land inside the oracle box. In the VS Code miss, the coordinates are (15,171) through (15,174); all land near the far-left gutter while the oracle refresh control lies farther right. RMS radius is computed in normalized 0–1000 coordinate space around the four-point centroid. The incorrect case has the smaller radius, 1.12 versus 2.55. This false consensus motivates temperature-sampled candidates plus token confidence for the next experiment. Sources: data/local-results/coordinate-beam-spread-smoke/summary.json; data/local-results/coordinate-beam-spread-vscode0-v1/summary.json; scripts/run_coordinate_beam_pilot.py.");
+  textBox(slide, "8/8 hit · RMS radius 15.46", 76, 648, 300, 20, { fontSize: 13, bold: true, color: C.green });
+  textBox(slide, "0/8 hit · RMS radius 83.62", 692, 648, 220, 20, { fontSize: 13, bold: true, color: C.orange });
+  textBox(slide, "16/16 outputs preserve strict JSON", 924, 648, 292, 20, { fontSize: 12, bold: true, color: C.ink, alignment: "right" });
+  footer(slide, "Exact source-pixel overlays. The selected two-case pilot tests feasibility, not calibration or adaptive-crop accuracy.");
+  slide.speakerNotes.textFrame.setText("Appendix — Both screenshots show exact source-pixel positions after mapping normalized coordinates back with x times source width divided by 1000 and y times source height divided by 1000. The orange rectangle is the released ScreenSpot-Pro oracle box. The blue dots are eight stochastic coordinate sequences. The model did not receive the full-resolution screenshot shown here. Each image was first resized to 25 percent of its original width and height with Lanczos resampling, then passed through the official H Company element-localization prompt and VisualLocalizerOutput coordinate contract. We called Transformers generate with do_sample true, num_beams one, num_return_sequences eight, temperature 0.8, top-p 0.95, top-k 20, and a 24-token limit. A custom confidence-width logits processor counted how many raw next-token log probabilities were within five nats of the best token. When fewer than two qualified, it masked every token except top-1. Otherwise, the normal temperature, top-p, and top-k sampling rules applied. The guardrail forced greedy decoding on 120 of 216 sequence-token positions. All sixteen outputs were strict JSON objects with integer x and y in the normalized 0–1000 range. In the PowerPoint hit, all eight unique clicks land inside the target and the RMS radius is 15.46. In the VS Code miss, all eight clicks remain wrong but spread along the far-left gutter, producing an RMS radius of 83.62. The deterministic four-beam baseline showed the opposite ordering, with 2.55 for the hit and 1.12 for the miss. This selected pair shows that guarded stochastic sampling can expose uncertainty hidden by deterministic beams while preserving format. A larger cohort must determine calibration. Sources: artifacts/screenspot-presentation/coordinate-stochastic-widthguard-v1.json; data/local-results/coordinate-stochastic-widthguard-v1/summary.json; scripts/run_coordinate_sampling_pilot.py.");
 }
 
 // 15 - methods appendix
@@ -1534,9 +1583,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v61");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v62");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v61.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v62.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
