@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = "/Users/yaoyiheng/Documents/ChatGPT/GUI VLM Fine Tuning";
 const SKILL_DIR = "/Users/yaoyiheng/.codex/plugins/cache/openai-primary-runtime/presentations/26.921.11914/skills/presentations";
 const TMP_DIR = path.join(workspaceDir, "artifacts/screenspot-presentation/build");
-const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v62.pptx");
+const FINAL_PPTX = path.join(workspaceDir, "artifacts/screenspot-presentation/holo-attribution-research-v63.pptx");
 const RUNTIME_PYTHON = "/Users/yaoyiheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
 const { resolvePresentationFont, applyPresentationChartFont, finalizePresentation } = await import(
   pathToFileURL(path.join(SKILL_DIR, "container_tools/artifact_tool_utils.mjs")).href,
@@ -319,12 +319,12 @@ function beamRing(slide, x, y, rank, scale = 1) {
 }
 
 function samplePoint(slide, x, y, scale = 1) {
-  const radius = 6 * scale;
+  const radius = 4.5 * scale;
   return slide.shapes.add({
     geometry: "ellipse",
     position: { left: x - radius, top: y - radius, width: radius * 2, height: radius * 2 },
-    fill: C.blue,
-    line: { fill: C.white, width: Math.max(1, 1.5 * scale) },
+    fill: "#00A6FF",
+    line: { fill: "none", width: 0 },
   });
 }
 
@@ -1583,9 +1583,9 @@ const requirements = {
   materializeLiteralChartWorkbooks: true,
 };
 const fontPolicy = { basis: "design", families: [family] };
-const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v62");
+const stagingDir = path.join(workspaceDir, ".codex-finalizer-screenspot-v63");
 await fs.mkdir(stagingDir, { recursive: true });
-const candidatePath = path.join(stagingDir, "candidate-v62.pptx");
+const candidatePath = path.join(stagingDir, "candidate-v63.pptx");
 await (await PresentationFile.exportPptx(presentation)).save(candidatePath);
 
 const result = await finalizePresentation({
