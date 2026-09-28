@@ -23,12 +23,20 @@ Run:
 python3 scripts/audit_trace_release.py --verify-hashes
 python3 scripts/stage_hf_traces.py --profile screenspot
 python3 scripts/stage_hf_traces.py --profile residual-review
+python3 scripts/stage_hf_traces.py --profile hotel-trajectory-review
+python3 scripts/stage_hf_traces.py --profile hotel-action-review
 python3 scripts/verify_hf_stage.py data/hf-stage/screenspot
 python3 scripts/verify_hf_stage.py data/hf-stage/residual-review
+python3 scripts/verify_hf_stage.py data/hf-stage/hotel-trajectory-review
+python3 scripts/verify_hf_stage.py data/hf-stage/hotel-action-review
 ```
 
 - `data/hf-stage/screenspot/`: 360 Holo ScreenSpot traces, about 2.71 GB of staged files. The index links each trace to its sample, resolution, target/control role, target box, predicted click, correctness label, and run-manifest hash. It includes images, generated tokens, chosen-token log probabilities, last-query attention rows, and small value-norm arrays.
 - `data/hf-stage/residual-review/`: 24 local traces with explicit model revision and residual states, about 0.95 GB of staged files. This is an internal review set. Input screenshots and raw requests are omitted. Six earlier residual traces without a model revision and other local traces are excluded pending provenance review.
+- `data/hf-stage/hotel-trajectory-review/`: one replay-ready, successful synthetic `test-0010` Holo replicate with three actions and 3 trace bundles, about 0.21 GB. Its attention rows cover only steps 0-63 of 302, 282, and 363 generated tokens. These rows do **not** reach the generated scroll/click parameters. It is useful for multi-frame early-token inspection and behavioral replay, but not a coordinate-token attention study.
+- `data/hf-stage/hotel-action-review/`: one replay-ready, successful synthetic `test-0035-large-ui` Holo diagnostic with four actions and 4 trace bundles, about 1.00 GB. The final decision captures the freely generated click x and y value-token attention at steps 246-248 and 252-254. It is a different fixture and run from the Holo/Qwen paired `test-0010` free-generation pilot. Its third decision saves only the first 256 of 355 generated-token attention steps.
+
+The matched Holo/Qwen coordinate-token attention experiment is a separate **teacher-forced probe**, recorded under `data/local-results/attention-delta-hotel-step2-native-v1/`. It reconstructs the attention rows predicting six declared oracle coordinate tokens for both checkpoints, then stores three-frame direct-attention and value-norm maps, layer mass, and comparison summaries. It is not a free-generation trajectory and is not included in the 433 raw trace count or the hotel stages above. The paired free-generation `test-0010` pilot has Holo and Qwen behavioral trajectories, but only a separately replicated Holo run and one failed-first-action Qwen run have raw activation traces; those captures stop attention at step 63. Do not describe the early-token maps as action-token attention.
 
 Staging uses local hard links by default, so those apparent bytes do not occupy another full copy on this filesystem. Use `--copy` for an independent folder. Each bundle gets a new manifest for its actual staged files. The staging code excludes raw requests and responses, machine-specific model paths, processor file lists, and prompt attention matrices. The dataset card intentionally leaves its license unset while image and derived-data rights are reviewed. Do not upload the `residual-review` profile before checking local input provenance; hidden vectors can retain information about their inputs even without screenshots.
 

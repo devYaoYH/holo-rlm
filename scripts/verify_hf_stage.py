@@ -47,6 +47,23 @@ def main() -> None:
             if item.stat().st_size != record["bytes"] or digest(item) != record["sha256"]:
                 raise ValueError(f"checksum mismatch: {item}")
             file_count += 1
+    trajectory_manifest = root / "trajectory-manifest.json"
+    if trajectory_manifest.exists():
+        records = json.loads(trajectory_manifest.read_text())["files"]
+        actual = {str(item.relative_to(root)) for item in (root / "frames").iterdir() if item.is_file()} | {"trajectory.json"}
+        if {record["path"] for record in records} != actual:
+            raise ValueError("trajectory manifest file set differs")
+        for record in records:
+            path = Path(record["path"])
+            if path.is_absolute() or ".." in path.parts or path.parts[0] not in {"frames", "trajectory.json"}:
+                raise ValueError(f"unsafe trajectory manifest path: {path}")
+            item = root / path
+            if item.stat().st_size != record["bytes"] or digest(item) != record["sha256"]:
+                raise ValueError(f"checksum mismatch: {item}")
+            file_count += 1
+        trajectory = json.loads((root / "trajectory.json").read_text())
+        if {step["trace_id"] for step in trajectory["steps"]} != set(trace_ids):
+            raise ValueError("trajectory and trace index differ")
     print(f"Verified {len(index)} traces and {file_count} files in {root}")
 
 
