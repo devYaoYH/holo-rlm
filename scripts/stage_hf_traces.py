@@ -74,7 +74,10 @@ def main() -> None:
     parser.add_argument("--profile", choices=("screenspot", "residual-review", "hotel-trajectory-review", "hotel-action-review"), default="screenspot")
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--copy", action="store_true", help="Copy instead of local hard links")
+    parser.add_argument("--public-card", action="store_true", help="Use the reviewed MIT public ScreenSpot card")
     args = parser.parse_args()
+    if args.public_card and args.profile != "screenspot":
+        parser.error("--public-card currently applies only to screenspot")
     audit = read(AUDIT)
     if not audit.get("hashes_verified"):
         parser.error("run audit_trace_release.py --verify-hashes first")
@@ -187,11 +190,17 @@ From the [source repository](https://github.com/devYaoYH/holo-rlm), run `python3
 
 ## Attribution
 
-The screenshots and benchmark annotations originate from [likaixin/ScreenSpot-Pro](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro), whose Hub card labels the dataset MIT. The benchmark authors provide the [dataset citation](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro#citation). Holo model information is at [Hcompany/Holo-3.1-4B](https://huggingface.co/Hcompany/Holo-3.1-4B). This release candidate does not claim ownership of the benchmark screenshots or model weights.
+The screenshots and benchmark annotations originate from [likaixin/ScreenSpot-Pro](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro), whose Hub card labels the dataset MIT. The benchmark authors provide the [dataset citation](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro#citation). Holo model information is at [Hcompany/Holo-3.1-4B](https://huggingface.co/Hcompany/Holo-3.1-4B). This dataset does not claim ownership of the benchmark screenshots or model weights.
 """ if args.profile == "screenspot" else ""
+    license_line = "license: mit\n" if args.public_card else ""
+    release_status = (
+        "This dataset is released under MIT. Its benchmark screenshots and annotations come from the upstream ScreenSpot-Pro dataset, whose Hub card also lists MIT; the original authors are credited below."
+        if args.public_card else
+        "This repository is private while release terms and privacy are reviewed. No separate license has been asserted for these traces yet."
+    )
     card = f"""---
 pretty_name: Holo 3.1 4B generation traces ({args.profile})
-language:
+{license_line}language:
 - en
 tags:
 - interpretability
@@ -201,7 +210,7 @@ tags:
 
 # Holo 3.1 4B generation traces — {args.profile}
 
-This release candidate contains {len(index)} completed trace bundles.
+This dataset contains {len(index)} completed trace bundles.
 Each `traces/<trace-id>/` contains generated token IDs and pieces, capture-position metadata, last-query attention rows,
 and optional last-query residual vectors and chosen-token log probabilities. The `manifest.json` records SHA-256 for every file.
 Use `index.jsonl` to enumerate the bundles. Run the local viewer with
@@ -213,11 +222,11 @@ The {args.profile} profile {'omits all input screenshots' if args.profile == 're
 No model weights are included. The eight conventional attention blocks are mapped to physical layer indices in `model.json`.
 Other blocks use linear attention and have no softmax row here. Residual vectors are post-block query states, not causal source attributions.
 
-## Provenance and release review
+## Provenance and release status
 
 Model: [Hcompany/Holo-3.1-4B](https://huggingface.co/Hcompany/Holo-3.1-4B).
-{'Benchmark: [ScreenSpot-Pro](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro). The screenshot and derived-data redistribution terms still need a final review.' if args.profile == 'screenspot' else 'These captures were made locally. Review prompt and screenshot provenance before any upload.'}
-Check benchmark/image rights, privacy, and dataset license before upload. This card deliberately does not assert a new license.
+{'Benchmark: [ScreenSpot-Pro](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro). Its Hub card labels the source dataset MIT.' if args.profile == 'screenspot' else 'These captures were made locally. Review prompt and screenshot provenance before public release.'}
+{release_status}
 {screenspot_notes}
 """
     (target / "README.md").write_text(card)
