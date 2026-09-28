@@ -174,6 +174,21 @@ def main() -> None:
         detail = "The index joins 120 pilot and 240 expansion requests to their ScreenSpot sample, image scale, target/control role, and run-manifest hash."
     else:
         detail = "This review profile includes only local residual traces with an explicit model revision."
+    screenspot_notes = """
+## ScreenSpot-Pro subset and capture
+
+This selected research subset has 18 ScreenSpot-Pro items from Photoshop, PowerPoint, and VS Code. For each item, Holo was run at four linear image scales (100%, 75%, 50%, 25%) with one target instruction and four same-image control instructions: 18 x 4 x 5 = 360 traces. It is not a benchmark-wide accuracy estimate. All 360 traces use Holo model revision `8c88265a5a159bfd1492db9243733dd2e6e04a6e` and save chosen-token log probabilities and last-query attention rows for every generated token. They do not save hidden-state vectors.
+
+Each line of `index.jsonl` identifies a trace, benchmark item, application, image scale, target/control role, bounding box, predicted click, and strict correctness label. Each trace directory has `generated_tokens.json`, `token_logprobs.json`, image inputs, attention rows, value norms, and a SHA-256 manifest. The `attention_last_query_rows.npz` file stores query-to-key rows for the eight conventional full-attention layers. Holo's other language blocks use linear attention and do not yield equivalent softmax rows in this capture. Attention visualizations describe routing; they do not establish causal influence.
+
+## Use
+
+From the [source repository](https://github.com/devYaoYH/holo-rlm), run `python3 -m apps.trace_viewer.server --root /path/to/this/dataset/traces` and open the address printed by the server. The viewer steps through generated tokens, layers, heads, and image patches. `scripts/verify_hf_stage.py` checks the staged files against their manifests. These traces are intended for evaluation and interpretability research; using benchmark examples for training may compromise later benchmark evaluation.
+
+## Attribution
+
+The screenshots and benchmark annotations originate from [likaixin/ScreenSpot-Pro](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro), whose Hub card labels the dataset MIT. The benchmark authors provide the [dataset citation](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro#citation). Holo model information is at [Hcompany/Holo-3.1-4B](https://huggingface.co/Hcompany/Holo-3.1-4B). This release candidate does not claim ownership of the benchmark screenshots or model weights.
+""" if args.profile == "screenspot" else ""
     card = f"""---
 pretty_name: Holo 3.1 4B generation traces ({args.profile})
 language:
@@ -186,7 +201,7 @@ tags:
 
 # Holo 3.1 4B generation traces — {args.profile}
 
-This is a **local release candidate**, not a published dataset. It contains {len(index)} completed trace bundles.
+This release candidate contains {len(index)} completed trace bundles.
 Each `traces/<trace-id>/` contains generated token IDs and pieces, capture-position metadata, last-query attention rows,
 and optional last-query residual vectors and chosen-token log probabilities. The `manifest.json` records SHA-256 for every file.
 Use `index.jsonl` to enumerate the bundles. Run the local viewer with
@@ -203,6 +218,7 @@ Other blocks use linear attention and have no softmax row here. Residual vectors
 Model: [Hcompany/Holo-3.1-4B](https://huggingface.co/Hcompany/Holo-3.1-4B).
 {'Benchmark: [ScreenSpot-Pro](https://huggingface.co/datasets/likaixin/ScreenSpot-Pro). The screenshot and derived-data redistribution terms still need a final review.' if args.profile == 'screenspot' else 'These captures were made locally. Review prompt and screenshot provenance before any upload.'}
 Check benchmark/image rights, privacy, and dataset license before upload. This card deliberately does not assert a new license.
+{screenspot_notes}
 """
     (target / "README.md").write_text(card)
     summary = {"profile": args.profile, "trace_count": len(index), "staged_bytes": sum(item.stat().st_size for item in target.rglob("*") if item.is_file()),
