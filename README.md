@@ -1,5 +1,7 @@
 # Holo desktop trajectory capture
 
+For the trace inventory, Hugging Face staging workflow, and layer-by-layer browser viewer, see [the trace release audit](docs/hf-trace-release.md).
+
 This repository contains a deterministic localhost-only booking-results fixture and a capture pipeline for replayable Holo trajectories. Generated captures remain under `data/` and are git-ignored. The fixture never links to a real booking, checkout, login, mail, payment, or deletion surface.
 
 ## Setup

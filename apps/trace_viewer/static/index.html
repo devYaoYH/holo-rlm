@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holo Trace Atlas</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="eyebrow">HOLO 3.1 / INSTRUMENTED GENERATION</div>
+    <h1>Trace Atlas <span>↗</span></h1>
+    <p>Explore the query state that predicts each token, block by block.</p>
+  </header>
+  <main>
+    <section class="toolbar panel">
+      <label>TRACE <input id="filter" type="search" placeholder="Filter by trace ID or source"><select id="trace"></select></label>
+      <label>GENERATION STEP <input id="step" type="range" min="0" max="0" value="0"><span id="stepValue">0</span></label>
+      <button id="play" type="button">▶ Play</button>
+      <label>HEAD <select id="head"><option value="-1">Mean of heads</option></select></label>
+    </section>
+    <section class="status panel">
+      <div><span class="eyebrow">PREDICTED TOKEN</span><strong id="currentToken">—</strong><small id="tokenMeta"></small></div>
+      <div><span class="eyebrow">QUERY POSITION</span><strong id="queryPosition">—</strong><small>Last prompt token at step 0; previous generated token afterward</small></div>
+      <div><span class="eyebrow">CAPTURE</span><strong id="capture">—</strong><small id="captureDetail"></small></div>
+    </section>
+    <section class="panel timeline">
+      <div class="sectionTitle"><h2>Generation timeline</h2><span>Choose a token to inspect its predicting query</span></div>
+      <div id="tokens" class="tokens"></div>
+    </section>
+    <div class="columns">
+      <section class="panel">
+        <div class="sectionTitle"><h2>Backbone</h2><span>32 language blocks · select a block</span></div>
+        <div id="blocks" class="blocks"></div>
+        <div class="legend"><span><i class="dot full"></i> Full attention</span><span><i class="dot linear"></i> Linear attention</span></div>
+      </section>
+      <section class="panel">
+        <div class="sectionTitle"><h2 id="blockTitle">Block —</h2><span id="blockKind"></span></div>
+        <div class="metrics"><div><span>Residual L₂</span><strong id="norm">—</strong></div><div><span>Block change L₂</span><strong id="deltaNorm">—</strong></div><div><span>Mean |activation|</span><strong id="meanabs">—</strong></div><div><span>Peak |activation|</span><strong id="peak">—</strong></div></div>
+        <div class="sectionTitle"><h3>Residual dimensions</h3><select id="vectorMode" aria-label="Activation view"><option value="output">Post-block state</option><option value="delta">Change added by block</option></select></div>
+        <canvas id="features" width="832" height="240"></canvas>
+        <div class="canvasCaption">2,560 signed dimensions, arranged by feature index in a 64 × 40 grid. Red is positive; blue is negative. <span id="hoverFeature"></span></div>
+      </section>
+    </div>
+    <div class="columns">
+      <section class="panel">
+        <div class="sectionTitle"><h2>Token routing</h2><span id="routingState"></span></div>
+        <div class="metrics"><div><span>Prompt mass</span><strong id="promptMass">—</strong></div><div><span>Prior output mass</span><strong id="outputMass">—</strong></div><div><span>Image mass</span><strong id="imageMass">—</strong></div></div>
+        <div id="topKeys" class="topKeys"></div>
+      </section>
+      <section class="panel">
+        <div class="sectionTitle"><h2>Visual input routing</h2><span>Raw last-query attention on image patches</span></div>
+        <label class="imagePicker">INPUT FRAME <select id="image"></select></label>
+        <div id="imageStage" class="imageStage"><canvas id="imageCanvas"></canvas><div id="imageEmpty" class="empty">No captured input image for this trace.</div></div>
+        <div id="imageCaption" class="canvasCaption"></div>
+      </section>
+    </div>
+    <section class="panel notes"><h2>How to read this view</h2><p>The residual vector for step <em>t</em> belongs to the query position used to predict generated token <em>t</em>. The attention row shows where a conventional full-attention block reads from that query. Linear-attention blocks do not yield comparable softmax rows in this capture. Routing and activation magnitude are observational; tracing causal influence requires controlled patching or ablation.</p><p id="availability"></p></section>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>
